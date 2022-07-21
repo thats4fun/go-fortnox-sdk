@@ -10,15 +10,15 @@ const (
 )
 
 // GetAllUnits does _GET https://api.fortnox.se/3/units
-func (c *Client) GetAllUnits(ctx context.Context) ([]*Unit, error) {
-	resp := GetAllUnitsResp{}
+func (c *Client) GetAllUnits(ctx context.Context) (*GetAllUnitsResp, error) {
+	resp := &GetAllUnitsResp{}
 
 	err := c._GET(ctx, unitsURI, nil, resp)
 	if err != nil {
 		return nil, err
 	}
 
-	return resp.Units, nil
+	return resp, nil
 }
 
 // CreateUnit does _POST https://api.fortnox.se/3/units
@@ -69,21 +69,19 @@ func (c *Client) UpdateUnit(ctx context.Context, code string, req *UpdateUnitReq
 	return resp, nil
 }
 
-// RemoveUnit does _DELETE
+// RemoveUnit does _DELETE https://api.fortnox.se/3/units/{Code}
 func (c *Client) RemoveUnit(ctx context.Context, code string) error {
 	uri := fmt.Sprintf("%s/%s", unitsURI, code)
 	return c._DELETE(ctx, uri)
 }
 
 type GetAllUnitsResp struct {
-	Units []*Unit `json:"Units"`
-}
-
-type Unit struct {
-	Url         string `json:"@url"`
-	Code        string `json:"Code"`
-	Description string `json:"Description"`
-	CodeEnglish string `json:"CodeEnglish"`
+	Units []struct {
+		Url         string `json:"@url"`
+		Code        string `json:"Code"`
+		Description string `json:"Description"`
+		CodeEnglish string `json:"CodeEnglish"`
+	} `json:"Units"`
 }
 
 type CreateUnitReq struct {
