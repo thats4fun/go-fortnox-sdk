@@ -167,6 +167,9 @@ func request(
 	case 200, 201:
 		bodyPreview, _ := getRespBodyPreview(resp, 30)
 		if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+			if err == io.EOF {
+				return nil
+			}
 			return errors.Wrap(err, fmt.Sprintf("failed to decode json from response [%s]", bodyPreview))
 		}
 		return nil

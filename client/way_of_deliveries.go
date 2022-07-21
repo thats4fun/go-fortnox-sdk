@@ -54,7 +54,7 @@ func (c *Client) GetWayOfDeliveryByCode(ctx context.Context, code string) (*GetW
 	return resp, nil
 }
 
-// UpdateWayOfDelivery does UPDATE https://api.fortnox.se/3/wayofdeliveries/{Code}
+// UpdateWayOfDelivery does _PUT https://api.fortnox.se/3/wayofdeliveries/{Code}
 //
 // code - identifies the way of delivery
 //
@@ -68,7 +68,7 @@ func (c *Client) UpdateWayOfDelivery(
 
 	uri := fmt.Sprintf("%s/%s", wayOfDeliveriesURI, code)
 
-	err := c._POST(ctx, uri, nil, req, resp)
+	err := c._PUT(ctx, uri, nil, req, resp)
 	if err != nil {
 		return nil, err
 	}
