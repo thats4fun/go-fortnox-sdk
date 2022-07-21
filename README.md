@@ -105,6 +105,6 @@ go test ./... -v -count=1
 | emailsenders/trusted                   | ❌          | ❌         |  
 | units                                  | ❌          | ❌         |  
 | voucherfileconnections                 | ❌          | ❌         |  
-| voucherseries                          | ❌          | ❌         |  
+| voucherseries                          | ✓          | ❌         |  
 | vouchers                               | ❌          | ❌         |  
 | wayofdeliveries                        | ✓           | ❌         |  

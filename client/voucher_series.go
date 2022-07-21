@@ -21,7 +21,7 @@ func (c *Client) GetAllVoucherSeries(ctx context.Context) (*GetAllVoucherSeriesR
 	return resp, nil
 }
 
-// CreateVoucherSeries doe _POST https://api.fortnox.se/3/voucherseries
+// CreateVoucherSeries does _POST https://api.fortnox.se/3/voucherseries
 //
 // req - voucher series to create
 func (c *Client) CreateVoucherSeries(ctx context.Context, req *CreateVoucherSeriesReq) (*CreateVoucherSeriesResp, error) {
