@@ -66,6 +66,8 @@ func (c *Client) GetTaxReduction(ctx context.Context, id int) (*GetTaxReductionR
 
 // UpdateTaxReduction does _PUT https://api.fortnox.se/3/taxreductions/{Id}
 //
+// id - identifies the tax reduction
+//
 // req - tax reduction to update
 func (c *Client) UpdateTaxReduction(
 	ctx context.Context,
@@ -84,7 +86,7 @@ func (c *Client) UpdateTaxReduction(
 	return resp, nil
 }
 
-// RemoveTaxReduction does _DELETE
+// RemoveTaxReduction does _DELETE https://api.fortnox.se/3/taxreductions/{Id}
 //
 // id - identifies the tax reduction
 func (c Client) RemoveTaxReduction(ctx context.Context, id int) error {
@@ -100,10 +102,14 @@ const (
 	OffersTaxReductionFilter   GetAllTaxReductionsFilter = "invoices"
 )
 
-func (f GetAllTaxReductionsFilter) urlValues() url.Values {
+func (f *GetAllTaxReductionsFilter) urlValues() url.Values {
+	if f == nil {
+		return nil
+	}
+
 	params := url.Values{}
 
-	fStr := string(f)
+	fStr := string(*f)
 
 	if strings.TrimSpace(fStr) != "" {
 		params[taxReductionFilterName] = []string{fStr}
