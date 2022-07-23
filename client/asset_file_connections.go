@@ -10,8 +10,8 @@ const (
 )
 
 // GetAllAssetFileConnections does _GET https://api.fortnox.se/3/assetfileconnections
-func (c *Client) GetAllAssetFileConnections(ctx context.Context) (*GetAllAssetFileConnections, error) {
-	resp := &GetAllAssetFileConnections{}
+func (c *Client) GetAllAssetFileConnections(ctx context.Context) (*GetAllAssetFileConnectionsResp, error) {
+	resp := &GetAllAssetFileConnectionsResp{}
 
 	err := c._GET(ctx, assetFileConnectionsURI, nil, resp)
 	if err != nil {
@@ -46,7 +46,7 @@ func (c *Client) DeleteAssetFileConnection(ctx context.Context, fileID string) e
 	return c._DELETE(ctx, uri)
 }
 
-type GetAllAssetFileConnections struct {
+type GetAllAssetFileConnectionsResp struct {
 	AssetFileConnections []struct {
 		Url     string `json:"@url"`
 		FileId  string `json:"FileId"`
@@ -61,8 +61,8 @@ type GetAllAssetFileConnections struct {
 }
 
 type CreateAssetFileConnectionReq struct {
-	FileID  string
-	AssetID string
+	FileId  string `json:"FileId"`
+	AssetId string `json:"AssetId"`
 }
 
 type CreateAssetFileConnectionResp struct {

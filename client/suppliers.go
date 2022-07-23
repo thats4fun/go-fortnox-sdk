@@ -9,7 +9,7 @@ const (
 	suppliersURI = "suppliers"
 )
 
-// GetAllSuppliers does _GET
+// GetAllSuppliers does _GET https://api.fortnox.se/3/suppliers
 func (c *Client) GetAllSuppliers(ctx context.Context) (*GetAllSuppliersResp, error) {
 	resp := &GetAllSuppliersResp{}
 
@@ -21,9 +21,9 @@ func (c *Client) GetAllSuppliers(ctx context.Context) (*GetAllSuppliersResp, err
 	return resp, nil
 }
 
-// CreateSupplier does _POST
+// CreateSupplier does _POST https://api.fortnox.se/3/suppliers
 //
-// req - to create
+// req - supplier to create
 func (c *Client) CreateSupplier(ctx context.Context, req *CreateSupplierReq) (*CreateSupplierResp, error) {
 	resp := &CreateSupplierResp{}
 
@@ -35,7 +35,7 @@ func (c *Client) CreateSupplier(ctx context.Context, req *CreateSupplierReq) (*C
 	return resp, nil
 }
 
-// GetSupplier does _GET
+// GetSupplier does _GET https://api.fortnox.se/3/suppliers/{SupplierNumber}
 //
 // supplierNumber - identifies the supplier
 func (c *Client) GetSupplier(ctx context.Context, supplierNumber string) (*GetSupplierResp, error) {
@@ -51,7 +51,7 @@ func (c *Client) GetSupplier(ctx context.Context, supplierNumber string) (*GetSu
 	return resp, nil
 }
 
-// UpdateSupplier does _PUT
+// UpdateSupplier does _PUT https://api.fortnox.se/3/suppliers/{SupplierNumber}
 //
 // supplierNumber - identifies the supplier
 func (c *Client) UpdateSupplier(

@@ -9,7 +9,7 @@ const (
 	modesOfPaymentsURI = "modesofpayments"
 )
 
-// GetAllModesOfPayments does _GET https://api.fortnox.se/3/supplierinvoices/
+// GetAllModesOfPayments does _GET https://api.fortnox.se/3/modesofpayments
 func (c *Client) GetAllModesOfPayments(ctx context.Context) (*GetAllModesOfPaymentsResp, error) {
 	resp := &GetAllModesOfPaymentsResp{}
 
@@ -21,7 +21,7 @@ func (c *Client) GetAllModesOfPayments(ctx context.Context) (*GetAllModesOfPayme
 	return resp, nil
 }
 
-// CreateModeOfPayment does _POST https://api.fortnox.se/3/supplierinvoices/
+// CreateModeOfPayment does _POST https://api.fortnox.se/3/modesofpayments
 //
 // req - mode of payment to create
 func (c *Client) CreateModeOfPayment(
@@ -38,7 +38,7 @@ func (c *Client) CreateModeOfPayment(
 	return resp, nil
 }
 
-// GetModeOfPayment does _GET https://api.fortnox.se/3/supplierinvoices/{GivenNumber}
+// GetModeOfPayment does _GET https://api.fortnox.se/3/modesofpayments/{Code}
 //
 // code - identifies the mode of payment
 func (c *Client) GetModeOfPayment(ctx context.Context, code string) (*GetModeOfPaymentResp, error) {

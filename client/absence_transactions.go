@@ -21,9 +21,9 @@ const (
 // filter - may contain employeeID and date
 func (c *Client) GetAllAbsenceTransactions(
 	ctx context.Context,
-	filter GetAbsenceTransactionsFilter) ([]*AbsenceTransaction, error) {
+	filter *GetAbsenceTransactionsFilter) (*GetAllAbsenceTransactionsResp, error) {
 
-	resp := &GetAbsenceTransactionsResp{}
+	resp := &GetAllAbsenceTransactionsResp{}
 
 	params := filter.urlValues()
 
@@ -32,7 +32,7 @@ func (c *Client) GetAllAbsenceTransactions(
 		return nil, err
 	}
 
-	return resp.AbsenceTransactions, nil
+	return resp, nil
 }
 
 // CreateNewAbsenceTransaction does _POST https://api.fortnox.se/3/absencetransactions
@@ -40,23 +40,23 @@ func (c *Client) GetAllAbsenceTransactions(
 // req - absence transaction to create
 func (c *Client) CreateNewAbsenceTransaction(
 	ctx context.Context,
-	req *CreateAbsenceTransactionReq) (*AbsenceTransaction, error) {
+	req *CreateNewAbsenceTransactionReq) (*CreateNewAbsenceTransactionResp, error) {
 
-	resp := &CreateAbsenceTransactionResp{}
+	resp := &CreateNewAbsenceTransactionResp{}
 
 	err := c._POST(ctx, absenceTransactionsURI, nil, req, resp)
 	if err != nil {
 		return nil, err
 	}
 
-	return resp.AbsenceTransaction, nil
+	return resp, nil
 }
 
 // GetAbsenceTransactionByID does _GET https://api.fortnox.se/3/absencetransactions/{id}
 //
 // id - identifies the transaction
-func (c *Client) GetAbsenceTransactionByID(ctx context.Context, id string) (*AbsenceTransaction, error) {
-	resp := GetAbsenceTransactionByIDResp{}
+func (c *Client) GetAbsenceTransactionByID(ctx context.Context, id string) (*GetAbsenceTransactionByIDResp, error) {
+	resp := &GetAbsenceTransactionByIDResp{}
 
 	uri := fmt.Sprintf("%s/%s", absenceTransactionsURI, id)
 
@@ -65,39 +65,46 @@ func (c *Client) GetAbsenceTransactionByID(ctx context.Context, id string) (*Abs
 		return nil, err
 	}
 
-	return resp.AbsenceTransaction, nil
+	return resp, nil
 }
 
 // UpdateAbsenceTransactionByID does _PUT https://api.fortnox.se/3/absencetransactions/{id}
 //
 // id - identifies the transaction
 //
-// updateAbsenceTx - absence transaction to update
+// req - absence transaction to update
 func (c *Client) UpdateAbsenceTransactionByID(
 	ctx context.Context,
 	id string,
-	updateAbsenceTx *UpdateAbsenceTransactionReq) (*AbsenceTransaction, error) {
+	req *UpdateAbsenceTransactionByIDReq) (*UpdateAbsenceTransactionByIDResp, error) {
 
-	resp := &UpdateAbsenceTransactionResp{}
+	resp := &UpdateAbsenceTransactionByIDResp{}
 
 	uri := fmt.Sprintf("%s/%s", absenceTransactionsURI, id)
 
-	err := c._PUT(ctx, uri, nil, updateAbsenceTx, resp)
+	err := c._PUT(ctx, uri, nil, req, resp)
 	if err != nil {
 		return nil, err
 	}
 
-	return resp.AbsenceTransaction, nil
+	return resp, nil
 }
 
 // DeleteAbsenceTransactionByID does _DELETE https://api.fortnox.se/3/absencetransactions/{id}
 //
 // id - identifies the transaction
-//
-// TODO: update to return deleted tx
-func (c *Client) DeleteAbsenceTransactionByID(ctx context.Context, id string) error {
+func (c *Client) DeleteAbsenceTransactionByID(ctx context.Context, id string) (*DeleteAbsenceTransactionByIDResp, error) {
+	resp := &DeleteAbsenceTransactionByIDResp{}
+
 	uri := fmt.Sprintf("%s/%s", absenceTransactionsURI, id)
-	return c._DELETE(ctx, uri)
+
+	err := c._DELETEWithResult(ctx, uri, resp)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
 }
 
 // GetAbsenceTransactionForEmployee does _GET https://api.fortnox.se/3/absencetransactions/{EmployeeId}/{Date}/{Code}
@@ -110,7 +117,7 @@ func (c *Client) DeleteAbsenceTransactionByID(ctx context.Context, id string) er
 func (c *Client) GetAbsenceTransactionForEmployee(
 	ctx context.Context,
 	employeeID, date string,
-	code AbsenceTransactionStatusCode) (*AbsenceTransaction, error) {
+	code AbsenceTransactionStatusCode) (*GetAbsenceTransactionForEmployeeResp, error) {
 
 	if !absence_transactions.IsCodeInCodeSet(code.String()) {
 		return nil, fmt.Errorf("code should be in code set range: %s", absence_transactions.Codes)
@@ -125,7 +132,7 @@ func (c *Client) GetAbsenceTransactionForEmployee(
 		return nil, err
 	}
 
-	return resp.AbsenceTransaction, nil
+	return resp, nil
 }
 
 type AbsenceTransactionStatusCode string
@@ -139,7 +146,11 @@ type GetAbsenceTransactionsFilter struct {
 	Date       string
 }
 
-func (p GetAbsenceTransactionsFilter) urlValues() url.Values {
+func (p *GetAbsenceTransactionsFilter) urlValues() url.Values {
+	if p == nil {
+		return nil
+	}
+
 	urlValues := url.Values{}
 
 	if strings.TrimSpace(p.EmployeeID) != "" {
@@ -153,46 +164,118 @@ func (p GetAbsenceTransactionsFilter) urlValues() url.Values {
 	return urlValues
 }
 
-type GetAbsenceTransactionsResp struct {
-	AbsenceTransactions []*AbsenceTransaction `json:"AbsenceTransactions"`
+type GetAllAbsenceTransactionsResp struct {
+	AbsenceTransactions []struct {
+		Url              string `json:"@url"`
+		Id               string `json:"id"`
+		EmployeeId       string `json:"EmployeeId"`
+		CauseCode        string `json:"CauseCode"`
+		Date             string `json:"Date"`
+		Extent           int    `json:"Extent"`
+		Hours            int    `json:"Hours"`
+		HolidayEntitling bool   `json:"HolidayEntitling"`
+		CostCenter       string `json:"CostCenter"`
+		Project          string `json:"Project"`
+	} `json:"AbsenceTransactions"`
 }
 
-type AbsenceTransaction struct {
-	Url              string `json:"@url"`
-	Id               string `json:"id"`
-	EmployeeId       string `json:"EmployeeId"`
-	CauseCode        string `json:"CauseCode"`
-	Date             string `json:"Date"`
-	Extent           int    `json:"Extent"`
-	Hours            int    `json:"Hours"`
-	HolidayEntitling bool   `json:"HolidayEntitling"`
-	CostCenter       string `json:"CostCenter"`
-	Project          string `json:"Project"`
+type CreateNewAbsenceTransactionReq struct {
+	AbsenceTransaction struct {
+		EmployeeId       string `json:"EmployeeId"`
+		CauseCode        string `json:"CauseCode"`
+		Date             string `json:"Date"`
+		Extent           int    `json:"Extent"`
+		Hours            int    `json:"Hours"`
+		HolidayEntitling bool   `json:"HolidayEntitling"`
+		CostCenter       string `json:"CostCenter"`
+		Project          string `json:"Project"`
+	} `json:"AbsenceTransaction"`
 }
 
-type CreateAbsenceTransactionReq struct {
-	AbsenceTransaction CreateAbsenceTransaction `json:"AbsenceTransaction"`
+type CreateNewAbsenceTransactionResp struct {
+	AbsenceTransaction struct {
+		Url              string `json:"@url"`
+		Id               string `json:"id"`
+		EmployeeId       string `json:"EmployeeId"`
+		CauseCode        string `json:"CauseCode"`
+		Date             string `json:"Date"`
+		Extent           int    `json:"Extent"`
+		Hours            int    `json:"Hours"`
+		HolidayEntitling bool   `json:"HolidayEntitling"`
+		CostCenter       string `json:"CostCenter"`
+		Project          string `json:"Project"`
+	} `json:"AbsenceTransaction"`
 }
 
-type CreateAbsenceTransaction struct {
-	EmployeeId       string `json:"EmployeeId"`
-	CauseCode        string `json:"CauseCode"`
-	Date             string `json:"Date"`
-	Extent           int    `json:"Extent"`
-	Hours            int    `json:"Hours"`
-	HolidayEntitling bool   `json:"HolidayEntitling"`
-	CostCenter       string `json:"CostCenter"`
-	Project          string `json:"Project"`
+type GetAbsenceTransactionByIDResp struct {
+	AbsenceTransaction struct {
+		Url              string `json:"@url"`
+		Id               string `json:"id"`
+		EmployeeId       string `json:"EmployeeId"`
+		CauseCode        string `json:"CauseCode"`
+		Date             string `json:"Date"`
+		Extent           int    `json:"Extent"`
+		Hours            int    `json:"Hours"`
+		HolidayEntitling bool   `json:"HolidayEntitling"`
+		CostCenter       string `json:"CostCenter"`
+		Project          string `json:"Project"`
+	} `json:"AbsenceTransaction"`
 }
 
-type CreateAbsenceTransactionResp struct {
-	AbsenceTransaction *AbsenceTransaction `json:"AbsenceTransaction"`
+type UpdateAbsenceTransactionByIDReq struct {
+	AbsenceTransaction struct {
+		EmployeeId       string `json:"EmployeeId"`
+		CauseCode        string `json:"CauseCode"`
+		Date             string `json:"Date"`
+		Extent           int    `json:"Extent"`
+		Hours            int    `json:"Hours"`
+		HolidayEntitling bool   `json:"HolidayEntitling"`
+		CostCenter       string `json:"CostCenter"`
+		Project          string `json:"Project"`
+	} `json:"AbsenceTransaction"`
 }
 
-type GetAbsenceTransactionByIDResp CreateAbsenceTransactionResp
+type UpdateAbsenceTransactionByIDResp struct {
+	AbsenceTransaction struct {
+		Url              string `json:"@url"`
+		Id               string `json:"id"`
+		EmployeeId       string `json:"EmployeeId"`
+		CauseCode        string `json:"CauseCode"`
+		Date             string `json:"Date"`
+		Extent           int    `json:"Extent"`
+		Hours            int    `json:"Hours"`
+		HolidayEntitling bool   `json:"HolidayEntitling"`
+		CostCenter       string `json:"CostCenter"`
+		Project          string `json:"Project"`
+	} `json:"AbsenceTransaction"`
+}
 
-type UpdateAbsenceTransactionReq CreateAbsenceTransactionReq
+type DeleteAbsenceTransactionByIDResp struct {
+	AbsenceTransaction struct {
+		Url              string `json:"@url"`
+		Id               string `json:"id"`
+		EmployeeId       string `json:"EmployeeId"`
+		CauseCode        string `json:"CauseCode"`
+		Date             string `json:"Date"`
+		Extent           int    `json:"Extent"`
+		Hours            int    `json:"Hours"`
+		HolidayEntitling bool   `json:"HolidayEntitling"`
+		CostCenter       string `json:"CostCenter"`
+		Project          string `json:"Project"`
+	} `json:"AbsenceTransaction"`
+}
 
-type UpdateAbsenceTransactionResp CreateAbsenceTransactionResp
-
-type GetAbsenceTransactionForEmployeeResp CreateAbsenceTransactionResp
+type GetAbsenceTransactionForEmployeeResp struct {
+	AbsenceTransactions []struct {
+		Url              string `json:"@url"`
+		Id               string `json:"id"`
+		EmployeeId       string `json:"EmployeeId"`
+		CauseCode        string `json:"CauseCode"`
+		Date             string `json:"Date"`
+		Extent           int    `json:"Extent"`
+		Hours            int    `json:"Hours"`
+		HolidayEntitling bool   `json:"HolidayEntitling"`
+		CostCenter       string `json:"CostCenter"`
+		Project          string `json:"Project"`
+	} `json:"AbsenceTransactions"`
+}

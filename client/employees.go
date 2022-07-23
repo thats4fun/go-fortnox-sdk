@@ -69,54 +69,6 @@ func (c *Client) UpdateEmployee(ctx context.Context, employeeID string, req *Upd
 	return resp, nil
 }
 
-type Employee struct {
-	EmployeeId             string `json:"EmployeeId"`
-	PersonalIdentityNumber string `json:"PersonalIdentityNumber"`
-	FirstName              string `json:"FirstName"`
-	LastName               string `json:"LastName"`
-	FullName               string `json:"FullName"`
-	Address1               string `json:"Address1"`
-	Address2               string `json:"Address2"`
-	PostCode               string `json:"PostCode"`
-	City                   string `json:"City"`
-	Country                string `json:"Country"`
-	Phone1                 string `json:"Phone1"`
-	Phone2                 string `json:"Phone2"`
-	Email                  string `json:"Email"`
-	EmploymentDate         string `json:"EmploymentDate"`
-	EmploymentForm         string `json:"EmploymentForm"`
-	SalaryForm             string `json:"SalaryForm"`
-	JobTitle               string `json:"JobTitle"`
-	PersonelType           string `json:"PersonelType"`
-	ScheduleId             string `json:"ScheduleId"`
-	ForaType               string `json:"ForaType"`
-	MonthlySalary          string `json:"MonthlySalary"`
-	HourlyPay              string `json:"HourlyPay"`
-	TaxAllowance           string `json:"TaxAllowance"`
-	TaxTable               string `json:"TaxTable"`
-	TaxColumn              int    `json:"TaxColumn"`
-	AutoNonRecurringTax    bool   `json:"AutoNonRecurringTax"`
-	NonRecurringTax        string `json:"NonRecurringTax"`
-	Inactive               bool   `json:"Inactive"`
-	ClearingNo             string `json:"ClearingNo"`
-	BankAccountNo          string `json:"BankAccountNo"`
-	EmployedTo             string `json:"EmployedTo"`
-	AverageWeeklyHours     string `json:"AverageWeeklyHours"`
-	AverageHourlyWage      string `json:"AverageHourlyWage"`
-	DatedWages             []struct {
-		EmployeeId    string `json:"EmployeeId"`
-		FirstDay      string `json:"FirstDay"`
-		MonthlySalary string `json:"MonthlySalary"`
-		HourlyPay     string `json:"HourlyPay"`
-	} `json:"DatedWages"`
-	DatedSchedules []struct {
-		EmployeeId string `json:"EmployeeId"`
-		FirstDay   string `json:"FirstDay"`
-		ScheduleId string `json:"ScheduleId"`
-	} `json:"DatedSchedules"`
-	Url string `json:"@url"`
-}
-
 type GetAllEmployeesResp struct {
 	Employees []struct {
 		EmployeeId             string `json:"EmployeeId"`

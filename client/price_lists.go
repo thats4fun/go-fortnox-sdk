@@ -9,7 +9,7 @@ const (
 	priceListURI = "pricelist"
 )
 
-// GetAllPriceLists does _GET
+// GetAllPriceLists does _GET https://api.fortnox.se/3/pricelists
 func (c *Client) GetAllPriceLists(ctx context.Context) (*GetAllPriceListsResp, error) {
 	resp := &GetAllPriceListsResp{}
 
@@ -21,8 +21,9 @@ func (c *Client) GetAllPriceLists(ctx context.Context) (*GetAllPriceListsResp, e
 	return resp, nil
 }
 
-// CreatePriceList does _POST
-// req -
+// CreatePriceList does _POST https://api.fortnox.se/3/pricelists
+//
+// req - price list to create
 func (c *Client) CreatePriceList(ctx context.Context, req *CreatePriceListReq) (*CreatePriceListResp, error) {
 	resp := &CreatePriceListResp{}
 
@@ -34,8 +35,9 @@ func (c *Client) CreatePriceList(ctx context.Context, req *CreatePriceListReq) (
 	return resp, nil
 }
 
-// GetPriceList does _GET
-// code -
+// GetPriceList does _GET https://api.fortnox.se/3/pricelists/{Code}
+//
+// code - identifies the price list
 func (c *Client) GetPriceList(ctx context.Context, code string) (*GetPriceListResp, error) {
 	resp := &GetPriceListResp{}
 
@@ -49,9 +51,11 @@ func (c *Client) GetPriceList(ctx context.Context, code string) (*GetPriceListRe
 	return resp, nil
 }
 
-// UpdatePriceList doe _PUT
-// code -
-// req -
+// UpdatePriceList does _PUT https://api.fortnox.se/3/pricelists/{Code}
+//
+// code - identifies the price list
+//
+// req - price list to update
 func (c *Client) UpdatePriceList(
 	ctx context.Context,
 	code string,

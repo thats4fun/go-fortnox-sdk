@@ -10,7 +10,7 @@ const (
 )
 
 // GetAllArticleFileConnections does _GET https://api.fortnox.se/3/articlefileconnections/
-func (c *Client) GetAllArticleFileConnections(ctx context.Context) ([]*ArticleFileConnection, error) {
+func (c *Client) GetAllArticleFileConnections(ctx context.Context) (*GetAllArticleFileConnectionsResp, error) {
 	resp := &GetAllArticleFileConnectionsResp{}
 
 	err := c._GET(ctx, articleFileConnectionsURI, nil, resp)
@@ -18,11 +18,12 @@ func (c *Client) GetAllArticleFileConnections(ctx context.Context) ([]*ArticleFi
 		return nil, err
 	}
 
-	return resp.ArticleFileConnections, nil
+	return resp, nil
 }
 
 // CreateArticleFileConnection does _POST https://api.fortnox.se/3/articlefileconnections/
-// req - object to create
+//
+// req - article file connection to create
 func (c *Client) CreateArticleFileConnection(ctx context.Context, req *CreateArticleFileConnectionReq) (*CreateArticleFileConnectionResp, error) {
 	resp := &CreateArticleFileConnectionResp{}
 
@@ -35,6 +36,7 @@ func (c *Client) CreateArticleFileConnection(ctx context.Context, req *CreateArt
 }
 
 // GetArticleFileConnectionByID does _GET https://api.fortnox.se/3/articlefileconnections/{FileId}
+//
 // fileID - identifies the article file connection
 func (c *Client) GetArticleFileConnectionByID(ctx context.Context, fileID string) (*GetArticleFileConnectionByIDResp, error) {
 	resp := &GetArticleFileConnectionByIDResp{}
@@ -49,27 +51,42 @@ func (c *Client) GetArticleFileConnectionByID(ctx context.Context, fileID string
 	return resp, nil
 }
 
-// Delete does _DELETE https://api.fortnox.se/3/articlefileconnections/{FileId}
+// DeleteArticleFileConnection does _DELETE https://api.fortnox.se/3/articlefileconnections/{FileId}
+//
 // fileID - identifies the article file connection
-func (c *Client) Delete(ctx context.Context, fileID string) error {
+func (c *Client) DeleteArticleFileConnection(ctx context.Context, fileID string) error {
 	uri := fmt.Sprintf("%s/%s", articleFileConnectionsURI, fileID)
 	return c._DELETE(ctx, uri)
 }
 
 type GetAllArticleFileConnectionsResp struct {
-	ArticleFileConnections []*ArticleFileConnection `json:"ArticleFileConnections"`
-}
-
-type ArticleFileConnection struct {
-	Url           string `json:"@url"`
-	FileId        string `json:"FileId"`
-	ArticleNumber string `json:"ArticleNumber"`
+	ArticleFileConnections []struct {
+		Url           string `json:"@url"`
+		FileId        string `json:"FileId"`
+		ArticleNumber string `json:"ArticleNumber"`
+	} `json:"ArticleFileConnections"`
 }
 
 type CreateArticleFileConnectionReq struct {
-	ArticleFileConnection ArticleFileConnection `json:"ArticleFileConnection"`
+	ArticleFileConnection struct {
+		Url           string `json:"@url"`
+		FileId        string `json:"FileId"`
+		ArticleNumber string `json:"ArticleNumber"`
+	} `json:"ArticleFileConnection"`
 }
 
-type CreateArticleFileConnectionResp CreateArticleFileConnectionReq
+type CreateArticleFileConnectionResp struct {
+	ArticleFileConnection struct {
+		Url           string `json:"@url"`
+		FileId        string `json:"FileId"`
+		ArticleNumber string `json:"ArticleNumber"`
+	} `json:"ArticleFileConnection"`
+}
 
-type GetArticleFileConnectionByIDResp CreateArticleFileConnectionResp
+type GetArticleFileConnectionByIDResp struct {
+	ArticleFileConnection struct {
+		Url           string `json:"@url"`
+		FileId        string `json:"FileId"`
+		ArticleNumber string `json:"ArticleNumber"`
+	} `json:"ArticleFileConnection"`
+}

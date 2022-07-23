@@ -10,13 +10,13 @@ const (
 	pricesURI = "prices"
 )
 
-// GetPriceForArticle does _GET
+// GetPriceForArticle does _GET https://api.fortnox.se/3/prices/{PriceList}/{ArticleNumber}/{FromQuantity}
 //
-// priceList -
+// priceList - identifies the price list
 //
-// articleNumber -
+// articleNumber - identifies the article
 //
-// fromQuantity -
+// fromQuantity - identifies from quantity
 func (c *Client) GetPriceForArticle(
 	ctx context.Context,
 	priceList, articleNumber string,
@@ -34,15 +34,15 @@ func (c *Client) GetPriceForArticle(
 	return resp, nil
 }
 
-// UpdatePrice doe _PUT
+// UpdatePrice does _PUT https://api.fortnox.se/3/prices/{PriceList}/{ArticleNumber}/{FromQuantity}
 //
-// priceList -
+// priceList - identifies the price list
 //
-// articleNumber -
+// articleNumber - identifies the article
 //
-// fromQuantity -
+// fromQuantity - identifies from quantity
 //
-// req -
+// req - price to update
 func (c *Client) UpdatePrice(
 	ctx context.Context,
 	priceList, articleNumber string,
@@ -61,30 +61,30 @@ func (c *Client) UpdatePrice(
 	return resp, nil
 }
 
-// DeletePrice does _DELETE
+// DeletePrice does _DELETE https://api.fortnox.se/3/prices/{PriceList}/{ArticleNumber}/{FromQuantity}
 //
-// priceList -
+// priceList - identifies the price list
 //
-// articleNumber -
+// articleNumber - identifies the article
 //
-// fromQuantity -
+// fromQuantity - identifies from quantity
 func (c *Client) DeletePrice(ctx context.Context, priceList, articleNumber string, fromQuantity int) error {
 	uri := fmt.Sprintf("%s/%s/%s/%d", pricesURI, priceList, articleNumber, fromQuantity)
 	return c._DELETE(ctx, uri)
 }
 
-// GetAllArticlesWithPricesInPriceList does _GET
+// GetAllArticlesWithPricesInPriceList does _GET https://api.fortnox.se/3/prices/sublist/{PriceList}/{ArticleNumber}
 //
-// priceList -
+// priceList - identifies the price list of the prices
 //
-// articleNumber -
+// articleNumber - identifies the article number of the prices
 func (c *Client) GetAllArticlesWithPricesInPriceList(
 	ctx context.Context,
 	priceList, articleNumber string) (*GetAllArticlesWithPricesInPriceListResp, error) {
 
 	resp := &GetAllArticlesWithPricesInPriceListResp{}
 
-	uri := fmt.Sprintf("%s/%s/%s", pricesURI, priceList, articleNumber)
+	uri := fmt.Sprintf("%s/sublist/%s/%s", pricesURI, priceList, articleNumber)
 
 	err := c._GET(ctx, uri, nil, resp)
 	if err != nil {
@@ -94,11 +94,11 @@ func (c *Client) GetAllArticlesWithPricesInPriceList(
 	return resp, nil
 }
 
-// GetFirstPriceForArticle does _GET
+// GetFirstPriceForArticle does _GET https://api.fortnox.se/3/prices/{PriceList}/{ArticleNumber}
 //
-// priceList -
+// priceList - identifies the price list of the prices
 //
-// articleNumber -
+// articleNumber - identifies the article number of the prices
 func (c *Client) GetFirstPriceForArticle(
 	ctx context.Context,
 	priceList, articleNumber string) (*GetFirstPriceForArticleResp, error) {
@@ -115,13 +115,13 @@ func (c *Client) GetFirstPriceForArticle(
 	return resp, nil
 }
 
-// UpdateFirstPriceForArticle does _PUT
+// UpdateFirstPriceForArticle does _PUT https://api.fortnox.se/3/prices/{PriceList}/{ArticleNumber}
 //
-// priceList -
+// priceList - identifies the price list of the prices
 //
-// articleNumber -
+// articleNumber - identifies the article number of the prices
 //
-// req -
+// req - price to update
 func (c *Client) UpdateFirstPriceForArticle(
 	ctx context.Context,
 	priceList, articleNumber string,
@@ -139,9 +139,9 @@ func (c *Client) UpdateFirstPriceForArticle(
 	return resp, nil
 }
 
-// CreatePrice does _POST
+// CreatePrice does _POST https://api.fortnox.se/3/prices/
 //
-// req -
+// req - price to create
 func (c *Client) CreatePrice(ctx context.Context, req *CreatePriceReq) (*CreatePriceResp, error) {
 	resp := &CreatePriceResp{}
 

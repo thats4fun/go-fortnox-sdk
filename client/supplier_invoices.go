@@ -12,13 +12,16 @@ const (
 )
 
 const (
-	GetAllSupplierInvoicesFilterParamName = "filter"
+	getAllSupplierInvoicesFilterParamName = "filter"
 )
 
-// GetAllSupplierInvoices does _GET
+// GetAllSupplierInvoices does _GET https://api.fortnox.se/3/supplierinvoices/
+//
+// filter - Enum: "cancelled" "fullypaid" "unpaid" "unpaidoverdue" "unbooked" "pendingpayment" "authorizepending"
+// possibility to filter supplier invoices
 func (c *Client) GetAllSupplierInvoices(
 	ctx context.Context,
-	filter GetAllSupplierInvoicesFilter) (*GetAllSupplierInvoicesResp, error) {
+	filter *GetAllSupplierInvoicesFilter) (*GetAllSupplierInvoicesResp, error) {
 
 	resp := &GetAllSupplierInvoicesResp{}
 
@@ -32,7 +35,7 @@ func (c *Client) GetAllSupplierInvoices(
 	return resp, nil
 }
 
-// CreateSupplierInvoice does _POST
+// CreateSupplierInvoice does _POST https://api.fortnox.se/3/supplierinvoices/
 //
 // req - supplier invoice to create
 func (c *Client) CreateSupplierInvoice(
@@ -49,7 +52,9 @@ func (c *Client) CreateSupplierInvoice(
 	return resp, nil
 }
 
-// GetSupplierInvoice does _GET
+// GetSupplierInvoice does _GET https://api.fortnox.se/3/supplierinvoices/{GivenNumber}
+//
+// givenNumber - identifies the invoice
 func (c *Client) GetSupplierInvoice(ctx context.Context, givenNumber int) (*GetSupplierInvoiceResp, error) {
 	resp := &GetSupplierInvoiceResp{}
 
@@ -63,7 +68,11 @@ func (c *Client) GetSupplierInvoice(ctx context.Context, givenNumber int) (*GetS
 	return resp, nil
 }
 
-// UpdateSupplierInvoice does _PUT
+// UpdateSupplierInvoice does _PUT https://api.fortnox.se/3/supplierinvoices/{GivenNumber}
+//
+// givenNumber - identifies the invoice
+//
+// req - supplier invoice to update
 func (c *Client) UpdateSupplierInvoice(
 	ctx context.Context,
 	givenNumber int,
@@ -81,11 +90,13 @@ func (c *Client) UpdateSupplierInvoice(
 	return resp, nil
 }
 
-// BookKeepSupplierInvoice does _PUT
+// BookKeepSupplierInvoice does _PUT https://api.fortnox.se/3/supplierinvoices/{GivenNumber}/bookkeep
+//
+// givenNumber - identifies the invoice
 func (c *Client) BookKeepSupplierInvoice(ctx context.Context, givenNumber int) (*BookKeepSupplierInvoiceResp, error) {
 	resp := &BookKeepSupplierInvoiceResp{}
 
-	uri := fmt.Sprintf("%s/%d", supplierInvoiceURI, givenNumber)
+	uri := fmt.Sprintf("%s/%d/bookkeep", supplierInvoiceURI, givenNumber)
 
 	err := c._PUT(ctx, uri, nil, nil, resp)
 	if err != nil {
@@ -95,11 +106,13 @@ func (c *Client) BookKeepSupplierInvoice(ctx context.Context, givenNumber int) (
 	return resp, nil
 }
 
-// CancelSupplierInvoice does _PUT
+// CancelSupplierInvoice does _PUT https://api.fortnox.se/3/supplierinvoices/{GivenNumber}/cancel
+//
+// givenNumber - identifies the invoice
 func (c *Client) CancelSupplierInvoice(ctx context.Context, givenNumber int) (*CancelSupplierInvoiceResp, error) {
 	resp := &CancelSupplierInvoiceResp{}
 
-	uri := fmt.Sprintf("%s/%d", supplierInvoiceURI, givenNumber)
+	uri := fmt.Sprintf("%s/%d/cancel", supplierInvoiceURI, givenNumber)
 
 	err := c._PUT(ctx, uri, nil, nil, resp)
 	if err != nil {
@@ -109,14 +122,16 @@ func (c *Client) CancelSupplierInvoice(ctx context.Context, givenNumber int) (*C
 	return resp, nil
 }
 
-// CreditSupplierInvoicePayment does _PUT
+// CreditSupplierInvoicePayment does _PUT https://api.fortnox.se/3/supplierinvoices/{GivenNumber}/credit
+//
+// givenNumber - identifies the invoice
 func (c *Client) CreditSupplierInvoicePayment(
 	ctx context.Context,
 	givenNumber int) (*CreditSupplierInvoicePaymentResp, error) {
 
 	resp := &CreditSupplierInvoicePaymentResp{}
 
-	uri := fmt.Sprintf("%s/%d", supplierInvoiceURI, givenNumber)
+	uri := fmt.Sprintf("%s/%d/credit", supplierInvoiceURI, givenNumber)
 
 	err := c._PUT(ctx, uri, nil, nil, resp)
 	if err != nil {
@@ -126,14 +141,14 @@ func (c *Client) CreditSupplierInvoicePayment(
 	return resp, nil
 }
 
-// ApprovalSupplierInvoicePayment does _PUT
+// ApprovalSupplierInvoicePayment does _PUT https://api.fortnox.se/3/supplierinvoices/{GivenNumber}/approvalpayment
 func (c *Client) ApprovalSupplierInvoicePayment(
 	ctx context.Context,
 	givenNumber int) (*ApprovalSupplierInvoicePaymentResp, error) {
 
 	resp := &ApprovalSupplierInvoicePaymentResp{}
 
-	uri := fmt.Sprintf("%s/%d", supplierInvoiceURI, givenNumber)
+	uri := fmt.Sprintf("%s/%d/approvalpayment", supplierInvoiceURI, givenNumber)
 
 	err := c._PUT(ctx, uri, nil, nil, resp)
 	if err != nil {
@@ -143,14 +158,16 @@ func (c *Client) ApprovalSupplierInvoicePayment(
 	return resp, nil
 }
 
-// ApprovalSupplierInvoiceBookKeep does _PUT
+// ApprovalSupplierInvoiceBookKeep does _PUT https://api.fortnox.se/3/supplierinvoices/{GivenNumber}/approvalbookkeep
+//
+// givenNumber - identifies the invoice
 func (c *Client) ApprovalSupplierInvoiceBookKeep(
 	ctx context.Context,
 	givenNumber int) (*ApprovalSupplierInvoiceBookKeepResp, error) {
 
 	resp := &ApprovalSupplierInvoiceBookKeepResp{}
 
-	uri := fmt.Sprintf("%s/%d", supplierInvoiceURI, givenNumber)
+	uri := fmt.Sprintf("%s/%d/approvalbookkeep", supplierInvoiceURI, givenNumber)
 
 	err := c._PUT(ctx, uri, nil, nil, resp)
 	if err != nil {
@@ -172,12 +189,16 @@ const (
 	AuthorizePendingSupplierInvoiceFilter GetAllSupplierInvoicesFilter = "authorizepending"
 )
 
-func (f GetAllSupplierInvoicesFilter) urlValues() url.Values {
+func (f *GetAllSupplierInvoicesFilter) urlValues() url.Values {
+	if f == nil {
+		return nil
+	}
+
 	params := url.Values{}
 
-	fStr := string(f)
+	fStr := string(*f)
 	if strings.TrimSpace(fStr) != "" {
-		params[GetAllSupplierInvoicesFilterParamName] = []string{fStr}
+		params[getAllSupplierInvoicesFilterParamName] = []string{fStr}
 	}
 
 	return params

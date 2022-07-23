@@ -76,7 +76,7 @@ func (c *Client) UpdateContractAccrual(
 	return resp, nil
 }
 
-// RemoveContractAccrual does DELET https://api.fortnox.se/3/contractaccruals/{DocumentNumber}
+// RemoveContractAccrual does _DELETE https://api.fortnox.se/3/contractaccruals/{DocumentNumber}
 //
 // documentNumber - identifies the contract accrual
 func (c *Client) RemoveContractAccrual(ctx context.Context, documentNumber int) error {

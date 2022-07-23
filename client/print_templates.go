@@ -6,7 +6,7 @@ const (
 	printTemplatesURI = "printtemplates"
 )
 
-// GetAllPrintTemplates does _GET
+// GetAllPrintTemplates does _GET https://api.fortnox.se/3/printtemplates
 func (c *Client) GetAllPrintTemplates(ctx context.Context) (*GetAllPrintTemplatesResp, error) {
 	resp := &GetAllPrintTemplatesResp{}
 

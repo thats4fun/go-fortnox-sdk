@@ -3,10 +3,10 @@ package client
 import "context"
 
 const (
-	lockedPeriodURI = "lockedperiod"
+	lockedPeriodURI = "settings/lockedperiod/"
 )
 
-// GetLockedPeriod does _GET
+// GetLockedPeriod does _GET https://api.fortnox.se/3/settings/lockedperiod/
 //
 // If no date is returned, no period is locked.
 func (c *Client) GetLockedPeriod(ctx context.Context) (*GetLockedPeriodResp, error) {

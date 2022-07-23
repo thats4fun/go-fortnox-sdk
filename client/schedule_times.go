@@ -9,11 +9,11 @@ const (
 	scheduleTimesURI = "scheduletimes"
 )
 
-// GetScheduleTime does _GET
+// GetScheduleTime does _GET https://api.fortnox.se/3/scheduletimes/{EmployeeId}/{Date}
 //
-// employeeID -
+// employeeID - identifies the employee
 //
-// date -
+// date - identifies the date
 func (c *Client) GetScheduleTime(ctx context.Context, employeeID, date string) (*GetScheduleTimeResp, error) {
 	resp := &GetScheduleTimeResp{}
 
@@ -27,10 +27,13 @@ func (c *Client) GetScheduleTime(ctx context.Context, employeeID, date string) (
 	return resp, nil
 }
 
-// UpdateScheduleTime does _PUT
-// employeeID -
-// date -
-// req -
+// UpdateScheduleTime does _PUT https://api.fortnox.se/3/scheduletimes/{EmployeeId}/{Date}
+//
+// employeeID - identifies the employee
+//
+// date - identifies the date
+//
+// req - schedule time to update
 func (c *Client) UpdateScheduleTime(
 	ctx context.Context,
 	employeeID, date string,
@@ -48,13 +51,15 @@ func (c *Client) UpdateScheduleTime(
 	return resp, nil
 }
 
-// ResetScheduleTime does _PUT
-// employeeID -
-// date -
+// ResetScheduleTime does _PUT https://api.fortnox.se/3/scheduletimes/{EmployeeId}/{Date}/resetday
+//
+// employeeID - identifies the employee
+//
+// date - identifies the date
 func (c *Client) ResetScheduleTime(ctx context.Context, employeeID, date string) (*ResetScheduleTimeResp, error) {
 	resp := &ResetScheduleTimeResp{}
 
-	uri := fmt.Sprintf("%s/%s/%s", scheduleTimesURI, employeeID, date)
+	uri := fmt.Sprintf("%s/%s/%s/resetday", scheduleTimesURI, employeeID, date)
 
 	err := c._PUT(ctx, uri, nil, nil, resp)
 	if err != nil {

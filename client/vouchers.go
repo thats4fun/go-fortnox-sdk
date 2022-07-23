@@ -19,7 +19,7 @@ const (
 func (c *Client) GetVoucher(
 	ctx context.Context,
 	voucherSeries, voucherNumber string,
-	filter FinancialYearFilter) (*GetVoucherResp, error) {
+	filter *FinancialYearFilter) (*GetVoucherResp, error) {
 
 	resp := &GetVoucherResp{}
 
@@ -38,7 +38,7 @@ func (c *Client) GetVoucher(
 // GetAllVouchers does _GET https://api.fortnox.se/3/vouchers/
 //
 // filter - filter on financial year
-func (c *Client) GetAllVouchers(ctx context.Context, filter FinancialYearFilter) (*GetAllVouchersResp, error) {
+func (c *Client) GetAllVouchers(ctx context.Context, filter *FinancialYearFilter) (*GetAllVouchersResp, error) {
 	resp := &GetAllVouchersResp{}
 
 	params := filter.urlValues()
@@ -53,7 +53,7 @@ func (c *Client) GetAllVouchers(ctx context.Context, filter FinancialYearFilter)
 
 // CreateVoucher does _POST https://api.fortnox.se/3/vouchers/
 //
-// filter - Financial year id, used to determine which financial year the voucher is created in
+// filter - financial year id, used to determine which financial year the voucher is created in
 //
 // req - voucher to create
 func (c *Client) CreateVoucher(

@@ -75,7 +75,7 @@ func (c *Client) ChangeManualAssetOBValue(
 
 // DeleteOrVoidAsset does _DELETE https://api.fortnox.se/3/assets/{GivenNumber}
 //
-// givenNumber - Asset number
+// givenNumber - asset number
 //
 // req - request
 //
@@ -197,7 +197,7 @@ func (c *Client) PerformAssetDepreciation(
 
 	uri := fmt.Sprintf("%s/depreciate", assetsURI)
 
-	err := c._PUT(ctx, uri, nil, req, resp)
+	err := c._POST(ctx, uri, nil, req, resp)
 	if err != nil {
 		return nil, err
 	}
@@ -325,8 +325,8 @@ type GetAssetResp struct {
 }
 
 type ChangeManualAssetOBValueReq struct {
-	Amount  int
-	Comment string
+	Amount  int    `json:"Amount"`
+	Comment string `json:"Comment"`
 }
 
 type ChangeManualAssetOBValueResp struct {

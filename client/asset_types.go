@@ -12,8 +12,8 @@ const (
 // GetAssetType does _GET https://api.fortnox.se/3/assets/types/{id}
 //
 // id - id
-func (c *Client) GetAssetType(ctx context.Context, id int) (*AssetTypeResp, error) {
-	resp := &AssetTypeResp{}
+func (c *Client) GetAssetType(ctx context.Context, id int) (*GetAssetTypeResp, error) {
+	resp := &GetAssetTypeResp{}
 
 	uri := fmt.Sprintf("%s/%d", assetTypesURI, id)
 
@@ -81,7 +81,7 @@ func (c *Client) GetAllAssetTypes(ctx context.Context) (*GetAllAssetTypesResp, e
 	return resp, nil
 }
 
-type AssetTypeResp struct {
+type GetAssetTypeResp struct {
 	Type struct {
 		Url                   string `json:"@url"`
 		Id                    int    `json:"Id"`
