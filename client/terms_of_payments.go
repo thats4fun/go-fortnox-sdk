@@ -21,7 +21,7 @@ func (c *Client) GetAllTermsOfPayments(ctx context.Context) (*GetAllTermsOfPayme
 	return resp, nil
 }
 
-//CreateTermOfPayment does _POST https://api.fortnox.se/3/termsofpayments
+// CreateTermOfPayment does _POST https://api.fortnox.se/3/termsofpayments
 //
 // req - term of payment to create
 func (c Client) CreateTermOfPayment(ctx context.Context, req *CreateTermOfPaymentReq) (*CreateTermOfPaymentResp, error) {
