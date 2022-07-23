@@ -9,7 +9,9 @@ const (
 	supplierInvoiceExternalUrlConnectionsURI = "supplierinvoiceexternalurlconnections"
 )
 
-// GetSupplierInvoiceExternalUrlConnection does _GET
+// GetSupplierInvoiceExternalUrlConnection does _GET https://api.fortnox.se/3/supplierinvoiceexternalurlconnections/{Id}
+//
+// id - id
 func (c *Client) GetSupplierInvoiceExternalUrlConnection(
 	ctx context.Context,
 	id int) (*GetSupplierInvoiceExternalUrlConnectionResp, error) {
@@ -26,7 +28,11 @@ func (c *Client) GetSupplierInvoiceExternalUrlConnection(
 	return resp, nil
 }
 
-// UpdateSupplierInvoiceExternalUrlConnection does _PUT
+// UpdateSupplierInvoiceExternalUrlConnection does _PUT https://api.fortnox.se/3/supplierinvoiceexternalurlconnections/{Id}
+//
+// id - id
+//
+// req - supplier invoice external url connection to update
 func (c *Client) UpdateSupplierInvoiceExternalUrlConnection(
 	ctx context.Context,
 	id int,
@@ -44,13 +50,17 @@ func (c *Client) UpdateSupplierInvoiceExternalUrlConnection(
 	return resp, nil
 }
 
-// DeleteSupplierInvoiceExternalUrlConnection does _DELETE
+// DeleteSupplierInvoiceExternalUrlConnection does _DELETE https://api.fortnox.se/3/supplierinvoiceexternalurlconnections/{Id}
+//
+// id - id
 func (c *Client) DeleteSupplierInvoiceExternalUrlConnection(ctx context.Context, id int) error {
 	uri := fmt.Sprintf("%s/%d", supplierInvoiceExternalUrlConnectionsURI, id)
 	return c._DELETE(ctx, uri)
 }
 
-// CreateSupplierInvoiceExternalUrlConnection does _POST
+// CreateSupplierInvoiceExternalUrlConnection does _POST https://api.fortnox.se/3/supplierinvoiceexternalurlconnections
+//
+// req - supplier invoice external url connection to update
 func (c *Client) CreateSupplierInvoiceExternalUrlConnection(
 	ctx context.Context,
 	req *CreateSupplierInvoiceExternalUrlConnectionReq) (*CreateSupplierInvoiceExternalUrlConnectionResp, error) {
