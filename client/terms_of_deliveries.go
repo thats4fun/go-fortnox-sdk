@@ -58,7 +58,7 @@ func (c *Client) GetTermOfDelivery(ctx context.Context, code string) (*GetTermOf
 //
 // code - identifies the terms of delivery
 //
-// req - to update
+// req - terms of delivery to update
 func (c *Client) UpdateTermOfDelivery(
 	ctx context.Context,
 	code string, req *UpdateTermOfDeliveryReq) (*UpdateTermOfDeliveryResp, error) {
