@@ -37,7 +37,7 @@ func (c *Client) CreateExpense(ctx context.Context, req *CreateExpenseReq) (*Cre
 
 // GetExpense does _GET https://api.fortnox.se/3/expenses/{ExpenseCode}
 //
-// ExpenseCode - expenseCode
+// expenseCode - expenseCode
 func (c *Client) GetExpense(ctx context.Context, expenseCode string) (*GetExpenseResp, error) {
 	resp := &GetExpenseResp{}
 
@@ -49,12 +49,6 @@ func (c *Client) GetExpense(ctx context.Context, expenseCode string) (*GetExpens
 	}
 
 	return resp, nil
-}
-
-type Expense struct {
-	Code    string `json:"Code"`
-	Text    string `json:"Text"`
-	Account int    `json:"Account"`
 }
 
 type GetAllExpensesResp struct {
