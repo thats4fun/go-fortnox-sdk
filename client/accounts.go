@@ -136,7 +136,11 @@ type FinancialYearFilter struct {
 	FinancialYear int
 }
 
-func (f FinancialYearFilter) urlValues() url.Values {
+func (f *FinancialYearFilter) urlValues() url.Values {
+	if f == nil {
+		return nil
+	}
+
 	params := url.Values{}
 
 	if f.FinancialYear > 0 {

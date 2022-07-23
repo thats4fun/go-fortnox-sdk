@@ -9,12 +9,12 @@ const (
 	sieURI = "sie"
 )
 
-// GetSIEFile does _GET
+// GetSIEFile does _GET https://api.fortnox.se/3/sie/{Type}
 //
 // typ - type
 //
 // filter - FinancialYearFilter
-func (c *Client) GetSIEFile(ctx context.Context, typ string, filter FinancialYearFilter) (*[]byte, error) {
+func (c *Client) GetSIEFile(ctx context.Context, typ string, filter *FinancialYearFilter) (*[]byte, error) {
 	resp := &[]byte{}
 
 	uri := fmt.Sprintf("%s/%s", sieURI, typ)
