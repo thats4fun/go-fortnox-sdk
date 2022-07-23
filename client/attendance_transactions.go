@@ -21,7 +21,7 @@ const (
 // filter - GetAllAttendanceTransactionsFilter
 func (c *Client) GetAllAttendanceTransactions(
 	ctx context.Context,
-	filter GetAllAttendanceTransactionsFilter) (*GetAllAttendanceTransactionsResp, error) {
+	filter *GetAllAttendanceTransactionsFilter) (*GetAllAttendanceTransactionsResp, error) {
 
 	resp := &GetAllAttendanceTransactionsResp{}
 
@@ -75,6 +75,7 @@ func (c *Client) UpdateAttendanceTransaction(
 	ctx context.Context,
 	id string,
 	req *UpdateAttendanceTransactionReq) (*UpdateAttendanceTransactionResp, error) {
+
 	resp := &UpdateAttendanceTransactionResp{}
 
 	uri := fmt.Sprintf("%s/%s", attendanceTransactionsURI, id)
@@ -94,7 +95,11 @@ type GetAllAttendanceTransactionsFilter struct {
 	date string
 }
 
-func (f GetAllAttendanceTransactionsFilter) urlValues() url.Values {
+func (f *GetAllAttendanceTransactionsFilter) urlValues() url.Values {
+	if f == nil {
+		return nil
+	}
+
 	params := url.Values{}
 
 	if strings.TrimSpace(f.employeeID) != "" {
