@@ -55,7 +55,7 @@ go test ./... -v -count=1
 | accountcharts                          | ✓        | ❌         |  
 | absencetransactions                    | ✓         | ❌         |   
 | accounts                               | ✓        | ❌         |  
-| archive                                | ❌        | ❌         |  
+| archive                                | ✓        | ❌         |  
 | articlefileconnections                 | ❌        | ❌         |  
 | articles                               | ❌        | ❌         |  
 | assetfileconnections                   | ❌        | ❌         |  
