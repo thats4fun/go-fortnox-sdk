@@ -6,10 +6,10 @@ import (
 )
 
 const (
-	contractTemplatesURI = "contracttemplates/"
+	contractTemplatesURI = "contracttemplates"
 )
 
-// GetAllContractTemplates does _GET https://api.fortnox.se/3/contractaccruals/
+// GetAllContractTemplates does _GET https://api.fortnox.se/3/contracttemplates/
 func (c *Client) GetAllContractTemplates(ctx context.Context) (*GetAllContractTemplatesResp, error) {
 	resp := &GetAllContractTemplatesResp{}
 
@@ -21,7 +21,7 @@ func (c *Client) GetAllContractTemplates(ctx context.Context) (*GetAllContractTe
 	return resp, nil
 }
 
-// CreateContractTemplate does _POST https://api.fortnox.se/3/contractaccruals/
+// CreateContractTemplate does _POST https://api.fortnox.se/3/contracttemplates/
 //
 // req - contract template to create
 func (c *Client) CreateContractTemplate(
@@ -38,7 +38,7 @@ func (c *Client) CreateContractTemplate(
 	return resp, nil
 }
 
-// GetContractTemplate does _GET https://api.fortnox.se/3/contractaccruals/{DocumentNumber}
+// GetContractTemplate does _GET https://api.fortnox.se/3/contracttemplates/{DocumentNumber}
 //
 // templateNumber - identifies the contract accrual
 func (c *Client) GetContractTemplate(ctx context.Context, templateNumber int) (*GetContractTemplateResp, error) {
@@ -54,7 +54,7 @@ func (c *Client) GetContractTemplate(ctx context.Context, templateNumber int) (*
 	return resp, nil
 }
 
-// UpdateContractTemplate does _PUT https://api.fortnox.se/3/contractaccruals/{DocumentNumber}
+// UpdateContractTemplate does _PUT https://api.fortnox.se/3/contracttemplates/{DocumentNumber}
 //
 // templateNumber - identifies the contract accrual
 //
