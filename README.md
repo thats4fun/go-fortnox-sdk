@@ -52,8 +52,8 @@ go test ./... -v -count=1
 
 | Name                                  | Implemented? | Tested?   | 
 |---------------------------------------|-----------|-----------| 
+| absencetransactions                   | ✓         | ❌         |
 | accountcharts                         | ✓         | ❌         |  
-| absencetransactions                   | ✓         | ❌         |   
 | accounts                              | ✓         | ❌         |  
 | archive                               | ✓         | ❌         |  
 | articlefileconnections                | ✓         | ❌         |  
