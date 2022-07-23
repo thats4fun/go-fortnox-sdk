@@ -9,7 +9,7 @@ const (
 	supplierInvoicePaymentsURI = "supplierinvoicepayments"
 )
 
-// GetAllSupplierInvoicePayments does _GET
+// GetAllSupplierInvoicePayments does _GET https://api.fortnox.se/3/supplierinvoicepayments/
 func (c *Client) GetAllSupplierInvoicePayments(ctx context.Context) (*GetAllSupplierInvoicePaymentsResp, error) {
 	resp := &GetAllSupplierInvoicePaymentsResp{}
 
@@ -21,7 +21,9 @@ func (c *Client) GetAllSupplierInvoicePayments(ctx context.Context) (*GetAllSupp
 	return resp, nil
 }
 
-// CreateSupplierInvoicePayment does _POST
+// CreateSupplierInvoicePayment does _POST https://api.fortnox.se/3/supplierinvoicepayments/
+//
+// req - supplier invoice payment to create
 func (c *Client) CreateSupplierInvoicePayment(
 	ctx context.Context,
 	req *CreateSupplierInvoicePaymentReq) (*CreateSupplierInvoicePaymentResp, error) {
@@ -36,7 +38,9 @@ func (c *Client) CreateSupplierInvoicePayment(
 	return resp, nil
 }
 
-// GetSupplierInvoicePayment does _GET
+// GetSupplierInvoicePayment does _GET https://api.fortnox.se/3/supplierinvoicepayments/{Number}
+//
+// number - identifies the supplier invoice payment
 func (c *Client) GetSupplierInvoicePayment(ctx context.Context, number int) (*GetSupplierInvoicePaymentResp, error) {
 	resp := &GetSupplierInvoicePaymentResp{}
 
@@ -50,7 +54,11 @@ func (c *Client) GetSupplierInvoicePayment(ctx context.Context, number int) (*Ge
 	return resp, nil
 }
 
-// UpdateSupplierInvoicePayment does _PUT
+// UpdateSupplierInvoicePayment does _PUT https://api.fortnox.se/3/supplierinvoicepayments/{Number}
+//
+// number - identifies the supplier invoice payment
+//
+// req - supplier invoice payment to update
 func (c *Client) UpdateSupplierInvoicePayment(
 	ctx context.Context,
 	number int,
@@ -68,20 +76,24 @@ func (c *Client) UpdateSupplierInvoicePayment(
 	return resp, nil
 }
 
-// RemoveSupplierInvoicePayment does _DELETE
+// RemoveSupplierInvoicePayment does _DELETE https://api.fortnox.se/3/supplierinvoicepayments/{Number}
+//
+// number - identifies the supplier invoice payment
 func (c *Client) RemoveSupplierInvoicePayment(ctx context.Context, number int) error {
 	uri := fmt.Sprintf("%s/%d", supplierInvoicePaymentsURI, number)
 	return c._DELETE(ctx, uri)
 }
 
-// BookKeepSupplierInvoicePayment does _PUT
+// BookKeepSupplierInvoicePayment does _PUT https://api.fortnox.se/3/supplierinvoicepayments/{Number}/bookkeep
+//
+// number - identifies the supplier invoice payment
 func (c *Client) BookKeepSupplierInvoicePayment(
 	ctx context.Context,
 	number int) (*BookKeepSupplierInvoicePaymentResp, error) {
 
 	resp := &BookKeepSupplierInvoicePaymentResp{}
 
-	uri := fmt.Sprintf("%s/%d", supplierInvoicePaymentsURI, number)
+	uri := fmt.Sprintf("%s/%d/bookkeep", supplierInvoicePaymentsURI, number)
 
 	err := c._PUT(ctx, uri, nil, nil, resp)
 	if err != nil {
