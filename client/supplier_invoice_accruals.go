@@ -9,6 +9,7 @@ const (
 	supplierInvoiceAccrualsURI = "supplierinvoiceaccruals"
 )
 
+// GetAllSupplierInvoiceAccruals does _GET https://api.fortnox.se/3/supplierinvoiceaccruals/
 func (c *Client) GetAllSupplierInvoiceAccruals(ctx context.Context) (*GetAllSupplierInvoiceAccrualsResp, error) {
 	resp := &GetAllSupplierInvoiceAccrualsResp{}
 
@@ -20,6 +21,9 @@ func (c *Client) GetAllSupplierInvoiceAccruals(ctx context.Context) (*GetAllSupp
 	return resp, nil
 }
 
+// CreateSupplierInvoiceAccruals does _POST https://api.fortnox.se/3/supplierinvoiceaccruals/
+//
+// req - supplier invoice accruals to create
 func (c *Client) CreateSupplierInvoiceAccruals(
 	ctx context.Context,
 	req *CreateSupplierInvoiceAccrualsReq) (*CreateSupplierInvoiceAccrualsResp, error) {
@@ -34,6 +38,9 @@ func (c *Client) CreateSupplierInvoiceAccruals(
 	return resp, nil
 }
 
+// GetSupplierInvoiceAccruals does _GET https://api.fortnox.se/3/supplierinvoiceaccruals/{SupplierInvoiceNumber}
+//
+// supplierInvoiceNumber - identifies the supplier invoice accrual
 func (c *Client) GetSupplierInvoiceAccruals(
 	ctx context.Context,
 	supplierInvoiceNumber int) (*GetSupplierInvoiceAccrualsResp, error) {
@@ -50,6 +57,11 @@ func (c *Client) GetSupplierInvoiceAccruals(
 	return resp, nil
 }
 
+// UpdateSupplierInvoiceAccruals does _PUT https://api.fortnox.se/3/supplierinvoiceaccruals/{SupplierInvoiceNumber}
+//
+// supplierInvoiceNumber - identifies the supplier invoice accrual
+//
+// req - supplier invoice accruals to update
 func (c *Client) UpdateSupplierInvoiceAccruals(
 	ctx context.Context,
 	supplierInvoiceNumber int,
@@ -67,6 +79,9 @@ func (c *Client) UpdateSupplierInvoiceAccruals(
 	return resp, nil
 }
 
+// DeleteSupplierInvoiceAccruals does _DELETE https://api.fortnox.se/3/supplierinvoiceaccruals/{SupplierInvoiceNumber}
+//
+// supplierInvoiceNumber - identifies the supplier invoice accrual
 func (c *Client) DeleteSupplierInvoiceAccruals(ctx context.Context, supplierInvoiceNumber int) error {
 	uri := fmt.Sprintf("%s/%d", supplierInvoiceAccrualsURI, supplierInvoiceNumber)
 	return c._DELETE(ctx, uri)
