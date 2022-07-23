@@ -9,7 +9,7 @@ const (
 	predefinedVoucherSeriesURI = "predefinedvoucherseries"
 )
 
-// GetAllPredefinedVoucherSeries does _GET
+// GetAllPredefinedVoucherSeries does _GET https://api.fortnox.se/3/predefinedvoucherseries/
 func (c *Client) GetAllPredefinedVoucherSeries(ctx context.Context) (*GetAllPredefinedVoucherSeriesResp, error) {
 	resp := &GetAllPredefinedVoucherSeriesResp{}
 
@@ -21,8 +21,9 @@ func (c *Client) GetAllPredefinedVoucherSeries(ctx context.Context) (*GetAllPred
 	return resp, nil
 }
 
-// GetPredefinedVoucherSeries does _GET
-// name -
+// GetPredefinedVoucherSeries does _GET https://api.fortnox.se/3/predefinedvoucherseries/{Name}
+//
+// name - identifies the predefined voucher series
 func (c *Client) GetPredefinedVoucherSeries(ctx context.Context, name string) (*GetPredefinedVoucherSeriesResp, error) {
 	resp := &GetPredefinedVoucherSeriesResp{}
 
@@ -36,9 +37,11 @@ func (c *Client) GetPredefinedVoucherSeries(ctx context.Context, name string) (*
 	return resp, nil
 }
 
-// UpdatePredefinedVoucherSeries does _PUT
-// name -
-// req -
+// UpdatePredefinedVoucherSeries does _PUT https://api.fortnox.se/3/predefinedvoucherseries/{Name}
+//
+// name - identifies the predefined voucher series
+//
+// req - predefined voucher series to update
 func (c *Client) UpdatePredefinedVoucherSeries(
 	ctx context.Context,
 	name string,
