@@ -9,7 +9,7 @@ const (
 	supplierInvoiceFileConnectionsURI = "supplierinvoicefileconnections"
 )
 
-// GetAllSupplierInvoiceFileConnections does _GET
+// GetAllSupplierInvoiceFileConnections does _GET https://api.fortnox.se/3/supplierinvoicefileconnections/
 func (c *Client) GetAllSupplierInvoiceFileConnections(
 	ctx context.Context) (*GetAllSupplierInvoiceFileConnectionsResp, error) {
 
@@ -23,7 +23,9 @@ func (c *Client) GetAllSupplierInvoiceFileConnections(
 	return resp, nil
 }
 
-// CreateSupplierInvoiceFileConnection does _POST
+// CreateSupplierInvoiceFileConnection does _POST https://api.fortnox.se/3/supplierinvoicefileconnections/
+//
+// req - supplier invoice file connection to create
 func (c *Client) CreateSupplierInvoiceFileConnection(
 	ctx context.Context,
 	req *CreateSupplierInvoiceFileConnectionReq) (*CreateSupplierInvoiceFileConnectionResp, error) {
@@ -38,7 +40,9 @@ func (c *Client) CreateSupplierInvoiceFileConnection(
 	return resp, nil
 }
 
-// GetSupplierInvoiceFileConnection does _GET
+// GetSupplierInvoiceFileConnection does _GET https://api.fortnox.se/3/supplierinvoicefileconnections/{FileId}
+//
+// fileID - identifies the file connection
 func (c *Client) GetSupplierInvoiceFileConnection(
 	ctx context.Context,
 	fileID string) (*GetSupplierInvoiceFileConnectionResp, error) {
@@ -55,7 +59,9 @@ func (c *Client) GetSupplierInvoiceFileConnection(
 	return resp, nil
 }
 
-// RemoveSupplierInvoiceFileConnections does _DELETE
+// RemoveSupplierInvoiceFileConnections does _DELETE https://api.fortnox.se/3/supplierinvoicefileconnections/{FileId}
+//
+// fileID - identifies the file connection
 func (c *Client) RemoveSupplierInvoiceFileConnections(ctx context.Context, fieldID string) error {
 	uri := fmt.Sprintf("%s/%s", supplierInvoiceFileConnectionsURI, fieldID)
 	return c._DELETE(ctx, uri)
