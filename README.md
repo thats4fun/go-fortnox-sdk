@@ -10,12 +10,13 @@ import (
 	"fmt"
 	"log"
 
-	fortnox "github.com/thats4fun/go-fortnox-sdk"
+	fortnox "github.com/thats4fun/go-fortnox-sdk/client"
 )
 
 func main() {
 	client := fortnox.NewClient(
-		fortnox.WithAuthOpts("token", "secret"),
+		fortnox.WithAuthOpt("token", "secret"),
+		fortnox.WithURLOpt(fortnox.DefaultURL),
 	)
 
 	order, err := client.GetOrder(context.Background(), 1)
