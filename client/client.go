@@ -81,6 +81,11 @@ func NewClient(options ...OptionFunc) *Client {
 	}
 }
 
+func (c *Client) String() string {
+	return fmt.Sprintf("AccessToken: %s, RefreshToken: %s, ClientSecret:%s, BaseURL: %s",
+		c.clientOptions.AccessToken, c.clientOptions.RefreshToken, c.clientOptions.ClientSecret, c.clientOptions.BaseURL)
+}
+
 func (c *Client) buildURL(section string) (*url.URL, error) {
 	u, err := url.Parse(c.clientOptions.BaseURL)
 	if err != nil {
