@@ -47,8 +47,8 @@ func (c *Client) GetFileOrFolder(ctx context.Context, filter *PathFileIDFilter) 
 // 1. path - name of folder
 //
 // 2. folderID - if of folder
-func (c Client) UploadFileToDir(ctx context.Context, filter *PathFileIDFilter, file *File) (*UploadFileResp, error) {
-	resp := &UploadFileResp{}
+func (c Client) UploadFileToDir(ctx context.Context, filter *PathFileIDFilter, file *File) (*UploadFileToDirResp, error) {
+	resp := &UploadFileToDirResp{}
 
 	params := filter.urlValues()
 
@@ -182,7 +182,7 @@ type GetFileOrFolderResp struct {
 	} `json:"Folder"`
 }
 
-type UploadFileResp struct {
+type UploadFileToDirResp struct {
 	File struct {
 		Url           string `json:"@url"`
 		Comments      string `json:"Comments"`

@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/go-fortnox-sdk/absence_transactions"
+	"github.com/thats4fun/go-fortnox-sdk/absence_transactions"
 )
 
 const absenceTransactionsURI = "absencetransactions"

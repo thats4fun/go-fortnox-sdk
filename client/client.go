@@ -22,6 +22,10 @@ const (
 )
 
 const (
+	refreshTokenURL = "https://apps.fortnox.se/oauth-v1/token"
+)
+
+const (
 	DefaultURL = "https://api.fortnox.se/3/"
 	TestURL    = "https://api.fortnox.se/3/test/"
 )
@@ -36,6 +40,22 @@ var (
 		"Content-Type": mimeType,
 		"User-Agent":   userAgent,
 	}
+)
+
+type Scope string
+
+const (
+	Salary             Scope = "salary"
+	Bookkeeping        Scope = "bookkeeping"
+	Archive            Scope = "archive"
+	FileConnection     Scope = "connectfile"
+	Article            Scope = "article"
+	CompanyInformation Scope = "companyinformation"
+	Settings           Scope = "settings"
+	Invoice            Scope = "invoice"
+	CostCenters        Scope = "costcenter"
+	Currency           Scope = "currency"
+	Customer           Scope = "customer"
 )
 
 type Client struct {
@@ -129,6 +149,44 @@ func (c *Client) request(
 	return request(ctx, c.clientOptions.HTTPClient, headers, method, u.String(), bodyBuffer, result)
 }
 
+func (c *Client) RefreshToken() error {
+	body := &bytes.Buffer{}
+
+	body.WriteString(
+		fmt.Sprintf("grant_type=refresh_token&refresh_token=%s", c.clientOptions.RefreshToken),
+	)
+
+	resp, err := http.Post(refreshTokenURL, "application/x-www-form-urlencoded", body)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	bts, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+
+	tokenInfo := TokenInfo{}
+	err = json.Unmarshal(bts, &tokenInfo)
+	if err != nil {
+		return err
+	}
+
+	c.clientOptions.AccessToken = tokenInfo.AccessToken
+	c.clientOptions.RefreshToken = tokenInfo.RefreshToken
+
+	return nil
+}
+
+type TokenInfo struct {
+	AccessToken  string `json:"access_token"`
+	ExpiresIn    int    `json:"expires_in"`
+	TokenType    string `json:"token_type"`
+	Scope        string `json:"scope"`
+	RefreshToken string `json:"refresh_token"`
+}
+
 func request(
 	ctx context.Context,
 	client *http.Client,
@@ -182,13 +240,20 @@ func request(
 		if err := json.NewDecoder(resp.Body).Decode(&errMsg); err != nil {
 			return errors.Wrap(err, fmt.Sprintf("failed to decode %d error from response [%s]", resp.StatusCode, bodyPreview))
 		}
+		msg := errMsg.ErrorInformation.Message
+		if errMsg.ErrorInformation.Code == 0 {
+			msg = fmt.Sprintf("%s | try to refresh token", bodyPreview)
+		}
 		return FortnoxError{
 			HTTPStatus: resp.StatusCode,
 			Code:       errMsg.ErrorInformation.Code,
-			Message:    errMsg.ErrorInformation.Message,
+			Message:    msg,
 		}
 	}
+}
 
+type MessageWrapper struct {
+	Message string `json:"message"`
 }
 
 // Get a preview of the body (without affecting the resp.Body reader)
@@ -222,13 +287,16 @@ type FortnoxError struct {
 }
 
 func (f FortnoxError) Error() string {
-	return fmt.Sprintf("%d - %s", f.Code, f.Message)
+	return fmt.Sprintf(
+		"HTTP Status Code [%d]: %s\nFortnox Code: %d <-> %s",
+		f.HTTPStatus, http.StatusText(f.HTTPStatus), f.Code, f.Message)
 }
 
-// Translate translates error message to [langCode]
-// TODO: would be awesome to translate error from Sweden to [langCode]
-func (f FortnoxError) Translate(langCode string) string {
-	return ""
+// Translate translates error message to languages defined by [langCode]
+func (f FortnoxError) Translate(langCode LangCode) string {
+	langToDescriptionMapping := CodeToLanguagesMapping[f.Code]
+	description := langToDescriptionMapping[langCode]
+	return description
 }
 
 // ErrorMessage response type
@@ -236,4 +304,161 @@ type ErrorMessage struct {
 	Error   int    `json:"Error"`
 	Message string `json:"Message"`
 	Code    int    `json:"Code"`
+}
+
+// Translate translates error message to languages defined by [langCode]
+func (f ErrorMessage) Translate(langCode LangCode) string {
+	langToDescriptionMapping := CodeToLanguagesMapping[f.Code]
+	description := langToDescriptionMapping[langCode]
+	return description
+}
+
+type LangCode string
+
+const (
+	EN LangCode = "EN"
+	SE LangCode = "SE"
+)
+
+var CodeToLanguagesMapping = map[int]map[LangCode]string{
+	1000003: {
+		SE: "System exception",
+		EN: "Something went wrong on our end, please contact us.",
+	},
+	1000030: {
+		SE: "Invalid response type",
+		EN: "The provided response type(Accept) was invalid.",
+	},
+	1000031: {
+		SE: "Invalid content type",
+		EN: "The provided content type was invalid.",
+	},
+	2000106: {
+		SE: "Värdet måste vara alfanumeriskt ({Value})",
+		EN: "The value needs to be alphanumeric.",
+	},
+	2000108: {
+		SE: "Värdet måste vara numeriskt ({Value})",
+		EN: "The value needs to be numeric.",
+	},
+	2000134: {
+		SE: "Värdet måste vara en boolean ({Value})",
+		EN: "The value needs to be boolean",
+	},
+	2000310: {
+		SE: "Ogiltig inloggning",
+		EN: "The Client-Secret or the Access-Token is either missing or is incorrect.",
+	},
+	2000311: {
+		SE: "Kan inte logga in, access-token eller client-secret saknas(2).",
+		EN: "The Client-Secret or the Access-Token is either missing or is incorrect.",
+	},
+	2000359: {
+		SE: "Värdet innehåller ej tillåtna tecken. ({Value})",
+		EN: "The value contains invalid characters.",
+	},
+	2000588: {
+		SE: "Ogiltig parameter i anropet.",
+		EN: "A parameter is invalid. Read more about parameters. [https://developer.fortnox.se/documentation/general/parameters/]",
+	},
+	2000637: {
+		SE: "Kundnummer 1 används redan. Kundnumret har redan använts men blivit raderat.",
+		EN: "Customer number 1 is/has already been used.",
+	},
+	2000729: {
+		SE: "A valid identifier was not provided.",
+		EN: "A valid identifier was not provided.",
+	},
+	2001103: {
+		SE: "Api-licens saknas.",
+		EN: "The requested Fortnox account does not have a license to use the API",
+	},
+	2001392: {
+		SE: "Ingen eller felaktig typ av data.",
+		EN: "The request body was empty or contained incorrect data.",
+	},
+	2001740: {
+		SE: "Inläsning av dokument misslyckades: {Message}",
+		EN: "The XML object contained an error.",
+	},
+	2002115: {
+		SE: "Error deserializing JSON: JSON_ERROR_SYNTAX",
+		EN: "The JSON object contained an error.",
+	},
+	2001304: {
+		SE: "Kunde inte hitta konto",
+		EN: "Could not find Account",
+	},
+	2001399: {
+		SE: "Felaktigt fältnamn",
+		EN: "Invalid Field name",
+	},
+	2001101: {
+		SE: "Det finns ingen aktiv licens för önskat scope",
+		EN: "There is no active licens for the desired scope.",
+	},
+	2000663: {
+		SE: "Har inte behörighet för scope",
+		EN: "No access to the current scope.",
+	},
+	2003095: {
+		SE: "Det saknas ett förvalt konto för Inköp SE, omvänd skattskyldighet\t",
+		EN: "Account is missing for Purchase SE reversed tax liability",
+	},
+	2000755: {
+		SE: "Leverantörsfakturan balanserar inte",
+		EN: "Supplier invoice does not balance",
+	},
+	2003115: {
+		SE: "Momsrader för momstyp REVERSE måste vara märkta med motsvarande CODE",
+		EN: "Tax Rows for VAT type REVERSE must be marked with CODE",
+	},
+	2003124: {
+		SE: "Enbart ordrar som levererats ut kan klarmarkeras",
+		EN: "",
+	},
+	2003125: {
+		SE: "Ett klarmarkerat dokument kan inte ändras",
+		EN: "",
+	},
+	2003126: {
+		SE: "Utleveransdatum kan inte vara senare än dagens datum",
+		EN: "",
+	},
+	2003241: {
+		SE: "Migrering är redan påbörjad eller avslutad",
+		EN: "",
+	},
+	2003275: {
+		SE: "Ej autentiserad",
+		EN: "",
+	},
+	2003277: {
+		SE: "Hittades inte i lagermodulen",
+		EN: "",
+	},
+	2003399: {
+		SE: "Dokumentet är makulerat i lagermodulen",
+		EN: "",
+	},
+	2003127: {
+		SE: "Ett fel uppstod i lagermodulen",
+		EN: "",
+	},
+	2000204: {
+		SE: "Kunde inte hämta/hitta kund (kundnummer)",
+		EN: "The customer in the request is not available in the customer resource.",
+	},
+	2000433: {
+		SE: "Kunde inte hämta/hitta kund (kundnummer)",
+		EN: "The customer in the request is not available in the customer resource.",
+	},
+	2001302: {
+		SE: "Kunde inte hitta artikel",
+		EN: "Could not find article used in request",
+	},
+	2000428: {
+		SE: "Kan inte hitta artikeln",
+		EN: "",
+	},
 }

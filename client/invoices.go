@@ -68,7 +68,7 @@ func (c *Client) GetAllInvoices(ctx context.Context, queryParams *GetAllInvoices
 	return resp, nil
 }
 
-//CreateInvoice does _POST https://api.fortnox.se/3/invoices
+// CreateInvoice does _POST https://api.fortnox.se/3/invoices
 //
 // req - payload
 func (c *Client) CreateInvoice(ctx context.Context, req *CreateInvoiceReq) (*CreateInvoiceResp, error) {

@@ -9,6 +9,7 @@ type AccessTokenOptions struct {
 
 type Options struct {
 	AccessToken  string
+	RefreshToken string
 	ClientSecret string
 	BaseURL      string
 	HTTPClient   *http.Client
@@ -20,6 +21,12 @@ func WithAuthOpt(token, secret string) OptionFunc {
 	return func(co *Options) {
 		co.AccessToken = token
 		co.ClientSecret = secret
+	}
+}
+
+func WithRefreshOpt(refreshToken string) OptionFunc {
+	return func(co *Options) {
+		co.RefreshToken = refreshToken
 	}
 }
 
