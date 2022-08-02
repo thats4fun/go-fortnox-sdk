@@ -10,7 +10,7 @@ const (
 )
 
 // GetAllSupplierInvoiceAccruals does _GET https://api.fortnox.se/3/supplierinvoiceaccruals/
-func (c *Client) GetAllSupplierInvoiceAccruals(ctx context.Context) (*GetAllSupplierInvoiceAccrualsResp, error) {
+func (c *Client) GetAllSupplierInvoiceAccruals(ctx context.Context) ([]SupplierInvoiceAccrual, error) {
 	resp := &GetAllSupplierInvoiceAccrualsResp{}
 
 	err := c._GET(ctx, supplierInvoiceAccrualsURI, nil, resp)
@@ -18,7 +18,7 @@ func (c *Client) GetAllSupplierInvoiceAccruals(ctx context.Context) (*GetAllSupp
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.SupplierInvoiceAccruals, nil
 }
 
 // CreateSupplierInvoiceAccruals does _POST https://api.fortnox.se/3/supplierinvoiceaccruals/
@@ -26,8 +26,9 @@ func (c *Client) GetAllSupplierInvoiceAccruals(ctx context.Context) (*GetAllSupp
 // req - supplier invoice accruals to create
 func (c *Client) CreateSupplierInvoiceAccruals(
 	ctx context.Context,
-	req *CreateSupplierInvoiceAccrualsReq) (*CreateSupplierInvoiceAccrualsResp, error) {
+	sia *SupplierInvoiceAccrual) (*SupplierInvoiceAccrual, error) {
 
+	req := &CreateSupplierInvoiceAccrualsReq{SupplierInvoiceAccrual: *sia}
 	resp := &CreateSupplierInvoiceAccrualsResp{}
 
 	err := c._POST(ctx, supplierInvoiceAccrualsURI, nil, req, resp)
@@ -35,7 +36,7 @@ func (c *Client) CreateSupplierInvoiceAccruals(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.SupplierInvoiceAccrual, nil
 }
 
 // GetSupplierInvoiceAccruals does _GET https://api.fortnox.se/3/supplierinvoiceaccruals/{SupplierInvoiceNumber}
@@ -43,7 +44,7 @@ func (c *Client) CreateSupplierInvoiceAccruals(
 // supplierInvoiceNumber - identifies the supplier invoice accrual
 func (c *Client) GetSupplierInvoiceAccruals(
 	ctx context.Context,
-	supplierInvoiceNumber int) (*GetSupplierInvoiceAccrualsResp, error) {
+	supplierInvoiceNumber int) (*SupplierInvoiceAccrual, error) {
 
 	resp := &GetSupplierInvoiceAccrualsResp{}
 
@@ -54,7 +55,7 @@ func (c *Client) GetSupplierInvoiceAccruals(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.SupplierInvoiceAccrual, nil
 }
 
 // UpdateSupplierInvoiceAccruals does _PUT https://api.fortnox.se/3/supplierinvoiceaccruals/{SupplierInvoiceNumber}
@@ -65,8 +66,9 @@ func (c *Client) GetSupplierInvoiceAccruals(
 func (c *Client) UpdateSupplierInvoiceAccruals(
 	ctx context.Context,
 	supplierInvoiceNumber int,
-	req *UpdateSupplierInvoiceAccrualReq) (*UpdateSupplierInvoiceAccrualResp, error) {
+	sia *SupplierInvoiceAccrual) (*SupplierInvoiceAccrual, error) {
 
+	req := UpdateSupplierInvoiceAccrualReq{SupplierInvoiceAccrual: *sia}
 	resp := &UpdateSupplierInvoiceAccrualResp{}
 
 	uri := fmt.Sprintf("%s/%d", supplierInvoiceAccrualsURI, supplierInvoiceNumber)
@@ -76,7 +78,7 @@ func (c *Client) UpdateSupplierInvoiceAccruals(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.SupplierInvoiceAccrual, nil
 }
 
 // DeleteSupplierInvoiceAccruals does _DELETE https://api.fortnox.se/3/supplierinvoiceaccruals/{SupplierInvoiceNumber}
@@ -88,130 +90,49 @@ func (c *Client) DeleteSupplierInvoiceAccruals(ctx context.Context, supplierInvo
 }
 
 type GetAllSupplierInvoiceAccrualsResp struct {
-	SupplierInvoiceAccruals []struct {
-		Url                   string `json:"@url"`
-		Description           string `json:"Description"`
-		SupplierInvoiceNumber int    `json:"SupplierInvoiceNumber"`
-		Period                string `json:"Period"`
-	} `json:"SupplierInvoiceAccruals"`
+	SupplierInvoiceAccruals []SupplierInvoiceAccrual `json:"SupplierInvoiceAccruals"`
 }
 
 type CreateSupplierInvoiceAccrualsReq struct {
-	SupplierInvoiceAccrual struct {
-		Url                        string `json:"@url"`
-		AccrualAccount             int    `json:"AccrualAccount"`
-		CostAccount                int    `json:"CostAccount"`
-		Description                string `json:"Description"`
-		EndDate                    string `json:"EndDate"`
-		SupplierInvoiceNumber      int    `json:"SupplierInvoiceNumber"`
-		Period                     string `json:"Period"`
-		StartDate                  string `json:"StartDate"`
-		Times                      int    `json:"Times"`
-		Total                      int    `json:"Total"`
-		VATIncluded                bool   `json:"VATIncluded"`
-		SupplierInvoiceAccrualRows []struct {
-			Account                int    `json:"Account"`
-			CostCenter             string `json:"CostCenter"`
-			Credit                 int    `json:"Credit"`
-			Debit                  int    `json:"Debit"`
-			Project                string `json:"Project"`
-			TransactionInformation string `json:"TransactionInformation"`
-		} `json:"SupplierInvoiceAccrualRows"`
-	} `json:"SupplierInvoiceAccrual"`
+	SupplierInvoiceAccrual SupplierInvoiceAccrual `json:"SupplierInvoiceAccrual"`
 }
 
 type CreateSupplierInvoiceAccrualsResp struct {
-	SupplierInvoiceAccrual struct {
-		Url                        string `json:"@url"`
-		AccrualAccount             int    `json:"AccrualAccount"`
-		CostAccount                int    `json:"CostAccount"`
-		Description                string `json:"Description"`
-		EndDate                    string `json:"EndDate"`
-		SupplierInvoiceNumber      int    `json:"SupplierInvoiceNumber"`
-		Period                     string `json:"Period"`
-		StartDate                  string `json:"StartDate"`
-		Times                      int    `json:"Times"`
-		Total                      int    `json:"Total"`
-		VATIncluded                bool   `json:"VATIncluded"`
-		SupplierInvoiceAccrualRows []struct {
-			Account                int    `json:"Account"`
-			CostCenter             string `json:"CostCenter"`
-			Credit                 int    `json:"Credit"`
-			Debit                  int    `json:"Debit"`
-			Project                string `json:"Project"`
-			TransactionInformation string `json:"TransactionInformation"`
-		} `json:"SupplierInvoiceAccrualRows"`
-	} `json:"SupplierInvoiceAccrual"`
+	SupplierInvoiceAccrual SupplierInvoiceAccrual `json:"SupplierInvoiceAccrual"`
 }
 
 type GetSupplierInvoiceAccrualsResp struct {
-	SupplierInvoiceAccrual struct {
-		Url                        string `json:"@url"`
-		AccrualAccount             int    `json:"AccrualAccount"`
-		CostAccount                int    `json:"CostAccount"`
-		Description                string `json:"Description"`
-		EndDate                    string `json:"EndDate"`
-		SupplierInvoiceNumber      int    `json:"SupplierInvoiceNumber"`
-		Period                     string `json:"Period"`
-		StartDate                  string `json:"StartDate"`
-		Times                      int    `json:"Times"`
-		Total                      int    `json:"Total"`
-		VATIncluded                bool   `json:"VATIncluded"`
-		SupplierInvoiceAccrualRows []struct {
-			Account                int    `json:"Account"`
-			CostCenter             string `json:"CostCenter"`
-			Credit                 int    `json:"Credit"`
-			Debit                  int    `json:"Debit"`
-			Project                string `json:"Project"`
-			TransactionInformation string `json:"TransactionInformation"`
-		} `json:"SupplierInvoiceAccrualRows"`
-	} `json:"SupplierInvoiceAccrual"`
+	SupplierInvoiceAccrual SupplierInvoiceAccrual `json:"SupplierInvoiceAccrual"`
 }
 
 type UpdateSupplierInvoiceAccrualReq struct {
-	SupplierInvoiceAccrual struct {
-		Url                        string `json:"@url"`
-		AccrualAccount             int    `json:"AccrualAccount"`
-		CostAccount                int    `json:"CostAccount"`
-		Description                string `json:"Description"`
-		EndDate                    string `json:"EndDate"`
-		SupplierInvoiceNumber      int    `json:"SupplierInvoiceNumber"`
-		Period                     string `json:"Period"`
-		StartDate                  string `json:"StartDate"`
-		Times                      int    `json:"Times"`
-		Total                      int    `json:"Total"`
-		VATIncluded                bool   `json:"VATIncluded"`
-		SupplierInvoiceAccrualRows []struct {
-			Account                int    `json:"Account"`
-			CostCenter             string `json:"CostCenter"`
-			Credit                 int    `json:"Credit"`
-			Debit                  int    `json:"Debit"`
-			Project                string `json:"Project"`
-			TransactionInformation string `json:"TransactionInformation"`
-		} `json:"SupplierInvoiceAccrualRows"`
-	} `json:"SupplierInvoiceAccrual"`
+	SupplierInvoiceAccrual SupplierInvoiceAccrual `json:"SupplierInvoiceAccrual"`
 }
 
 type UpdateSupplierInvoiceAccrualResp struct {
-	SupplierInvoiceAccrual struct {
-		Url                        string `json:"@url"`
-		AccrualAccount             int    `json:"AccrualAccount"`
-		CostAccount                int    `json:"CostAccount"`
-		Description                string `json:"Description"`
-		EndDate                    string `json:"EndDate"`
-		SupplierInvoiceNumber      int    `json:"SupplierInvoiceNumber"`
-		Period                     string `json:"Period"`
-		StartDate                  string `json:"StartDate"`
-		Times                      int    `json:"Times"`
-		Total                      int    `json:"Total"`
-		VATIncluded                bool   `json:"VATIncluded"`
-		SupplierInvoiceAccrualRows []struct {
-			Account                int    `json:"Account"`
-			CostCenter             string `json:"CostCenter"`
-			Credit                 int    `json:"Credit"`
-			Debit                  int    `json:"Debit"`
-			Project                string `json:"Project"`
-			TransactionInformation string `json:"TransactionInformation"`
-		} `json:"SupplierInvoiceAccrualRows"`
-	} `json:"SupplierInvoiceAccrual"`
+	SupplierInvoiceAccrual SupplierInvoiceAccrual `json:"SupplierInvoiceAccrual"`
+}
+
+type SupplierInvoiceAccrualRow struct {
+	Account                int    `json:"Account,omitempty"`
+	CostCenter             string `json:"CostCenter,omitempty"`
+	Credit                 int    `json:"Credit,omitempty"`
+	Debit                  int    `json:"Debit,omitempty"`
+	Project                string `json:"Project,omitempty"`
+	TransactionInformation string `json:"TransactionInformation,omitempty"`
+}
+
+type SupplierInvoiceAccrual struct {
+	Url                        string                      `json:"@url,omitempty"`
+	AccrualAccount             int                         `json:"AccrualAccount,omitempty"`
+	CostAccount                int                         `json:"CostAccount,omitempty"`
+	Description                string                      `json:"Description,omitempty"`
+	EndDate                    string                      `json:"EndDate,omitempty"`
+	SupplierInvoiceNumber      int                         `json:"SupplierInvoiceNumber,omitempty"`
+	Period                     string                      `json:"Period,omitempty"`
+	StartDate                  string                      `json:"StartDate,omitempty"`
+	Times                      int                         `json:"Times,omitempty"`
+	Total                      int                         `json:"Total,omitempty"`
+	VATIncluded                bool                        `json:"VATIncluded,omitempty"`
+	SupplierInvoiceAccrualRows []SupplierInvoiceAccrualRow `json:"SupplierInvoiceAccrualRows,omitempty"`
 }

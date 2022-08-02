@@ -10,7 +10,7 @@ const (
 )
 
 // GetAllVoucherSeries does _GET https://api.fortnox.se/3/voucherseries
-func (c *Client) GetAllVoucherSeries(ctx context.Context) (*GetAllVoucherSeriesResp, error) {
+func (c *Client) GetAllVoucherSeries(ctx context.Context) ([]VoucherSeries, error) {
 	resp := &GetAllVoucherSeriesResp{}
 
 	err := c._GET(ctx, voucherSeriesURI, nil, resp)
@@ -18,13 +18,14 @@ func (c *Client) GetAllVoucherSeries(ctx context.Context) (*GetAllVoucherSeriesR
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.VoucherSeriesCollection, nil
 }
 
 // CreateVoucherSeries does _POST https://api.fortnox.se/3/voucherseries
 //
 // req - voucher series to create
-func (c *Client) CreateVoucherSeries(ctx context.Context, req *CreateVoucherSeriesReq) (*CreateVoucherSeriesResp, error) {
+func (c *Client) CreateVoucherSeries(ctx context.Context, vs *VoucherSeries) (*VoucherSeries, error) {
+	req := &CreateVoucherSeriesReq{VoucherSeries: *vs}
 	resp := &CreateVoucherSeriesResp{}
 
 	err := c._POST(ctx, vouchersURI, nil, req, resp)
@@ -32,13 +33,13 @@ func (c *Client) CreateVoucherSeries(ctx context.Context, req *CreateVoucherSeri
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.VoucherSeries, nil
 }
 
 // GetVoucherSeriesByCode doe _GET https://api.fortnox.se/3/voucherseries/{Code}
 //
 // code - identifies the voucher series
-func (c *Client) GetVoucherSeriesByCode(ctx context.Context, code string) (*GetVoucherSeriesByCodeResp, error) {
+func (c *Client) GetVoucherSeriesByCode(ctx context.Context, code string) (*VoucherSeries, error) {
 	resp := &GetVoucherSeriesByCodeResp{}
 
 	uri := fmt.Sprintf("%s/%s", vouchersURI, code)
@@ -47,7 +48,7 @@ func (c *Client) GetVoucherSeriesByCode(ctx context.Context, code string) (*GetV
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.VoucherSeries, nil
 }
 
 // UpdateVoucherSeries does _PUT https://api.fortnox.se/3/voucherseries/{Code}
@@ -58,8 +59,9 @@ func (c *Client) GetVoucherSeriesByCode(ctx context.Context, code string) (*GetV
 func (c *Client) UpdateVoucherSeries(
 	ctx context.Context,
 	code string,
-	req *UpdateVoucherSeriesReq) (*UpdateVoucherSeriesResp, error) {
+	vs *VoucherSeries) (*VoucherSeries, error) {
 
+	req := &UpdateVoucherSeriesReq{VoucherSeries: *vs}
 	resp := &UpdateVoucherSeriesResp{}
 
 	uri := fmt.Sprintf("%s/%s", vouchersURI, code)
@@ -69,22 +71,22 @@ func (c *Client) UpdateVoucherSeries(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.VoucherSeries, nil
 }
 
 type VoucherSeries struct {
-	Url               string   `json:"@url"`
-	Code              string   `json:"Code"`
-	Description       string   `json:"Description"`
-	Manual            bool     `json:"Manual"`
+	Url               string   `json:"@url,omitempty"`
+	Code              string   `json:"Code,omitempty"`
+	Description       string   `json:"Description,omitempty"`
+	Manual            bool     `json:"Manual,omitempty"`
 	NextVoucherNumber int      `json:"NextVoucherNumber,omitempty"`
-	Year              int      `json:"Year"`
-	Approver          Approver `json:"Approver"`
+	Year              int      `json:"Year,omitempty"`
+	Approver          Approver `json:"Approver,omitempty"`
 }
 
 type Approver struct {
-	Id   int    `json:"Id"`
-	Name string `json:"Name"`
+	Id   int    `json:"Id,omitempty"`
+	Name string `json:"Name,omitempty"`
 }
 
 type GetAllVoucherSeriesResp struct {

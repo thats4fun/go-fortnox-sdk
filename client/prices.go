@@ -42,7 +42,7 @@ func (c *Client) GetPriceForArticle(
 //
 // fromQuantity - identifies from quantity
 //
-// req - price to update
+// p - price to update
 func (c *Client) UpdatePrice(
 	ctx context.Context,
 	priceList, articleNumber string,
@@ -100,9 +100,7 @@ func (c *Client) GetAllArticlesWithPricesInPriceList(
 // priceList - identifies the price list of the prices
 //
 // articleNumber - identifies the article number of the prices
-func (c *Client) GetFirstPriceForArticle(
-	ctx context.Context,
-	priceList, articleNumber string) (*Price, error) {
+func (c *Client) GetFirstPriceForArticle(ctx context.Context, priceList, articleNumber string) (*Price, error) {
 
 	resp := &GetFirstPriceForArticleResp{}
 
@@ -122,7 +120,7 @@ func (c *Client) GetFirstPriceForArticle(
 //
 // articleNumber - identifies the article number of the prices
 //
-// req - price to update
+// p - price to update
 func (c *Client) UpdateFirstPriceForArticle(
 	ctx context.Context,
 	priceList, articleNumber string,
@@ -143,7 +141,7 @@ func (c *Client) UpdateFirstPriceForArticle(
 
 // CreatePrice does _POST https://api.fortnox.se/3/prices/
 //
-// req - price to create
+// p - price to create
 func (c *Client) CreatePrice(ctx context.Context, p *Price) (*Price, error) {
 	req := &CreatePriceReq{Price: *p}
 	resp := &CreatePriceResp{}

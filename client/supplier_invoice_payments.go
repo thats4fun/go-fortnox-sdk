@@ -104,226 +104,64 @@ func (c *Client) BookKeepSupplierInvoicePayment(
 }
 
 type GetAllSupplierInvoicePaymentsResp struct {
-	SupplierInvoicePayments []struct {
-		Url           string `json:"@url"`
-		Amount        int    `json:"Amount"`
-		Booked        bool   `json:"Booked"`
-		Currency      string `json:"Currency"`
-		CurrencyRate  int    `json:"CurrencyRate"`
-		CurrencyUnit  int    `json:"CurrencyUnit"`
-		InvoiceNumber string `json:"InvoiceNumber"`
-		Number        int    `json:"Number"`
-		PaymentDate   string `json:"PaymentDate"`
-		Source        string `json:"Source"`
-	} `json:"SupplierInvoicePayments"`
+	SupplierInvoicePayments []SupplierInvoicePayment `json:"SupplierInvoicePayments"`
 }
 
 type CreateSupplierInvoicePaymentReq struct {
-	SupplierInvoicePayment struct {
-		Url                   string `json:"@url"`
-		Amount                int    `json:"Amount"`
-		AmountCurrency        int    `json:"AmountCurrency"`
-		Booked                bool   `json:"Booked"`
-		Currency              string `json:"Currency"`
-		CurrencyRate          int    `json:"CurrencyRate"`
-		CurrencyUnit          int    `json:"CurrencyUnit"`
-		Information           string `json:"Information"`
-		InvoiceNumber         string `json:"InvoiceNumber"`
-		InvoiceDueDate        string `json:"InvoiceDueDate"`
-		InvoiceOCR            string `json:"InvoiceOCR"`
-		InvoiceSupplierName   string `json:"InvoiceSupplierName"`
-		InvoiceSupplierNumber string `json:"InvoiceSupplierNumber"`
-		InvoiceTotal          string `json:"InvoiceTotal"`
-		ModeOfPayment         string `json:"ModeOfPayment"`
-		Number                int    `json:"Number"`
-		PaymentDate           string `json:"PaymentDate"`
-		Source                string `json:"Source"`
-		VoucherNumber         int    `json:"VoucherNumber"`
-		VoucherSeries         string `json:"VoucherSeries"`
-		VoucherYear           int    `json:"VoucherYear"`
-		WriteOffs             []struct {
-			Amount                 int    `json:"Amount"`
-			AccountNumber          int    `json:"AccountNumber"`
-			CostCenter             string `json:"CostCenter"`
-			Currency               string `json:"Currency"`
-			Description            string `json:"Description"`
-			TransactionInformation string `json:"TransactionInformation"`
-			Project                string `json:"Project"`
-		} `json:"WriteOffs"`
-	} `json:"SupplierInvoicePayment"`
+	SupplierInvoicePayment SupplierInvoicePayment `json:"SupplierInvoicePayment"`
 }
 
 type CreateSupplierInvoicePaymentResp struct {
-	SupplierInvoicePayment struct {
-		Url                   string `json:"@url"`
-		Amount                int    `json:"Amount"`
-		AmountCurrency        int    `json:"AmountCurrency"`
-		Booked                bool   `json:"Booked"`
-		Currency              string `json:"Currency"`
-		CurrencyRate          int    `json:"CurrencyRate"`
-		CurrencyUnit          int    `json:"CurrencyUnit"`
-		Information           string `json:"Information"`
-		InvoiceNumber         string `json:"InvoiceNumber"`
-		InvoiceDueDate        string `json:"InvoiceDueDate"`
-		InvoiceOCR            string `json:"InvoiceOCR"`
-		InvoiceSupplierName   string `json:"InvoiceSupplierName"`
-		InvoiceSupplierNumber string `json:"InvoiceSupplierNumber"`
-		InvoiceTotal          string `json:"InvoiceTotal"`
-		ModeOfPayment         string `json:"ModeOfPayment"`
-		Number                int    `json:"Number"`
-		PaymentDate           string `json:"PaymentDate"`
-		Source                string `json:"Source"`
-		VoucherNumber         int    `json:"VoucherNumber"`
-		VoucherSeries         string `json:"VoucherSeries"`
-		VoucherYear           int    `json:"VoucherYear"`
-		WriteOffs             []struct {
-			Amount                 int    `json:"Amount"`
-			AccountNumber          int    `json:"AccountNumber"`
-			CostCenter             string `json:"CostCenter"`
-			Currency               string `json:"Currency"`
-			Description            string `json:"Description"`
-			TransactionInformation string `json:"TransactionInformation"`
-			Project                string `json:"Project"`
-		} `json:"WriteOffs"`
-	} `json:"SupplierInvoicePayment"`
+	SupplierInvoicePayment SupplierInvoicePayment `json:"SupplierInvoicePayment"`
 }
 
 type GetSupplierInvoicePaymentResp struct {
-	SupplierInvoicePayment struct {
-		Url                   string `json:"@url"`
-		Amount                int    `json:"Amount"`
-		AmountCurrency        int    `json:"AmountCurrency"`
-		Booked                bool   `json:"Booked"`
-		Currency              string `json:"Currency"`
-		CurrencyRate          int    `json:"CurrencyRate"`
-		CurrencyUnit          int    `json:"CurrencyUnit"`
-		Information           string `json:"Information"`
-		InvoiceNumber         string `json:"InvoiceNumber"`
-		InvoiceDueDate        string `json:"InvoiceDueDate"`
-		InvoiceOCR            string `json:"InvoiceOCR"`
-		InvoiceSupplierName   string `json:"InvoiceSupplierName"`
-		InvoiceSupplierNumber string `json:"InvoiceSupplierNumber"`
-		InvoiceTotal          string `json:"InvoiceTotal"`
-		ModeOfPayment         string `json:"ModeOfPayment"`
-		Number                int    `json:"Number"`
-		PaymentDate           string `json:"PaymentDate"`
-		Source                string `json:"Source"`
-		VoucherNumber         int    `json:"VoucherNumber"`
-		VoucherSeries         string `json:"VoucherSeries"`
-		VoucherYear           int    `json:"VoucherYear"`
-		WriteOffs             []struct {
-			Amount                 int    `json:"Amount"`
-			AccountNumber          int    `json:"AccountNumber"`
-			CostCenter             string `json:"CostCenter"`
-			Currency               string `json:"Currency"`
-			Description            string `json:"Description"`
-			TransactionInformation string `json:"TransactionInformation"`
-			Project                string `json:"Project"`
-		} `json:"WriteOffs"`
-	} `json:"SupplierInvoicePayment"`
+	SupplierInvoicePayment SupplierInvoicePayment `json:"SupplierInvoicePayment"`
 }
 
 type UpdateSupplierInvoicePaymentReq struct {
-	SupplierInvoicePayment struct {
-		Url                   string `json:"@url"`
-		Amount                int    `json:"Amount"`
-		AmountCurrency        int    `json:"AmountCurrency"`
-		Booked                bool   `json:"Booked"`
-		Currency              string `json:"Currency"`
-		CurrencyRate          int    `json:"CurrencyRate"`
-		CurrencyUnit          int    `json:"CurrencyUnit"`
-		Information           string `json:"Information"`
-		InvoiceNumber         string `json:"InvoiceNumber"`
-		InvoiceDueDate        string `json:"InvoiceDueDate"`
-		InvoiceOCR            string `json:"InvoiceOCR"`
-		InvoiceSupplierName   string `json:"InvoiceSupplierName"`
-		InvoiceSupplierNumber string `json:"InvoiceSupplierNumber"`
-		InvoiceTotal          string `json:"InvoiceTotal"`
-		ModeOfPayment         string `json:"ModeOfPayment"`
-		Number                int    `json:"Number"`
-		PaymentDate           string `json:"PaymentDate"`
-		Source                string `json:"Source"`
-		VoucherNumber         int    `json:"VoucherNumber"`
-		VoucherSeries         string `json:"VoucherSeries"`
-		VoucherYear           int    `json:"VoucherYear"`
-		WriteOffs             []struct {
-			Amount                 int    `json:"Amount"`
-			AccountNumber          int    `json:"AccountNumber"`
-			CostCenter             string `json:"CostCenter"`
-			Currency               string `json:"Currency"`
-			Description            string `json:"Description"`
-			TransactionInformation string `json:"TransactionInformation"`
-			Project                string `json:"Project"`
-		} `json:"WriteOffs"`
-	} `json:"SupplierInvoicePayment"`
+	SupplierInvoicePayment SupplierInvoicePayment `json:"SupplierInvoicePayment"`
 }
 
 type UpdateSupplierInvoicePaymentResp struct {
-	SupplierInvoicePayment struct {
-		Url                   string `json:"@url"`
-		Amount                int    `json:"Amount"`
-		AmountCurrency        int    `json:"AmountCurrency"`
-		Booked                bool   `json:"Booked"`
-		Currency              string `json:"Currency"`
-		CurrencyRate          int    `json:"CurrencyRate"`
-		CurrencyUnit          int    `json:"CurrencyUnit"`
-		Information           string `json:"Information"`
-		InvoiceNumber         string `json:"InvoiceNumber"`
-		InvoiceDueDate        string `json:"InvoiceDueDate"`
-		InvoiceOCR            string `json:"InvoiceOCR"`
-		InvoiceSupplierName   string `json:"InvoiceSupplierName"`
-		InvoiceSupplierNumber string `json:"InvoiceSupplierNumber"`
-		InvoiceTotal          string `json:"InvoiceTotal"`
-		ModeOfPayment         string `json:"ModeOfPayment"`
-		Number                int    `json:"Number"`
-		PaymentDate           string `json:"PaymentDate"`
-		Source                string `json:"Source"`
-		VoucherNumber         int    `json:"VoucherNumber"`
-		VoucherSeries         string `json:"VoucherSeries"`
-		VoucherYear           int    `json:"VoucherYear"`
-		WriteOffs             []struct {
-			Amount                 int    `json:"Amount"`
-			AccountNumber          int    `json:"AccountNumber"`
-			CostCenter             string `json:"CostCenter"`
-			Currency               string `json:"Currency"`
-			Description            string `json:"Description"`
-			TransactionInformation string `json:"TransactionInformation"`
-			Project                string `json:"Project"`
-		} `json:"WriteOffs"`
-	} `json:"SupplierInvoicePayment"`
+	SupplierInvoicePayment SupplierInvoicePayment `json:"SupplierInvoicePayment"`
 }
 
 type BookKeepSupplierInvoicePaymentResp struct {
-	SupplierInvoicePayment struct {
-		Url                   string `json:"@url"`
-		Amount                int    `json:"Amount"`
-		AmountCurrency        int    `json:"AmountCurrency"`
-		Booked                bool   `json:"Booked"`
-		Currency              string `json:"Currency"`
-		CurrencyRate          int    `json:"CurrencyRate"`
-		CurrencyUnit          int    `json:"CurrencyUnit"`
-		Information           string `json:"Information"`
-		InvoiceNumber         string `json:"InvoiceNumber"`
-		InvoiceDueDate        string `json:"InvoiceDueDate"`
-		InvoiceOCR            string `json:"InvoiceOCR"`
-		InvoiceSupplierName   string `json:"InvoiceSupplierName"`
-		InvoiceSupplierNumber string `json:"InvoiceSupplierNumber"`
-		InvoiceTotal          string `json:"InvoiceTotal"`
-		ModeOfPayment         string `json:"ModeOfPayment"`
-		Number                int    `json:"Number"`
-		PaymentDate           string `json:"PaymentDate"`
-		Source                string `json:"Source"`
-		VoucherNumber         int    `json:"VoucherNumber"`
-		VoucherSeries         string `json:"VoucherSeries"`
-		VoucherYear           int    `json:"VoucherYear"`
-		WriteOffs             []struct {
-			Amount                 int    `json:"Amount"`
-			AccountNumber          int    `json:"AccountNumber"`
-			CostCenter             string `json:"CostCenter"`
-			Currency               string `json:"Currency"`
-			Description            string `json:"Description"`
-			TransactionInformation string `json:"TransactionInformation"`
-			Project                string `json:"Project"`
-		} `json:"WriteOffs"`
-	} `json:"SupplierInvoicePayment"`
+	SupplierInvoicePayment SupplierInvoicePayment `json:"SupplierInvoicePayment"`
+}
+
+type SupplierInvoicePayment struct {
+	Url                   string     `json:"@url,omitempty"`
+	Amount                int        `json:"Amount,omitempty"`
+	AmountCurrency        int        `json:"AmountCurrency,omitempty"`
+	Booked                bool       `json:"Booked,omitempty"`
+	Currency              string     `json:"Currency,omitempty"`
+	CurrencyRate          int        `json:"CurrencyRate,omitempty"`
+	CurrencyUnit          int        `json:"CurrencyUnit,omitempty"`
+	Information           string     `json:"Information,omitempty"`
+	InvoiceNumber         string     `json:"InvoiceNumber,omitempty"`
+	InvoiceDueDate        string     `json:"InvoiceDueDate,omitempty"`
+	InvoiceOCR            string     `json:"InvoiceOCR,omitempty"`
+	InvoiceSupplierName   string     `json:"InvoiceSupplierName,omitempty"`
+	InvoiceSupplierNumber string     `json:"InvoiceSupplierNumber,omitempty"`
+	InvoiceTotal          string     `json:"InvoiceTotal,omitempty"`
+	ModeOfPayment         string     `json:"ModeOfPayment,omitempty"`
+	Number                int        `json:"Number,omitempty"`
+	PaymentDate           string     `json:"PaymentDate,omitempty"`
+	Source                string     `json:"Source,omitempty"`
+	VoucherNumber         int        `json:"VoucherNumber,omitempty"`
+	VoucherSeries         string     `json:"VoucherSeries,omitempty"`
+	VoucherYear           int        `json:"VoucherYear,omitempty"`
+	WriteOffs             []WriteOff `json:"WriteOffs,omitempty"`
+}
+
+type WriteOff struct {
+	Amount                 int    `json:"Amount,omitempty"`
+	AccountNumber          int    `json:"AccountNumber,omitempty"`
+	CostCenter             string `json:"CostCenter,omitempty"`
+	Currency               string `json:"Currency,omitempty"`
+	Description            string `json:"Description,omitempty"`
+	TransactionInformation string `json:"TransactionInformation,omitempty"`
+	Project                string `json:"Project,omitempty"`
 }

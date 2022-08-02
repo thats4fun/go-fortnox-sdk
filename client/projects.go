@@ -29,9 +29,9 @@ func (c *Client) GetProject(ctx context.Context, projectNumber int) (*Project, e
 //
 // projectNumber - identifies the project
 //
-// project - project to update
-func (c *Client) UpdateProject(ctx context.Context, projectNumber int, project *Project) (*Project, error) {
-	req := &UpdateProjectReq{Project: *project}
+// p - project to update
+func (c *Client) UpdateProject(ctx context.Context, projectNumber int, p *Project) (*Project, error) {
+	req := &UpdateProjectReq{Project: *p}
 	resp := &UpdateProjectResp{}
 
 	uri := fmt.Sprintf("%s/%d", projectsURI, projectNumber)
@@ -67,8 +67,8 @@ func (c *Client) GetAllProjects(ctx context.Context) ([]Project, error) {
 // CreateProject does POST https://api.fortnox.se/3/projects/
 //
 // project - project to create
-func (c *Client) CreateProject(ctx context.Context, project *Project) (*Project, error) {
-	req := &CreateProjectReq{Project: *project}
+func (c *Client) CreateProject(ctx context.Context, p *Project) (*Project, error) {
+	req := &CreateProjectReq{Project: *p}
 	resp := &CreateProjectResp{}
 
 	err := c._POST(ctx, projectsURI, nil, req, resp)

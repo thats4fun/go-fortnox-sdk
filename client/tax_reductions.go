@@ -18,10 +18,7 @@ const (
 // GetAllTaxReductions does _GET https://api.fortnox.se/3/taxreductions
 //
 // Enum: {"invoices" "orders" "offers"}, possibility to filter tax reductions
-func (c Client) GetAllTaxReductions(
-	ctx context.Context,
-	filter *GetAllTaxReductionsFilter) ([]TaxReduction, error) {
-
+func (c Client) GetAllTaxReductions(ctx context.Context, filter *GetAllTaxReductionsFilter) ([]TaxReduction, error) {
 	resp := &GetAllTaxReductionsResp{}
 
 	params := filter.urlValues()
@@ -70,11 +67,7 @@ func (c *Client) GetTaxReduction(ctx context.Context, id int) (*TaxReduction, er
 // id - identifies the tax reduction
 //
 // req - tax reduction to update
-func (c *Client) UpdateTaxReduction(
-	ctx context.Context,
-	id int,
-	tr *TaxReduction) (*TaxReduction, error) {
-
+func (c *Client) UpdateTaxReduction(ctx context.Context, id int, tr *TaxReduction) (*TaxReduction, error) {
 	req := &UpdateTaxReductionReq{TaxReduction: *tr}
 	resp := &UpdateTaxReductionResp{}
 
@@ -121,18 +114,18 @@ func (f *GetAllTaxReductionsFilter) urlValues() url.Values {
 }
 
 type TaxReduction struct {
-	Url                                    string               `json:"@url"`
-	ApprovedAmount                         int                  `json:"ApprovedAmount"`
+	Url                                    string               `json:"@url,omitempty"`
+	ApprovedAmount                         int                  `json:"ApprovedAmount,omitempty"`
 	AskedAmount                            int                  `json:"AskedAmount,omitempty"`
 	BilledAmount                           int                  `json:"BilledAmount,omitempty"`
-	CustomerName                           string               `json:"CustomerName"`
-	Id                                     int                  `json:"Id"`
+	CustomerName                           string               `json:"CustomerName,omitempty"`
+	Id                                     int                  `json:"Id,omitempty"`
 	PropertyDesignation                    string               `json:"PropertyDesignation,omitempty"`
-	ReferenceDocumentType                  string               `json:"ReferenceDocumentType"`
-	ReferenceNumber                        string               `json:"ReferenceNumber"`
+	ReferenceDocumentType                  string               `json:"ReferenceDocumentType,omitempty"`
+	ReferenceNumber                        string               `json:"ReferenceNumber,omitempty"`
 	RequestSent                            bool                 `json:"RequestSent,omitempty"`
 	ResidenceAssociationOrganisationNumber string               `json:"ResidenceAssociationOrganisationNumber,omitempty"`
-	SocialSecurityNumber                   string               `json:"SocialSecurityNumber"`
+	SocialSecurityNumber                   string               `json:"SocialSecurityNumber,omitempty"`
 	TypeOfReduction                        string               `json:"TypeOfReduction,omitempty"`
 	VoucherNumber                          int                  `json:"VoucherNumber,omitempty"`
 	VoucherSeries                          string               `json:"VoucherSeries,omitempty"`
@@ -141,8 +134,8 @@ type TaxReduction struct {
 }
 
 type TaxReductionAmount struct {
-	AskedAmount int    `json:"askedAmount"`
-	WorkType    string `json:"workType"`
+	AskedAmount int    `json:"askedAmount,omitempty"`
+	WorkType    string `json:"workType,omitempty"`
 }
 
 type GetAllTaxReductionsResp struct {

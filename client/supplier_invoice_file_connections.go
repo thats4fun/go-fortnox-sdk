@@ -10,9 +10,7 @@ const (
 )
 
 // GetAllSupplierInvoiceFileConnections does _GET https://api.fortnox.se/3/supplierinvoicefileconnections/
-func (c *Client) GetAllSupplierInvoiceFileConnections(
-	ctx context.Context) ([]SupplierInvoiceFileConnection, error) {
-
+func (c *Client) GetAllSupplierInvoiceFileConnections(ctx context.Context) ([]SupplierInvoiceFileConnection, error) {
 	resp := &GetAllSupplierInvoiceFileConnectionsResp{}
 
 	err := c._GET(ctx, supplierInvoiceFileConnectionsURI, nil, resp)
@@ -25,7 +23,7 @@ func (c *Client) GetAllSupplierInvoiceFileConnections(
 
 // CreateSupplierInvoiceFileConnection does _POST https://api.fortnox.se/3/supplierinvoicefileconnections/
 //
-// req - supplier invoice file connection to create
+// sifc - supplier invoice file connection to create
 func (c *Client) CreateSupplierInvoiceFileConnection(
 	ctx context.Context,
 	sifc *SupplierInvoiceFileConnection) (*SupplierInvoiceFileConnection, error) {
@@ -69,11 +67,11 @@ func (c *Client) RemoveSupplierInvoiceFileConnections(ctx context.Context, field
 }
 
 type SupplierInvoiceFileConnection struct {
-	Url                   string `json:"@url"`
-	FileId                string `json:"FileId"`
-	Name                  string `json:"Name"`
-	SupplierInvoiceNumber string `json:"SupplierInvoiceNumber"`
-	SupplierName          string `json:"SupplierName"`
+	Url                   string `json:"@url,omitempty"`
+	FileId                string `json:"FileId,omitempty"`
+	Name                  string `json:"Name,omitempty"`
+	SupplierInvoiceNumber string `json:"SupplierInvoiceNumber,omitempty"`
+	SupplierName          string `json:"SupplierName,omitempty"`
 }
 
 type GetAllSupplierInvoiceFileConnectionsResp struct {

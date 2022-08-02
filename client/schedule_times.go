@@ -33,7 +33,7 @@ func (c *Client) GetScheduleTime(ctx context.Context, employeeID, date string) (
 //
 // date - identifies the date
 //
-// req - schedule time to update
+// st - schedule time to update
 func (c *Client) UpdateScheduleTime(
 	ctx context.Context,
 	employeeID, date string,

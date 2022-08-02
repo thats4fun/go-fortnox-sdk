@@ -24,10 +24,7 @@ func (c *Client) GetAllTermsOfDeliveries(ctx context.Context) ([]TermsOfDelivery
 // CreateTermsOfDeliveries does _POST https://api.fortnox.se/3/termsofdeliveries
 //
 // req - terms of delivery to create
-func (c *Client) CreateTermsOfDeliveries(
-	ctx context.Context,
-	tod *TermsOfDelivery) (*TermsOfDelivery, error) {
-
+func (c *Client) CreateTermsOfDeliveries(ctx context.Context, tod *TermsOfDelivery) (*TermsOfDelivery, error) {
 	req := &CreateTermsOfDeliveriesReq{TermsOfDelivery: *tod}
 	resp := &CreateTermsOfDeliveriesResp{}
 
@@ -79,10 +76,10 @@ func (c *Client) UpdateTermOfDelivery(
 }
 
 type TermsOfDelivery struct {
-	Url                string `json:"@url"`
-	Code               string `json:"Code"`
-	Description        string `json:"Description"`
-	DescriptionEnglish string `json:"DescriptionEnglish"`
+	Url                string `json:"@url,omitempty"`
+	Code               string `json:"Code,omitempty"`
+	Description        string `json:"Description,omitempty"`
+	DescriptionEnglish string `json:"DescriptionEnglish,omitempty"`
 }
 
 type GetAllTermsOfDeliveriesResp struct {

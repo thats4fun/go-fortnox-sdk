@@ -21,7 +21,7 @@ func (c *Client) GetLockedPeriod(ctx context.Context) (*LockedPeriod, error) {
 }
 
 type LockedPeriod struct {
-	EndDate string `json:"EndDate"`
+	EndDate string `json:"EndDate,omitempty"`
 }
 
 type GetLockedPeriodResp struct {

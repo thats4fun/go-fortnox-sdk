@@ -19,7 +19,7 @@ const (
 func (c *Client) GetVoucher(
 	ctx context.Context,
 	voucherSeries, voucherNumber string,
-	filter *FinancialYearFilter) (*GetVoucherResp, error) {
+	filter *FinancialYearFilter) (*Voucher, error) {
 
 	resp := &GetVoucherResp{}
 
@@ -32,13 +32,13 @@ func (c *Client) GetVoucher(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Voucher, nil
 }
 
 // GetAllVouchers does _GET https://api.fortnox.se/3/vouchers/
 //
 // filter - filter on financial year
-func (c *Client) GetAllVouchers(ctx context.Context, filter *FinancialYearFilter) (*GetAllVouchersResp, error) {
+func (c *Client) GetAllVouchers(ctx context.Context, filter *FinancialYearFilter) ([]Voucher, error) {
 	resp := &GetAllVouchersResp{}
 
 	params := filter.urlValues()
@@ -48,7 +48,7 @@ func (c *Client) GetAllVouchers(ctx context.Context, filter *FinancialYearFilter
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.Vouchers, nil
 }
 
 // CreateVoucher does _POST https://api.fortnox.se/3/vouchers/
@@ -59,8 +59,9 @@ func (c *Client) GetAllVouchers(ctx context.Context, filter *FinancialYearFilter
 func (c *Client) CreateVoucher(
 	ctx context.Context,
 	filter FinancialYearFilter,
-	req *CreateVoucherReq) (*CreateVoucherResp, error) {
+	v *Voucher) (*Voucher, error) {
 
+	req := &CreateVoucherReq{Voucher: *v}
 	resp := &CreateVoucherResp{}
 
 	params := filter.urlValues()
@@ -70,7 +71,7 @@ func (c *Client) CreateVoucher(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Voucher, nil
 }
 
 // GetVouchersBySeries does _GET https://api.fortnox.se/3/vouchers/sublist/{VoucherSeries}
@@ -81,7 +82,7 @@ func (c *Client) CreateVoucher(
 func (c *Client) GetVouchersBySeries(
 	ctx context.Context,
 	voucherSeries string,
-	filter FinancialYearFilter) (*GetVouchersBySeriesResp, error) {
+	filter FinancialYearFilter) ([]Voucher, error) {
 
 	resp := &GetVouchersBySeriesResp{}
 
@@ -94,7 +95,7 @@ func (c *Client) GetVouchersBySeries(
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.Vouchers, nil
 }
 
 type GetVoucherResp struct {

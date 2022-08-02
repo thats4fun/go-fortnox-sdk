@@ -76,11 +76,11 @@ func (c *Client) UpdatePriceList(
 }
 
 type PriceList struct {
-	Url         string `json:"@url"`
-	Code        string `json:"Code"`
-	Description string `json:"Description"`
-	Comments    string `json:"Comments"`
-	PreSelected bool   `json:"PreSelected"`
+	Url         string `json:"@url,omitempty"`
+	Code        string `json:"Code,omitempty"`
+	Description string `json:"Description,omitempty"`
+	Comments    string `json:"Comments,omitempty"`
+	PreSelected bool   `json:"PreSelected,omitempty"`
 }
 
 type GetAllPriceListsResp struct {

@@ -76,10 +76,10 @@ func (c *Client) CreateSupplierInvoiceExternalUrlConnection(
 }
 
 type SupplierInvoiceExternalURLConnection struct {
-	Url                   string `json:"Url"`
-	Id                    int    `json:"Id"`
-	SupplierInvoiceNumber int    `json:"SupplierInvoiceNumber"`
-	ExternalUrlConnection string `json:"ExternalUrlConnection"`
+	Url                   string `json:"Url,omitempty"`
+	Id                    int    `json:"Id,omitempty"`
+	SupplierInvoiceNumber int    `json:"SupplierInvoiceNumber,omitempty"`
+	ExternalUrlConnection string `json:"ExternalUrlConnection,omitempty"`
 }
 
 type GetSupplierInvoiceExternalUrlConnectionResp struct {
@@ -87,8 +87,8 @@ type GetSupplierInvoiceExternalUrlConnectionResp struct {
 }
 
 type UpdateSupplierInvoiceExternalUrlConnectionReq struct {
-	SupplierInvoiceNumber int    `json:"SupplierInvoiceNumber"`
-	ExternalURLConnection string `json:"ExternalURLConnection"`
+	SupplierInvoiceNumber int    `json:"SupplierInvoiceNumber,omitempty"`
+	ExternalURLConnection string `json:"ExternalURLConnection,omitempty"`
 }
 
 type UpdateSupplierInvoiceExternalUrlConnectionResp struct {
@@ -96,8 +96,8 @@ type UpdateSupplierInvoiceExternalUrlConnectionResp struct {
 }
 
 type CreateSupplierInvoiceExternalUrlConnectionReq struct {
-	SupplierInvoiceNumber int    `json:"SupplierInvoiceNumber"`
-	ExternalURLConnection string `json:"ExternalURLConnection"`
+	SupplierInvoiceNumber int    `json:"SupplierInvoiceNumber,omitempty"`
+	ExternalURLConnection string `json:"ExternalURLConnection,omitempty"`
 }
 
 type CreateSupplierInvoiceExternalUrlConnectionResp struct {
