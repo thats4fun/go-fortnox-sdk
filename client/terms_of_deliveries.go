@@ -10,7 +10,7 @@ const (
 )
 
 // GetAllTermsOfDeliveries does _GET https://api.fortnox.se/3/termsofdeliveries
-func (c *Client) GetAllTermsOfDeliveries(ctx context.Context) (*GetAllTermsOfDeliveriesResp, error) {
+func (c *Client) GetAllTermsOfDeliveries(ctx context.Context) ([]TermsOfDelivery, error) {
 	resp := &GetAllTermsOfDeliveriesResp{}
 
 	err := c._GET(ctx, termsOfDeliveriesURI, nil, resp)
@@ -18,7 +18,7 @@ func (c *Client) GetAllTermsOfDeliveries(ctx context.Context) (*GetAllTermsOfDel
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.TermsOfDeliveries, nil
 }
 
 // CreateTermsOfDeliveries does _POST https://api.fortnox.se/3/termsofdeliveries
@@ -26,8 +26,9 @@ func (c *Client) GetAllTermsOfDeliveries(ctx context.Context) (*GetAllTermsOfDel
 // req - terms of delivery to create
 func (c *Client) CreateTermsOfDeliveries(
 	ctx context.Context,
-	req *CreateTermsOfDeliveriesReq) (*CreateTermsOfDeliveriesResp, error) {
+	tod *TermsOfDelivery) (*TermsOfDelivery, error) {
 
+	req := &CreateTermsOfDeliveriesReq{TermsOfDelivery: *tod}
 	resp := &CreateTermsOfDeliveriesResp{}
 
 	err := c._POST(ctx, termsOfDeliveriesURI, nil, req, resp)
@@ -35,13 +36,13 @@ func (c *Client) CreateTermsOfDeliveries(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.TermsOfDelivery, nil
 }
 
 // GetTermOfDelivery does _GET https://api.fortnox.se/3/termsofdeliveries/{Code}
 //
 // code - identifies the terms of delivery
-func (c *Client) GetTermOfDelivery(ctx context.Context, code string) (*GetTermOfDeliveryResp, error) {
+func (c *Client) GetTermOfDelivery(ctx context.Context, code string) (*TermsOfDelivery, error) {
 	resp := &GetTermOfDeliveryResp{}
 
 	uri := fmt.Sprintf("%s/%s", termsOfDeliveriesURI, code)
@@ -51,7 +52,7 @@ func (c *Client) GetTermOfDelivery(ctx context.Context, code string) (*GetTermOf
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.TermsOfDelivery, nil
 }
 
 // UpdateTermOfDelivery does _PUT https://api.fortnox.se/3/termsofdeliveries/{Code}
@@ -61,8 +62,10 @@ func (c *Client) GetTermOfDelivery(ctx context.Context, code string) (*GetTermOf
 // req - terms of delivery to update
 func (c *Client) UpdateTermOfDelivery(
 	ctx context.Context,
-	code string, req *UpdateTermOfDeliveryReq) (*UpdateTermOfDeliveryResp, error) {
+	code string,
+	tod *TermsOfDelivery) (*TermsOfDelivery, error) {
 
+	req := &UpdateTermOfDeliveryReq{TermsOfDelivery: *tod}
 	resp := &UpdateTermOfDeliveryResp{}
 
 	uri := fmt.Sprintf("%s/%s", termsOfDeliveriesURI, code)
@@ -72,59 +75,36 @@ func (c *Client) UpdateTermOfDelivery(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.TermsOfDelivery, nil
+}
+
+type TermsOfDelivery struct {
+	Url                string `json:"@url"`
+	Code               string `json:"Code"`
+	Description        string `json:"Description"`
+	DescriptionEnglish string `json:"DescriptionEnglish"`
 }
 
 type GetAllTermsOfDeliveriesResp struct {
-	TermsOfDeliveries []struct {
-		Url                string `json:"@url"`
-		Code               string `json:"Code"`
-		Description        string `json:"Description"`
-		DescriptionEnglish string `json:"DescriptionEnglish"`
-	} `json:"TermsOfDeliveries"`
+	TermsOfDeliveries []TermsOfDelivery `json:"TermsOfDeliveries"`
 }
 
 type CreateTermsOfDeliveriesReq struct {
-	TermsOfDelivery struct {
-		Url                string `json:"@url"`
-		Code               string `json:"Code"`
-		Description        string `json:"Description"`
-		DescriptionEnglish string `json:"DescriptionEnglish"`
-	} `json:"TermsOfDelivery"`
+	TermsOfDelivery TermsOfDelivery `json:"TermsOfDelivery"`
 }
 
 type CreateTermsOfDeliveriesResp struct {
-	TermsOfDelivery struct {
-		Url                string `json:"@url"`
-		Code               string `json:"Code"`
-		Description        string `json:"Description"`
-		DescriptionEnglish string `json:"DescriptionEnglish"`
-	} `json:"TermsOfDelivery"`
+	TermsOfDelivery TermsOfDelivery `json:"TermsOfDelivery"`
 }
 
 type GetTermOfDeliveryResp struct {
-	TermsOfDelivery struct {
-		Url                string `json:"@url"`
-		Code               string `json:"Code"`
-		Description        string `json:"Description"`
-		DescriptionEnglish string `json:"DescriptionEnglish"`
-	} `json:"TermsOfDelivery"`
+	TermsOfDelivery TermsOfDelivery `json:"TermsOfDelivery"`
 }
 
 type UpdateTermOfDeliveryReq struct {
-	TermsOfDelivery struct {
-		Url                string `json:"@url"`
-		Code               string `json:"Code"`
-		Description        string `json:"Description"`
-		DescriptionEnglish string `json:"DescriptionEnglish"`
-	} `json:"TermsOfDelivery"`
+	TermsOfDelivery TermsOfDelivery `json:"TermsOfDelivery"`
 }
 
 type UpdateTermOfDeliveryResp struct {
-	TermsOfDelivery struct {
-		Url                string `json:"@url"`
-		Code               string `json:"Code"`
-		Description        string `json:"Description"`
-		DescriptionEnglish string `json:"DescriptionEnglish"`
-	} `json:"TermsOfDelivery"`
+	TermsOfDelivery TermsOfDelivery `json:"TermsOfDelivery"`
 }

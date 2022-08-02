@@ -10,7 +10,7 @@ const (
 )
 
 // GetAllPredefinedVoucherSeries does _GET https://api.fortnox.se/3/predefinedvoucherseries/
-func (c *Client) GetAllPredefinedVoucherSeries(ctx context.Context) (*GetAllPredefinedVoucherSeriesResp, error) {
+func (c *Client) GetAllPredefinedVoucherSeries(ctx context.Context) ([]PreDefinedVoucherSeries, error) {
 	resp := &GetAllPredefinedVoucherSeriesResp{}
 
 	err := c._GET(ctx, predefinedVoucherSeriesURI, nil, resp)
@@ -18,13 +18,13 @@ func (c *Client) GetAllPredefinedVoucherSeries(ctx context.Context) (*GetAllPred
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.PreDefinedVoucherSeriesCollection, nil
 }
 
 // GetPredefinedVoucherSeries does _GET https://api.fortnox.se/3/predefinedvoucherseries/{Name}
 //
 // name - identifies the predefined voucher series
-func (c *Client) GetPredefinedVoucherSeries(ctx context.Context, name string) (*GetPredefinedVoucherSeriesResp, error) {
+func (c *Client) GetPredefinedVoucherSeries(ctx context.Context, name string) (*PreDefinedVoucherSeries, error) {
 	resp := &GetPredefinedVoucherSeriesResp{}
 
 	uri := fmt.Sprintf("%s/%s", predefinedVoucherSeriesURI, name)
@@ -34,7 +34,7 @@ func (c *Client) GetPredefinedVoucherSeries(ctx context.Context, name string) (*
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.PreDefinedVoucherSeries, nil
 }
 
 // UpdatePredefinedVoucherSeries does _PUT https://api.fortnox.se/3/predefinedvoucherseries/{Name}
@@ -45,8 +45,9 @@ func (c *Client) GetPredefinedVoucherSeries(ctx context.Context, name string) (*
 func (c *Client) UpdatePredefinedVoucherSeries(
 	ctx context.Context,
 	name string,
-	req *UpdatePredefinedVoucherSeriesReq) (*UpdatePredefinedVoucherSeriesResp, error) {
+	pdvs *PreDefinedVoucherSeries) (*PreDefinedVoucherSeries, error) {
 
+	req := &UpdatePredefinedVoucherSeriesReq{PreDefinedVoucherSeries: *pdvs}
 	resp := &UpdatePredefinedVoucherSeriesResp{}
 
 	uri := fmt.Sprintf("%s/%s", predefinedVoucherSeriesURI, name)
@@ -56,37 +57,27 @@ func (c *Client) UpdatePredefinedVoucherSeries(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.PreDefinedVoucherSeries, nil
+}
+
+type PreDefinedVoucherSeries struct {
+	Url           string `json:"@url"`
+	Name          string `json:"Name"`
+	VoucherSeries string `json:"VoucherSeries"`
 }
 
 type GetAllPredefinedVoucherSeriesResp struct {
-	PreDefinedVoucherSeriesCollection []struct {
-		Url           string `json:"@url"`
-		Name          string `json:"Name"`
-		VoucherSeries string `json:"VoucherSeries"`
-	} `json:"PreDefinedVoucherSeriesCollection"`
+	PreDefinedVoucherSeriesCollection []PreDefinedVoucherSeries `json:"PreDefinedVoucherSeriesCollection"`
 }
 
 type GetPredefinedVoucherSeriesResp struct {
-	PreDefinedVoucherSeries struct {
-		Url           string `json:"@url"`
-		Name          string `json:"Name"`
-		VoucherSeries string `json:"VoucherSeries"`
-	} `json:"PreDefinedVoucherSeries"`
+	PreDefinedVoucherSeries PreDefinedVoucherSeries `json:"PreDefinedVoucherSeries"`
 }
 
 type UpdatePredefinedVoucherSeriesReq struct {
-	PreDefinedVoucherSeries struct {
-		Url           string `json:"@url"`
-		Name          string `json:"Name"`
-		VoucherSeries string `json:"VoucherSeries"`
-	} `json:"PreDefinedVoucherSeries"`
+	PreDefinedVoucherSeries PreDefinedVoucherSeries `json:"PreDefinedVoucherSeries"`
 }
 
 type UpdatePredefinedVoucherSeriesResp struct {
-	PreDefinedVoucherSeries struct {
-		Url           string `json:"@url"`
-		Name          string `json:"Name"`
-		VoucherSeries string `json:"VoucherSeries"`
-	} `json:"PreDefinedVoucherSeries"`
+	PreDefinedVoucherSeries PreDefinedVoucherSeries `json:"PreDefinedVoucherSeries"`
 }

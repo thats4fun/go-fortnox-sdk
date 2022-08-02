@@ -210,3 +210,15 @@ type GetVouchersBySeriesResp struct {
 		ApprovalState   int    `json:"ApprovalState"`
 	} `json:"Vouchers"`
 }
+
+type VoucherRow struct {
+	Account                int    `json:"Account"`
+	CostCenter             string `json:"CostCenter"`
+	Credit                 int    `json:"Credit"`
+	Description            string `json:"Description"`
+	Debit                  int    `json:"Debit"`
+	Project                string `json:"Project"`
+	Removed                bool   `json:"Removed"`
+	TransactionInformation string `json:"TransactionInformation"`
+	Quantity               int    `json:"Quantity"`
+}

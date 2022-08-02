@@ -20,7 +20,7 @@ const (
 // Enum: {"invoices" "orders" "offers"}, possibility to filter tax reductions
 func (c Client) GetAllTaxReductions(
 	ctx context.Context,
-	filter *GetAllTaxReductionsFilter) (*GetAllTaxReductionsResp, error) {
+	filter *GetAllTaxReductionsFilter) ([]TaxReduction, error) {
 
 	resp := &GetAllTaxReductionsResp{}
 
@@ -31,13 +31,14 @@ func (c Client) GetAllTaxReductions(
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.TaxReductions, nil
 }
 
 // CreateTaxReduction does _POST https://api.fortnox.se/3/taxreductions
 //
 // req - tax reduction to create
-func (c *Client) CreateTaxReduction(ctx context.Context, req *CreateTaxReductionReq) (*CreateTaxReductionResp, error) {
+func (c *Client) CreateTaxReduction(ctx context.Context, tr *TaxReduction) (*TaxReduction, error) {
+	req := &CreateTaxReductionReq{TaxReduction: *tr}
 	resp := &CreateTaxReductionResp{}
 
 	err := c._POST(ctx, taxReductionsURI, nil, req, resp)
@@ -45,13 +46,13 @@ func (c *Client) CreateTaxReduction(ctx context.Context, req *CreateTaxReduction
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.TaxReduction, nil
 }
 
 // GetTaxReduction does _GET https://api.fortnox.se/3/taxreductions/{Id}
 //
 // id - identifies the tax reduction
-func (c *Client) GetTaxReduction(ctx context.Context, id int) (*GetTaxReductionResp, error) {
+func (c *Client) GetTaxReduction(ctx context.Context, id int) (*TaxReduction, error) {
 	resp := &GetTaxReductionResp{}
 
 	uri := fmt.Sprintf("%s/%d", taxReductionsURI, id)
@@ -61,7 +62,7 @@ func (c *Client) GetTaxReduction(ctx context.Context, id int) (*GetTaxReductionR
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.TaxReduction, nil
 }
 
 // UpdateTaxReduction does _PUT https://api.fortnox.se/3/taxreductions/{Id}
@@ -72,8 +73,9 @@ func (c *Client) GetTaxReduction(ctx context.Context, id int) (*GetTaxReductionR
 func (c *Client) UpdateTaxReduction(
 	ctx context.Context,
 	id int,
-	req *UpdateTaxReductionReq) (*UpdateTaxReductionResp, error) {
+	tr *TaxReduction) (*TaxReduction, error) {
 
+	req := &UpdateTaxReductionReq{TaxReduction: *tr}
 	resp := &UpdateTaxReductionResp{}
 
 	uri := fmt.Sprintf("%s/%d", taxReductionsURI, id)
@@ -83,7 +85,7 @@ func (c *Client) UpdateTaxReduction(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.TaxReduction, nil
 }
 
 // RemoveTaxReduction does _DELETE https://api.fortnox.se/3/taxreductions/{Id}
@@ -118,139 +120,51 @@ func (f *GetAllTaxReductionsFilter) urlValues() url.Values {
 	return params
 }
 
+type TaxReduction struct {
+	Url                                    string               `json:"@url"`
+	ApprovedAmount                         int                  `json:"ApprovedAmount"`
+	AskedAmount                            int                  `json:"AskedAmount,omitempty"`
+	BilledAmount                           int                  `json:"BilledAmount,omitempty"`
+	CustomerName                           string               `json:"CustomerName"`
+	Id                                     int                  `json:"Id"`
+	PropertyDesignation                    string               `json:"PropertyDesignation,omitempty"`
+	ReferenceDocumentType                  string               `json:"ReferenceDocumentType"`
+	ReferenceNumber                        string               `json:"ReferenceNumber"`
+	RequestSent                            bool                 `json:"RequestSent,omitempty"`
+	ResidenceAssociationOrganisationNumber string               `json:"ResidenceAssociationOrganisationNumber,omitempty"`
+	SocialSecurityNumber                   string               `json:"SocialSecurityNumber"`
+	TypeOfReduction                        string               `json:"TypeOfReduction,omitempty"`
+	VoucherNumber                          int                  `json:"VoucherNumber,omitempty"`
+	VoucherSeries                          string               `json:"VoucherSeries,omitempty"`
+	VoucherYear                            int                  `json:"VoucherYear,omitempty"`
+	TaxReductionAmounts                    []TaxReductionAmount `json:"TaxReductionAmounts,omitempty"`
+}
+
+type TaxReductionAmount struct {
+	AskedAmount int    `json:"askedAmount"`
+	WorkType    string `json:"workType"`
+}
+
 type GetAllTaxReductionsResp struct {
-	TaxReductions []struct {
-		Url                   string `json:"@url"`
-		ApprovedAmount        int    `json:"ApprovedAmount"`
-		CustomerName          string `json:"CustomerName"`
-		Id                    int    `json:"Id"`
-		ReferenceDocumentType string `json:"ReferenceDocumentType"`
-		ReferenceNumber       int    `json:"ReferenceNumber"`
-		SocialSecurityNumber  string `json:"SocialSecurityNumber"`
-	} `json:"TaxReductions"`
+	TaxReductions []TaxReduction `json:"TaxReductions"`
 }
 
 type CreateTaxReductionReq struct {
-	TaxReduction struct {
-		Url                                    string `json:"@url"`
-		ApprovedAmount                         int    `json:"ApprovedAmount"`
-		AskedAmount                            int    `json:"AskedAmount"`
-		BilledAmount                           int    `json:"BilledAmount"`
-		CustomerName                           string `json:"CustomerName"`
-		Id                                     int    `json:"Id"`
-		PropertyDesignation                    string `json:"PropertyDesignation"`
-		ReferenceDocumentType                  string `json:"ReferenceDocumentType"`
-		ReferenceNumber                        string `json:"ReferenceNumber"`
-		RequestSent                            bool   `json:"RequestSent"`
-		ResidenceAssociationOrganisationNumber string `json:"ResidenceAssociationOrganisationNumber"`
-		SocialSecurityNumber                   string `json:"SocialSecurityNumber"`
-		TypeOfReduction                        string `json:"TypeOfReduction"`
-		VoucherNumber                          int    `json:"VoucherNumber"`
-		VoucherSeries                          string `json:"VoucherSeries"`
-		VoucherYear                            int    `json:"VoucherYear"`
-		TaxReductionAmounts                    []struct {
-			AskedAmount int    `json:"askedAmount"`
-			WorkType    string `json:"workType"`
-		} `json:"TaxReductionAmounts"`
-	} `json:"TaxReduction"`
+	TaxReduction TaxReduction `json:"TaxReduction"`
 }
 
 type CreateTaxReductionResp struct {
-	TaxReduction struct {
-		Url                                    string `json:"@url"`
-		ApprovedAmount                         int    `json:"ApprovedAmount"`
-		AskedAmount                            int    `json:"AskedAmount"`
-		BilledAmount                           int    `json:"BilledAmount"`
-		CustomerName                           string `json:"CustomerName"`
-		Id                                     int    `json:"Id"`
-		PropertyDesignation                    string `json:"PropertyDesignation"`
-		ReferenceDocumentType                  string `json:"ReferenceDocumentType"`
-		ReferenceNumber                        string `json:"ReferenceNumber"`
-		RequestSent                            bool   `json:"RequestSent"`
-		ResidenceAssociationOrganisationNumber string `json:"ResidenceAssociationOrganisationNumber"`
-		SocialSecurityNumber                   string `json:"SocialSecurityNumber"`
-		TypeOfReduction                        string `json:"TypeOfReduction"`
-		VoucherNumber                          int    `json:"VoucherNumber"`
-		VoucherSeries                          string `json:"VoucherSeries"`
-		VoucherYear                            int    `json:"VoucherYear"`
-		TaxReductionAmounts                    []struct {
-			AskedAmount int    `json:"askedAmount"`
-			WorkType    string `json:"workType"`
-		} `json:"TaxReductionAmounts"`
-	} `json:"TaxReduction"`
+	TaxReduction TaxReduction `json:"TaxReduction"`
 }
 
 type GetTaxReductionResp struct {
-	TaxReduction struct {
-		Url                                    string `json:"@url"`
-		ApprovedAmount                         int    `json:"ApprovedAmount"`
-		AskedAmount                            int    `json:"AskedAmount"`
-		BilledAmount                           int    `json:"BilledAmount"`
-		CustomerName                           string `json:"CustomerName"`
-		Id                                     int    `json:"Id"`
-		PropertyDesignation                    string `json:"PropertyDesignation"`
-		ReferenceDocumentType                  string `json:"ReferenceDocumentType"`
-		ReferenceNumber                        string `json:"ReferenceNumber"`
-		RequestSent                            bool   `json:"RequestSent"`
-		ResidenceAssociationOrganisationNumber string `json:"ResidenceAssociationOrganisationNumber"`
-		SocialSecurityNumber                   string `json:"SocialSecurityNumber"`
-		TypeOfReduction                        string `json:"TypeOfReduction"`
-		VoucherNumber                          int    `json:"VoucherNumber"`
-		VoucherSeries                          string `json:"VoucherSeries"`
-		VoucherYear                            int    `json:"VoucherYear"`
-		TaxReductionAmounts                    []struct {
-			AskedAmount int    `json:"askedAmount"`
-			WorkType    string `json:"workType"`
-		} `json:"TaxReductionAmounts"`
-	} `json:"TaxReduction"`
+	TaxReduction TaxReduction `json:"TaxReduction"`
 }
 
 type UpdateTaxReductionReq struct {
-	TaxReduction struct {
-		Url                                    string `json:"@url"`
-		ApprovedAmount                         int    `json:"ApprovedAmount"`
-		AskedAmount                            int    `json:"AskedAmount"`
-		BilledAmount                           int    `json:"BilledAmount"`
-		CustomerName                           string `json:"CustomerName"`
-		Id                                     int    `json:"Id"`
-		PropertyDesignation                    string `json:"PropertyDesignation"`
-		ReferenceDocumentType                  string `json:"ReferenceDocumentType"`
-		ReferenceNumber                        string `json:"ReferenceNumber"`
-		RequestSent                            bool   `json:"RequestSent"`
-		ResidenceAssociationOrganisationNumber string `json:"ResidenceAssociationOrganisationNumber"`
-		SocialSecurityNumber                   string `json:"SocialSecurityNumber"`
-		TypeOfReduction                        string `json:"TypeOfReduction"`
-		VoucherNumber                          int    `json:"VoucherNumber"`
-		VoucherSeries                          string `json:"VoucherSeries"`
-		VoucherYear                            int    `json:"VoucherYear"`
-		TaxReductionAmounts                    []struct {
-			AskedAmount int    `json:"askedAmount"`
-			WorkType    string `json:"workType"`
-		} `json:"TaxReductionAmounts"`
-	} `json:"TaxReduction"`
+	TaxReduction TaxReduction `json:"TaxReduction"`
 }
 
 type UpdateTaxReductionResp struct {
-	TaxReduction struct {
-		Url                                    string `json:"@url"`
-		ApprovedAmount                         int    `json:"ApprovedAmount"`
-		AskedAmount                            int    `json:"AskedAmount"`
-		BilledAmount                           int    `json:"BilledAmount"`
-		CustomerName                           string `json:"CustomerName"`
-		Id                                     int    `json:"Id"`
-		PropertyDesignation                    string `json:"PropertyDesignation"`
-		ReferenceDocumentType                  string `json:"ReferenceDocumentType"`
-		ReferenceNumber                        string `json:"ReferenceNumber"`
-		RequestSent                            bool   `json:"RequestSent"`
-		ResidenceAssociationOrganisationNumber string `json:"ResidenceAssociationOrganisationNumber"`
-		SocialSecurityNumber                   string `json:"SocialSecurityNumber"`
-		TypeOfReduction                        string `json:"TypeOfReduction"`
-		VoucherNumber                          int    `json:"VoucherNumber"`
-		VoucherSeries                          string `json:"VoucherSeries"`
-		VoucherYear                            int    `json:"VoucherYear"`
-		TaxReductionAmounts                    []struct {
-			AskedAmount int    `json:"askedAmount"`
-			WorkType    string `json:"workType"`
-		} `json:"TaxReductionAmounts"`
-	} `json:"TaxReduction"`
+	TaxReduction TaxReduction `json:"TaxReduction"`
 }

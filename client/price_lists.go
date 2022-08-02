@@ -10,7 +10,7 @@ const (
 )
 
 // GetAllPriceLists does _GET https://api.fortnox.se/3/pricelists
-func (c *Client) GetAllPriceLists(ctx context.Context) (*GetAllPriceListsResp, error) {
+func (c *Client) GetAllPriceLists(ctx context.Context) ([]PriceList, error) {
 	resp := &GetAllPriceListsResp{}
 
 	err := c._GET(ctx, priceListURI, nil, resp)
@@ -18,13 +18,14 @@ func (c *Client) GetAllPriceLists(ctx context.Context) (*GetAllPriceListsResp, e
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.PriceLists, nil
 }
 
 // CreatePriceList does _POST https://api.fortnox.se/3/pricelists
 //
 // req - price list to create
-func (c *Client) CreatePriceList(ctx context.Context, req *CreatePriceListReq) (*CreatePriceListResp, error) {
+func (c *Client) CreatePriceList(ctx context.Context, pl *PriceList) (*PriceList, error) {
+	req := CreatePriceListReq{PriceList: *pl}
 	resp := &CreatePriceListResp{}
 
 	err := c._POST(ctx, priceListURI, nil, req, resp)
@@ -32,13 +33,13 @@ func (c *Client) CreatePriceList(ctx context.Context, req *CreatePriceListReq) (
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.PriceList, nil
 }
 
 // GetPriceList does _GET https://api.fortnox.se/3/pricelists/{Code}
 //
 // code - identifies the price list
-func (c *Client) GetPriceList(ctx context.Context, code string) (*GetPriceListResp, error) {
+func (c *Client) GetPriceList(ctx context.Context, code string) (*PriceList, error) {
 	resp := &GetPriceListResp{}
 
 	uri := fmt.Sprintf("%s/%s", priceListURI, code)
@@ -48,7 +49,7 @@ func (c *Client) GetPriceList(ctx context.Context, code string) (*GetPriceListRe
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.PriceList, nil
 }
 
 // UpdatePriceList does _PUT https://api.fortnox.se/3/pricelists/{Code}
@@ -59,8 +60,9 @@ func (c *Client) GetPriceList(ctx context.Context, code string) (*GetPriceListRe
 func (c *Client) UpdatePriceList(
 	ctx context.Context,
 	code string,
-	req *UpdatePriceListReq) (*UpdatePriceListResp, error) {
+	pl *PriceList) (*PriceList, error) {
 
+	req := UpdatePriceListReq{PriceList: *pl}
 	resp := &UpdatePriceListResp{}
 
 	uri := fmt.Sprintf("%s/%s", priceListURI, code)
@@ -70,65 +72,37 @@ func (c *Client) UpdatePriceList(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.PriceList, nil
+}
+
+type PriceList struct {
+	Url         string `json:"@url"`
+	Code        string `json:"Code"`
+	Description string `json:"Description"`
+	Comments    string `json:"Comments"`
+	PreSelected bool   `json:"PreSelected"`
 }
 
 type GetAllPriceListsResp struct {
-	PriceLists []struct {
-		Url         string `json:"@url"`
-		Code        string `json:"Code"`
-		Description string `json:"Description"`
-		Comments    string `json:"Comments"`
-		PreSelected bool   `json:"PreSelected"`
-	} `json:"PriceLists"`
+	PriceLists []PriceList `json:"PriceLists"`
 }
 
 type CreatePriceListReq struct {
-	PriceList struct {
-		Url         string `json:"@url"`
-		Code        string `json:"Code"`
-		Description string `json:"Description"`
-		Comments    string `json:"Comments"`
-		PreSelected bool   `json:"PreSelected"`
-	} `json:"PriceList"`
+	PriceList PriceList `json:"PriceList"`
 }
 
 type CreatePriceListResp struct {
-	PriceList struct {
-		Url         string `json:"@url"`
-		Code        string `json:"Code"`
-		Description string `json:"Description"`
-		Comments    string `json:"Comments"`
-		PreSelected bool   `json:"PreSelected"`
-	} `json:"PriceList"`
+	PriceList PriceList `json:"PriceList"`
 }
 
 type GetPriceListResp struct {
-	PriceList struct {
-		Url         string `json:"@url"`
-		Code        string `json:"Code"`
-		Description string `json:"Description"`
-		Comments    string `json:"Comments"`
-		PreSelected bool   `json:"PreSelected"`
-	} `json:"PriceList"`
+	PriceList PriceList `json:"PriceList"`
 }
 
 type UpdatePriceListReq struct {
-	PriceList struct {
-		Url         string `json:"@url"`
-		Code        string `json:"Code"`
-		Description string `json:"Description"`
-		Comments    string `json:"Comments"`
-		PreSelected bool   `json:"PreSelected"`
-	} `json:"PriceList"`
+	PriceList PriceList `json:"PriceList"`
 }
 
 type UpdatePriceListResp struct {
-	PriceList struct {
-		Url         string `json:"@url"`
-		Code        string `json:"Code"`
-		Description string `json:"Description"`
-		Comments    string `json:"Comments"`
-		PreSelected bool   `json:"PreSelected"`
-	} `json:"PriceList"`
+	PriceList PriceList `json:"PriceList"`
 }

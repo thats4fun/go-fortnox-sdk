@@ -20,7 +20,7 @@ const (
 func (c *Client) GetPriceForArticle(
 	ctx context.Context,
 	priceList, articleNumber string,
-	fromQuantity int) (*GetPriceForArticleResp, error) {
+	fromQuantity int) (*Price, error) {
 
 	resp := &GetPriceForArticleResp{}
 
@@ -31,7 +31,7 @@ func (c *Client) GetPriceForArticle(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Price, nil
 }
 
 // UpdatePrice does _PUT https://api.fortnox.se/3/prices/{PriceList}/{ArticleNumber}/{FromQuantity}
@@ -47,8 +47,9 @@ func (c *Client) UpdatePrice(
 	ctx context.Context,
 	priceList, articleNumber string,
 	fromQuantity int,
-	req *UpdatePriceReq) (*UpdatePriceResp, error) {
+	p *Price) (*Price, error) {
 
+	req := &UpdatePriceReq{Price: *p}
 	resp := &UpdatePriceResp{}
 
 	uri := fmt.Sprintf("%s/%s/%s/%d", pricesURI, priceList, articleNumber, fromQuantity)
@@ -58,7 +59,7 @@ func (c *Client) UpdatePrice(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Price, nil
 }
 
 // DeletePrice does _DELETE https://api.fortnox.se/3/prices/{PriceList}/{ArticleNumber}/{FromQuantity}
@@ -80,7 +81,7 @@ func (c *Client) DeletePrice(ctx context.Context, priceList, articleNumber strin
 // articleNumber - identifies the article number of the prices
 func (c *Client) GetAllArticlesWithPricesInPriceList(
 	ctx context.Context,
-	priceList, articleNumber string) (*GetAllArticlesWithPricesInPriceListResp, error) {
+	priceList, articleNumber string) ([]Price, error) {
 
 	resp := &GetAllArticlesWithPricesInPriceListResp{}
 
@@ -91,7 +92,7 @@ func (c *Client) GetAllArticlesWithPricesInPriceList(
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.Prices, nil
 }
 
 // GetFirstPriceForArticle does _GET https://api.fortnox.se/3/prices/{PriceList}/{ArticleNumber}
@@ -101,7 +102,7 @@ func (c *Client) GetAllArticlesWithPricesInPriceList(
 // articleNumber - identifies the article number of the prices
 func (c *Client) GetFirstPriceForArticle(
 	ctx context.Context,
-	priceList, articleNumber string) (*GetFirstPriceForArticleResp, error) {
+	priceList, articleNumber string) (*Price, error) {
 
 	resp := &GetFirstPriceForArticleResp{}
 
@@ -112,7 +113,7 @@ func (c *Client) GetFirstPriceForArticle(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Price, nil
 }
 
 // UpdateFirstPriceForArticle does _PUT https://api.fortnox.se/3/prices/{PriceList}/{ArticleNumber}
@@ -125,8 +126,9 @@ func (c *Client) GetFirstPriceForArticle(
 func (c *Client) UpdateFirstPriceForArticle(
 	ctx context.Context,
 	priceList, articleNumber string,
-	req *UpdateFirstPriceForArticleReq) (*UpdateFirstPriceForArticleResp, error) {
+	p *Price) (*Price, error) {
 
+	req := &UpdateFirstPriceForArticleReq{Price: *p}
 	resp := &UpdateFirstPriceForArticleResp{}
 
 	uri := fmt.Sprintf("%s/%s/%s", pricesURI, priceList, articleNumber)
@@ -136,13 +138,14 @@ func (c *Client) UpdateFirstPriceForArticle(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Price, nil
 }
 
 // CreatePrice does _POST https://api.fortnox.se/3/prices/
 //
 // req - price to create
-func (c *Client) CreatePrice(ctx context.Context, req *CreatePriceReq) (*CreatePriceResp, error) {
+func (c *Client) CreatePrice(ctx context.Context, p *Price) (*Price, error) {
+	req := &CreatePriceReq{Price: *p}
 	resp := &CreatePriceResp{}
 
 	err := c._POST(ctx, pricesURI, nil, req, resp)
@@ -150,111 +153,51 @@ func (c *Client) CreatePrice(ctx context.Context, req *CreatePriceReq) (*CreateP
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Price, nil
+}
+
+type Price struct {
+	Url           string    `json:"@url,omitempty"`
+	ArticleNumber string    `json:"ArticleNumber,omitempty"`
+	Date          time.Time `json:"Date,omitempty,omitempty"`
+	FromQuantity  int       `json:"FromQuantity,omitempty"`
+	Percent       int       `json:"Percent,omitempty,omitempty"`
+	Price         int       `json:"Price,omitempty"`
+	PriceList     string    `json:"PriceList,omitempty"`
 }
 
 type GetPriceForArticleResp struct {
-	Price struct {
-		Url           string    `json:"@url"`
-		ArticleNumber string    `json:"ArticleNumber"`
-		Date          time.Time `json:"Date"`
-		FromQuantity  int       `json:"FromQuantity"`
-		Percent       int       `json:"Percent"`
-		Price         int       `json:"Price"`
-		PriceList     string    `json:"PriceList"`
-	} `json:"Price"`
+	Price Price `json:"Price"`
 }
 
 type UpdatePriceReq struct {
-	Price struct {
-		Url           string    `json:"@url"`
-		ArticleNumber string    `json:"ArticleNumber"`
-		Date          time.Time `json:"Date"`
-		FromQuantity  int       `json:"FromQuantity"`
-		Percent       int       `json:"Percent"`
-		Price         int       `json:"Price"`
-		PriceList     string    `json:"PriceList"`
-	} `json:"Price"`
+	Price Price `json:"Price"`
 }
 
 type UpdatePriceResp struct {
-	Price struct {
-		Url           string    `json:"@url"`
-		ArticleNumber string    `json:"ArticleNumber"`
-		Date          time.Time `json:"Date"`
-		FromQuantity  int       `json:"FromQuantity"`
-		Percent       int       `json:"Percent"`
-		Price         int       `json:"Price"`
-		PriceList     string    `json:"PriceList"`
-	} `json:"Price"`
+	Price Price `json:"Price"`
 }
 
 type GetAllArticlesWithPricesInPriceListResp struct {
-	Prices []struct {
-		Url           string `json:"@url"`
-		ArticleNumber string `json:"ArticleNumber"`
-		FromQuantity  int    `json:"FromQuantity"`
-		PriceList     string `json:"PriceList"`
-		Price         int    `json:"Price"`
-	} `json:"Prices"`
+	Prices []Price `json:"Prices"`
 }
 
 type GetFirstPriceForArticleResp struct {
-	Price struct {
-		Url           string    `json:"@url"`
-		ArticleNumber string    `json:"ArticleNumber"`
-		Date          time.Time `json:"Date"`
-		FromQuantity  int       `json:"FromQuantity"`
-		Percent       int       `json:"Percent"`
-		Price         int       `json:"Price"`
-		PriceList     string    `json:"PriceList"`
-	} `json:"Price"`
+	Price Price `json:"Price"`
 }
 
 type UpdateFirstPriceForArticleReq struct {
-	Price struct {
-		Url           string    `json:"@url"`
-		ArticleNumber string    `json:"ArticleNumber"`
-		Date          time.Time `json:"Date"`
-		FromQuantity  int       `json:"FromQuantity"`
-		Percent       int       `json:"Percent"`
-		Price         int       `json:"Price"`
-		PriceList     string    `json:"PriceList"`
-	} `json:"Price"`
+	Price Price `json:"Price"`
 }
 
 type UpdateFirstPriceForArticleResp struct {
-	Price struct {
-		Url           string    `json:"@url"`
-		ArticleNumber string    `json:"ArticleNumber"`
-		Date          time.Time `json:"Date"`
-		FromQuantity  int       `json:"FromQuantity"`
-		Percent       int       `json:"Percent"`
-		Price         int       `json:"Price"`
-		PriceList     string    `json:"PriceList"`
-	} `json:"Price"`
+	Price Price `json:"Price"`
 }
 
 type CreatePriceReq struct {
-	Price struct {
-		Url           string    `json:"@url"`
-		ArticleNumber string    `json:"ArticleNumber"`
-		Date          time.Time `json:"Date"`
-		FromQuantity  int       `json:"FromQuantity"`
-		Percent       int       `json:"Percent"`
-		Price         int       `json:"Price"`
-		PriceList     string    `json:"PriceList"`
-	} `json:"Price"`
+	Price Price `json:"Price"`
 }
 
 type CreatePriceResp struct {
-	Price struct {
-		Url           string    `json:"@url"`
-		ArticleNumber string    `json:"ArticleNumber"`
-		Date          time.Time `json:"Date"`
-		FromQuantity  int       `json:"FromQuantity"`
-		Percent       int       `json:"Percent"`
-		Price         int       `json:"Price"`
-		PriceList     string    `json:"PriceList"`
-	} `json:"Price"`
+	Price Price `json:"Price"`
 }

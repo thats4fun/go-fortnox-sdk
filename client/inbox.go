@@ -26,7 +26,7 @@ var (
 )
 
 // GetRootDirectory does _GET https://api.fortnox.se/3/inbox/
-func (c *Client) GetRootDirectory(ctx context.Context) (*GetRootDirectoryResp, error) {
+func (c *Client) GetRootDirectory(ctx context.Context) (*InboxRootFolder, error) {
 	resp := GetRootDirectoryResp{}
 
 	err := c._GET(ctx, inboxURI, nil, resp)
@@ -34,16 +34,18 @@ func (c *Client) GetRootDirectory(ctx context.Context) (*GetRootDirectoryResp, e
 		return nil, err
 	}
 
-	return &resp, nil
+	return &resp.Folder, nil
 }
 
 // UploadFile does _POST https://api.fortnox.se/3/inbox/
+//
 // folderID - folder id
 //
 // path - path
 //
 // req - file to upload
-func (c *Client) UploadFile(ctx context.Context, params *UploadFileParams, req *UploadFileReq) (*UploadFileResp, error) {
+func (c *Client) UploadFile(ctx context.Context, params *UploadFileParams, f *InboxFile) (*InboxFile, error) {
+	req := &UploadFileReq{File: *f}
 	resp := &UploadFileResp{}
 
 	p := params.urlValues()
@@ -53,7 +55,7 @@ func (c *Client) UploadFile(ctx context.Context, params *UploadFileParams, req *
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.File, nil
 }
 
 // GetInboxFile does _GET https://api.fortnox.se/3/inbox/{Id}
@@ -133,13 +135,5 @@ type UploadFileReq struct {
 }
 
 type UploadFileResp struct {
-	File struct {
-		Url           string `json:"@url"`
-		Comments      string `json:"Comments"`
-		Id            string `json:"Id"`
-		Name          string `json:"Name"`
-		Path          string `json:"Path"`
-		Size          int    `json:"Size"`
-		ArchiveFileId string `json:"ArchiveFileId"`
-	} `json:"File"`
+	File InboxFile `json:"File"`
 }

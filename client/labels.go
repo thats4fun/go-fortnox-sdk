@@ -8,7 +8,7 @@ import (
 const labelsURI = "labels"
 
 // GetAllLabels does _GET https://api.fortnox.se/3/labels
-func (c Client) GetAllLabels(ctx context.Context) (*GetAllLabelsResp, error) {
+func (c Client) GetAllLabels(ctx context.Context) ([]Label, error) {
 	resp := &GetAllLabelsResp{}
 
 	err := c._GET(ctx, labelsURI, nil, resp)
@@ -16,16 +16,16 @@ func (c Client) GetAllLabels(ctx context.Context) (*GetAllLabelsResp, error) {
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.Labels, nil
 }
 
 // CreateLabels does _POST https://api.fortnox.se/3/labels
 //
 // name - label to create
-func (c *Client) CreateLabels(ctx context.Context, name string) (*CreateLabelResp, error) {
+func (c *Client) CreateLabels(ctx context.Context, name string) (*Label, error) {
 	resp := &CreateLabelResp{}
 
-	req := CreateLabelReq{
+	req := &CreateLabelReq{
 		Label: Label{
 			Description: name,
 		},
@@ -36,7 +36,7 @@ func (c *Client) CreateLabels(ctx context.Context, name string) (*CreateLabelRes
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Label, nil
 }
 
 // UpdateLabel does _PUT https://api.fortnox.se/3/labels/{Id}
@@ -44,10 +44,10 @@ func (c *Client) CreateLabels(ctx context.Context, name string) (*CreateLabelRes
 // id - identifies the label
 //
 // name - to update
-func (c *Client) UpdateLabel(ctx context.Context, id int, name string) (*UpdateLabelResp, error) {
+func (c *Client) UpdateLabel(ctx context.Context, id int, name string) (*Label, error) {
 	resp := &UpdateLabelResp{}
 
-	req := UpdateLabelReq{
+	req := &UpdateLabelReq{
 		Label: Label{
 			Description: name,
 		},
@@ -60,7 +60,7 @@ func (c *Client) UpdateLabel(ctx context.Context, id int, name string) (*UpdateL
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Label, nil
 }
 
 // DeleteLabel does _DELETE https://api.fortnox.se/3/labels/{Id}
@@ -77,16 +77,14 @@ type Label struct {
 }
 
 type GetAllLabelsResp struct {
-	Labels []*Label `json:"Labels"`
+	Labels []Label `json:"Labels"`
 }
 
 type CreateLabelReq struct {
 	Label Label `json:"Label"`
 }
 
-type CreateLabelResp struct {
-	Label Label `json:"Label"`
-}
+type CreateLabelResp CreateLabelReq
 
 type UpdateLabelReq CreateLabelReq
 

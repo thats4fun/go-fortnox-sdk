@@ -14,7 +14,7 @@ const (
 // id - id
 func (c *Client) GetSupplierInvoiceExternalUrlConnection(
 	ctx context.Context,
-	id int) (*GetSupplierInvoiceExternalUrlConnectionResp, error) {
+	id int) (*SupplierInvoiceExternalURLConnection, error) {
 
 	resp := &GetSupplierInvoiceExternalUrlConnectionResp{}
 
@@ -25,7 +25,7 @@ func (c *Client) GetSupplierInvoiceExternalUrlConnection(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.SupplierInvoiceExternalURLConnection, nil
 }
 
 // UpdateSupplierInvoiceExternalUrlConnection does _PUT https://api.fortnox.se/3/supplierinvoiceexternalurlconnections/{Id}
@@ -36,7 +36,7 @@ func (c *Client) GetSupplierInvoiceExternalUrlConnection(
 func (c *Client) UpdateSupplierInvoiceExternalUrlConnection(
 	ctx context.Context,
 	id int,
-	req *UpdateSupplierInvoiceExternalUrlConnectionReq) (*UpdateSupplierInvoiceExternalUrlConnectionResp, error) {
+	req *UpdateSupplierInvoiceExternalUrlConnectionReq) (*SupplierInvoiceExternalURLConnection, error) {
 
 	resp := &UpdateSupplierInvoiceExternalUrlConnectionResp{}
 
@@ -47,7 +47,7 @@ func (c *Client) UpdateSupplierInvoiceExternalUrlConnection(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.SupplierInvoiceExternalURLConnection, nil
 }
 
 // DeleteSupplierInvoiceExternalUrlConnection does _DELETE https://api.fortnox.se/3/supplierinvoiceexternalurlconnections/{Id}
@@ -63,7 +63,7 @@ func (c *Client) DeleteSupplierInvoiceExternalUrlConnection(ctx context.Context,
 // req - supplier invoice external url connection to update
 func (c *Client) CreateSupplierInvoiceExternalUrlConnection(
 	ctx context.Context,
-	req *CreateSupplierInvoiceExternalUrlConnectionReq) (*CreateSupplierInvoiceExternalUrlConnectionResp, error) {
+	req *CreateSupplierInvoiceExternalUrlConnectionReq) (*SupplierInvoiceExternalURLConnection, error) {
 
 	resp := &CreateSupplierInvoiceExternalUrlConnectionResp{}
 
@@ -72,16 +72,18 @@ func (c *Client) CreateSupplierInvoiceExternalUrlConnection(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.SupplierInvoiceExternalURLConnection, nil
+}
+
+type SupplierInvoiceExternalURLConnection struct {
+	Url                   string `json:"Url"`
+	Id                    int    `json:"Id"`
+	SupplierInvoiceNumber int    `json:"SupplierInvoiceNumber"`
+	ExternalUrlConnection string `json:"ExternalUrlConnection"`
 }
 
 type GetSupplierInvoiceExternalUrlConnectionResp struct {
-	SupplierInvoiceExternalURLConnection struct {
-		Url                   string `json:"Url"`
-		Id                    int    `json:"Id"`
-		SupplierInvoiceNumber int    `json:"SupplierInvoiceNumber"`
-		ExternalUrlConnection string `json:"ExternalUrlConnection"`
-	} `json:"SupplierInvoiceExternalURLConnection"`
+	SupplierInvoiceExternalURLConnection SupplierInvoiceExternalURLConnection `json:"SupplierInvoiceExternalURLConnection"`
 }
 
 type UpdateSupplierInvoiceExternalUrlConnectionReq struct {
@@ -90,12 +92,7 @@ type UpdateSupplierInvoiceExternalUrlConnectionReq struct {
 }
 
 type UpdateSupplierInvoiceExternalUrlConnectionResp struct {
-	SupplierInvoiceExternalURLConnection struct {
-		Url                   string `json:"Url"`
-		Id                    int    `json:"Id"`
-		SupplierInvoiceNumber int    `json:"SupplierInvoiceNumber"`
-		ExternalUrlConnection string `json:"ExternalUrlConnection"`
-	} `json:"SupplierInvoiceExternalURLConnection"`
+	SupplierInvoiceExternalURLConnection SupplierInvoiceExternalURLConnection `json:"SupplierInvoiceExternalURLConnection"`
 }
 
 type CreateSupplierInvoiceExternalUrlConnectionReq struct {
@@ -104,10 +101,5 @@ type CreateSupplierInvoiceExternalUrlConnectionReq struct {
 }
 
 type CreateSupplierInvoiceExternalUrlConnectionResp struct {
-	SupplierInvoiceExternalURLConnection struct {
-		Url                   string `json:"Url"`
-		Id                    int    `json:"Id"`
-		SupplierInvoiceNumber int    `json:"SupplierInvoiceNumber"`
-		ExternalUrlConnection string `json:"ExternalUrlConnection"`
-	} `json:"SupplierInvoiceExternalURLConnection"`
+	SupplierInvoiceExternalURLConnection SupplierInvoiceExternalURLConnection `json:"SupplierInvoiceExternalURLConnection"`
 }

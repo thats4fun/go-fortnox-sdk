@@ -65,7 +65,7 @@ var _AttendanceTransactionsCauseCodes = map[string]string{
 // filter - GetAllAttendanceTransactionsFilter
 func (c *Client) GetAllAttendanceTransactions(
 	ctx context.Context,
-	filter *GetAllAttendanceTransactionsFilter) (*GetAllAttendanceTransactionsResp, error) {
+	filter *GetAllAttendanceTransactionsFilter) ([]AttendanceTransaction, error) {
 
 	resp := &GetAllAttendanceTransactionsResp{}
 
@@ -76,7 +76,7 @@ func (c *Client) GetAllAttendanceTransactions(
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.AttendanceTransactions, nil
 }
 
 // CreateAttendanceTransaction does _POST https://api.fortnox.se/3/attendancetransactions
@@ -84,8 +84,9 @@ func (c *Client) GetAllAttendanceTransactions(
 // req - attendance transaction to create
 func (c *Client) CreateAttendanceTransaction(
 	ctx context.Context,
-	req *CreateAttendanceTransactionReq) (*CreateAttendanceTransactionResp, error) {
+	at *AttendanceTransaction) (*AttendanceTransaction, error) {
 
+	req := CreateAttendanceTransactionReq{AttendanceTransaction: *at}
 	resp := &CreateAttendanceTransactionResp{}
 
 	err := c._POST(ctx, attendanceTransactionsURI, nil, req, resp)
@@ -93,13 +94,13 @@ func (c *Client) CreateAttendanceTransaction(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.AttendanceTransaction, nil
 }
 
 // GetAttendanceTransaction does _GET https://api.fortnox.se/3/attendancetransactions/{id}
 //
 // id - identifies the transaction
-func (c *Client) GetAttendanceTransaction(ctx context.Context, id string) (*GetAttendanceTransactionResp, error) {
+func (c *Client) GetAttendanceTransaction(ctx context.Context, id string) (*AttendanceTransaction, error) {
 	resp := &GetAttendanceTransactionResp{}
 
 	uri := fmt.Sprintf("%s/%s", attendanceTransactionsURI, id)
@@ -109,7 +110,7 @@ func (c *Client) GetAttendanceTransaction(ctx context.Context, id string) (*GetA
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.AttendanceTransaction, nil
 }
 
 // UpdateAttendanceTransaction does _PUT https://api.fortnox.se/3/attendancetransactions/{id}
@@ -118,8 +119,9 @@ func (c *Client) GetAttendanceTransaction(ctx context.Context, id string) (*GetA
 func (c *Client) UpdateAttendanceTransaction(
 	ctx context.Context,
 	id string,
-	req *UpdateAttendanceTransactionReq) (*UpdateAttendanceTransactionResp, error) {
+	at *AttendanceTransaction) (*AttendanceTransaction, error) {
 
+	req := &UpdateAttendanceTransactionReq{AttendanceTransaction: *at}
 	resp := &UpdateAttendanceTransactionResp{}
 
 	uri := fmt.Sprintf("%s/%s", attendanceTransactionsURI, id)
@@ -129,7 +131,7 @@ func (c *Client) UpdateAttendanceTransaction(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.AttendanceTransaction, nil
 }
 
 type GetAllAttendanceTransactionsFilter struct {
@@ -157,70 +159,37 @@ func (f *GetAllAttendanceTransactionsFilter) urlValues() url.Values {
 	return params
 }
 
+type AttendanceTransaction struct {
+	Url        string `json:"@url,omitempty,omitempty"`
+	Id         string `json:"id,omitempty,omitempty"`
+	EmployeeId string `json:"EmployeeId,omitempty"`
+	CauseCode  string `json:"CauseCode,omitempty"`
+	Date       string `json:"Date,omitempty"`
+	Hours      string `json:"Hours,omitempty"`
+	CostCenter string `json:"CostCenter,omitempty"`
+	Project    string `json:"Project,omitempty"`
+}
+
 type GetAllAttendanceTransactionsResp struct {
-	AttendanceTransactions []struct {
-		Url        string `json:"@url"`
-		Id         string `json:"id"`
-		EmployeeId string `json:"EmployeeId"`
-		CauseCode  string `json:"CauseCode"`
-		Date       string `json:"Date"`
-		Hours      string `json:"Hours"`
-		CostCenter string `json:"CostCenter"`
-		Project    string `json:"Project"`
-	} `json:"AttendanceTransactions"`
+	AttendanceTransactions []AttendanceTransaction `json:"AttendanceTransactions"`
 }
 
 type CreateAttendanceTransactionReq struct {
-	AttendanceTransaction struct {
-		EmployeeId string `json:"EmployeeId"`
-		CauseCode  string `json:"CauseCode"`
-		Date       string `json:"Date"`
-		Hours      string `json:"Hours"`
-		CostCenter string `json:"CostCenter"`
-		Project    string `json:"Project"`
-	} `json:"AttendanceTransaction"`
+	AttendanceTransaction AttendanceTransaction `json:"AttendanceTransaction"`
 }
 
 type CreateAttendanceTransactionResp struct {
-	AttendanceTransaction struct {
-		EmployeeId string `json:"EmployeeId"`
-		CauseCode  string `json:"CauseCode"`
-		Date       string `json:"Date"`
-		Hours      string `json:"Hours"`
-		CostCenter string `json:"CostCenter"`
-		Project    string `json:"Project"`
-	} `json:"AttendanceTransaction"`
+	AttendanceTransaction AttendanceTransaction `json:"AttendanceTransaction"`
 }
 
 type GetAttendanceTransactionResp struct {
-	AttendanceTransaction struct {
-		EmployeeId string `json:"EmployeeId"`
-		CauseCode  string `json:"CauseCode"`
-		Date       string `json:"Date"`
-		Hours      string `json:"Hours"`
-		CostCenter string `json:"CostCenter"`
-		Project    string `json:"Project"`
-	} `json:"AttendanceTransaction"`
+	AttendanceTransaction AttendanceTransaction `json:"AttendanceTransaction"`
 }
 
 type UpdateAttendanceTransactionReq struct {
-	AttendanceTransaction struct {
-		EmployeeId string `json:"EmployeeId"`
-		CauseCode  string `json:"CauseCode"`
-		Date       string `json:"Date"`
-		Hours      string `json:"Hours"`
-		CostCenter string `json:"CostCenter"`
-		Project    string `json:"Project"`
-	} `json:"AttendanceTransaction"`
+	AttendanceTransaction AttendanceTransaction `json:"AttendanceTransaction"`
 }
 
 type UpdateAttendanceTransactionResp struct {
-	AttendanceTransaction struct {
-		EmployeeId string `json:"EmployeeId"`
-		CauseCode  string `json:"CauseCode"`
-		Date       string `json:"Date"`
-		Hours      string `json:"Hours"`
-		CostCenter string `json:"CostCenter"`
-		Project    string `json:"Project"`
-	} `json:"AttendanceTransaction"`
+	AttendanceTransaction AttendanceTransaction `json:"AttendanceTransaction"`
 }

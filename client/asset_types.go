@@ -109,16 +109,18 @@ type GetAssetTypeResp struct {
 	} `json:"Type"`
 }
 
+type AssetTypeShort struct {
+	Number                string `json:"Number"`
+	Description           string `json:"Description"`
+	Notes                 string `json:"Notes"`
+	Type                  int    `json:"Type"`
+	AccountAssetId        int    `json:"AccountAssetId"`
+	AccountDepreciationId int    `json:"AccountDepreciationId"`
+	AccountValueLossId    int    `json:"AccountValueLossId"`
+}
+
 type CreateAssetTypeReq struct {
-	AssetType struct {
-		Number                string `json:"Number"`
-		Description           string `json:"Description"`
-		Notes                 string `json:"Notes"`
-		Type                  int    `json:"Type"`
-		AccountAssetId        int    `json:"AccountAssetId"`
-		AccountDepreciationId int    `json:"AccountDepreciationId"`
-		AccountValueLossId    int    `json:"AccountValueLossId"`
-	} `json:"AssetType"`
+	AssetType AssetTypeShort `json:"AssetType"`
 }
 
 type CreateAssetTypeResp struct {
@@ -149,11 +151,12 @@ type CreateAssetTypeResp struct {
 	} `json:"Type"`
 }
 
+type UpdateAssetType struct {
+	Description string `json:"Description"`
+	Notes       string `json:"Notes"`
+}
 type UpdateAssetTypeReq struct {
-	AssetType struct {
-		Description string `json:"Description"`
-		Notes       string `json:"Notes"`
-	} `json:"AssetType"`
+	AssetType UpdateAssetType `json:"AssetType"`
 }
 type UpdateAssetTypeResp struct {
 	Type struct {
@@ -183,13 +186,15 @@ type UpdateAssetTypeResp struct {
 	} `json:"Type"`
 }
 
+type MetaInformation struct {
+	TotalResources int `json:"@TotalResources"`
+	TotalPages     int `json:"@TotalPages"`
+	CurrentPage    int `json:"@CurrentPage"`
+}
+
 type GetAllAssetTypesResp struct {
-	MetaInformation struct {
-		TotalResources int `json:"@TotalResources"`
-		TotalPages     int `json:"@TotalPages"`
-		CurrentPage    int `json:"@CurrentPage"`
-	} `json:"MetaInformation"`
-	Types []struct {
+	MetaInformation MetaInformation `json:"MetaInformation"`
+	Types           []struct {
 		Url                   string `json:"@url"`
 		Id                    int    `json:"Id"`
 		Number                string `json:"Number"`

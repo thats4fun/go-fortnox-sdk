@@ -16,7 +16,7 @@ const (
 // filter - GetAllSalaryTransactionsForAllEmployeesFilter
 func (c *Client) GetAllSalaryTransactionsForAllEmployees(
 	ctx context.Context,
-	filter *GetAllSalaryTransactionsForAllEmployeesFilter) (*GetAllSalaryTransactionsForAllEmployeesResp, error) {
+	filter *GetAllSalaryTransactionsForAllEmployeesFilter) ([]SalaryTransaction, error) {
 
 	resp := &GetAllSalaryTransactionsForAllEmployeesResp{}
 
@@ -27,15 +27,16 @@ func (c *Client) GetAllSalaryTransactionsForAllEmployees(
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.SalaryTransactions, nil
 }
 
 // CreateSalaryTransactionsForEmployee does _POST https://api.fortnox.se/3/salarytransactions
 //
 // req - salary transaction to create
 func (c *Client) CreateSalaryTransactionsForEmployee(
-	ctx context.Context, req *CreateSalaryTransactionsForEmployeeReq) (*CreateSalaryTransactionsForEmployeeResp, error) {
+	ctx context.Context, st *SalaryTransaction) (*SalaryTransaction, error) {
 
+	req := CreateSalaryTransactionsForEmployeeReq{SalaryTransaction: *st}
 	resp := &CreateSalaryTransactionsForEmployeeResp{}
 
 	err := c._POST(ctx, salaryTransactionsURI, nil, req, resp)
@@ -43,14 +44,14 @@ func (c *Client) CreateSalaryTransactionsForEmployee(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.SalaryTransaction, nil
 }
 
 // GetSalaryTransactionForEmployees does _GET https://api.fortnox.se/3/salarytransactions/{SalaryRow}
 //
 // salaryRow - identifies the salary transaction
 func (c *Client) GetSalaryTransactionForEmployees(
-	ctx context.Context, salaryRow int) (*GetSalaryTransactionForEmployeesResp, error) {
+	ctx context.Context, salaryRow int) (*SalaryTransaction, error) {
 
 	resp := &GetSalaryTransactionForEmployeesResp{}
 
@@ -61,7 +62,7 @@ func (c *Client) GetSalaryTransactionForEmployees(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.SalaryTransaction, nil
 }
 
 // UpdateSalaryTransactionForEmployee does _PUT https://api.fortnox.se/3/salarytransactions/{SalaryRow}
@@ -72,8 +73,9 @@ func (c *Client) GetSalaryTransactionForEmployees(
 func (c *Client) UpdateSalaryTransactionForEmployee(
 	ctx context.Context,
 	salaryRow int,
-	req *UpdateSalaryTransactionForEmployeeReq) (*UpdateSalaryTransactionForEmployeeResp, error) {
+	st *SalaryTransaction) (*SalaryTransaction, error) {
 
+	req := &UpdateSalaryTransactionForEmployeeReq{SalaryTransaction: *st}
 	resp := &UpdateSalaryTransactionForEmployeeResp{}
 
 	uri := fmt.Sprintf("%s/%d", salaryTransactionsURI, salaryRow)
@@ -83,14 +85,14 @@ func (c *Client) UpdateSalaryTransactionForEmployee(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.SalaryTransaction, nil
 }
 
 // DeleteSalaryTransactionForEmployee does _DELETE https://api.fortnox.se/3/salarytransactions/{SalaryRow}
 //
 // salaryRow - identifies the salary transaction
 func (c *Client) DeleteSalaryTransactionForEmployee(
-	ctx context.Context, salaryRow int) (*DeleteSalaryTransactionForEmployeeResp, error) {
+	ctx context.Context, salaryRow int) (*SalaryTransaction, error) {
 
 	resp := &DeleteSalaryTransactionForEmployeeResp{}
 
@@ -101,7 +103,7 @@ func (c *Client) DeleteSalaryTransactionForEmployee(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.SalaryTransaction, nil
 }
 
 type GetAllSalaryTransactionsForAllEmployeesFilter struct {
@@ -129,122 +131,46 @@ func (f *GetAllSalaryTransactionsForAllEmployeesFilter) urlValues() url.Values {
 	return p
 }
 
+type SalaryTransaction struct {
+	Url        string `json:"@url,omitempty"`
+	EmployeeId string `json:"EmployeeId"`
+	SalaryCode string `json:"SalaryCode"`
+	SalaryRow  int    `json:"SalaryRow"`
+	Date       string `json:"Date"`
+	Number     string `json:"Number"`
+	Amount     string `json:"Amount"`
+	Total      string `json:"Total"`
+	Expense    string `json:"Expense"`
+	VAT        string `json:"VAT"`
+	TextRow    string `json:"TextRow"`
+	CostCenter string `json:"CostCenter"`
+	Project    string `json:"Project"`
+}
+
 type GetAllSalaryTransactionsForAllEmployeesResp struct {
-	SalaryTransactions []struct {
-		Url        string `json:"@url"`
-		EmployeeId string `json:"EmployeeId"`
-		SalaryCode string `json:"SalaryCode"`
-		SalaryRow  int    `json:"SalaryRow"`
-		Date       string `json:"Date"`
-		Number     string `json:"Number"`
-		Amount     string `json:"Amount"`
-		Total      string `json:"Total"`
-		Expense    string `json:"Expense"`
-		VAT        string `json:"VAT"`
-		TextRow    string `json:"TextRow"`
-		CostCenter string `json:"CostCenter"`
-		Project    string `json:"Project"`
-	} `json:"SalaryTransactions"`
+	SalaryTransactions []SalaryTransaction `json:"SalaryTransactions"`
 }
 
 type CreateSalaryTransactionsForEmployeeReq struct {
-	SalaryTransaction struct {
-		EmployeeId string `json:"EmployeeId"`
-		SalaryCode string `json:"SalaryCode"`
-		SalaryRow  int    `json:"SalaryRow"`
-		Date       string `json:"Date"`
-		Number     string `json:"Number"`
-		Amount     string `json:"Amount"`
-		Total      string `json:"Total"`
-		Expense    string `json:"Expense"`
-		VAT        string `json:"VAT"`
-		TextRow    string `json:"TextRow"`
-		CostCenter string `json:"CostCenter"`
-		Project    string `json:"Project"`
-	} `json:"SalaryTransaction"`
+	SalaryTransaction SalaryTransaction `json:"SalaryTransaction"`
 }
 
 type CreateSalaryTransactionsForEmployeeResp struct {
-	SalaryTransaction struct {
-		EmployeeId string `json:"EmployeeId"`
-		SalaryCode string `json:"SalaryCode"`
-		SalaryRow  int    `json:"SalaryRow"`
-		Date       string `json:"Date"`
-		Number     string `json:"Number"`
-		Amount     string `json:"Amount"`
-		Total      string `json:"Total"`
-		Expense    string `json:"Expense"`
-		VAT        string `json:"VAT"`
-		TextRow    string `json:"TextRow"`
-		CostCenter string `json:"CostCenter"`
-		Project    string `json:"Project"`
-	} `json:"SalaryTransaction"`
+	SalaryTransaction SalaryTransaction `json:"SalaryTransaction"`
 }
 
 type GetSalaryTransactionForEmployeesResp struct {
-	SalaryTransaction struct {
-		EmployeeId string `json:"EmployeeId"`
-		SalaryCode string `json:"SalaryCode"`
-		SalaryRow  int    `json:"SalaryRow"`
-		Date       string `json:"Date"`
-		Number     string `json:"Number"`
-		Amount     string `json:"Amount"`
-		Total      string `json:"Total"`
-		Expense    string `json:"Expense"`
-		VAT        string `json:"VAT"`
-		TextRow    string `json:"TextRow"`
-		CostCenter string `json:"CostCenter"`
-		Project    string `json:"Project"`
-	} `json:"SalaryTransaction"`
+	SalaryTransaction SalaryTransaction `json:"SalaryTransaction"`
 }
 
 type UpdateSalaryTransactionForEmployeeReq struct {
-	SalaryTransaction struct {
-		EmployeeId string `json:"EmployeeId"`
-		SalaryCode string `json:"SalaryCode"`
-		SalaryRow  int    `json:"SalaryRow"`
-		Date       string `json:"Date"`
-		Number     string `json:"Number"`
-		Amount     string `json:"Amount"`
-		Total      string `json:"Total"`
-		Expense    string `json:"Expense"`
-		VAT        string `json:"VAT"`
-		TextRow    string `json:"TextRow"`
-		CostCenter string `json:"CostCenter"`
-		Project    string `json:"Project"`
-	} `json:"SalaryTransaction"`
+	SalaryTransaction SalaryTransaction `json:"SalaryTransaction"`
 }
 
 type UpdateSalaryTransactionForEmployeeResp struct {
-	SalaryTransaction struct {
-		EmployeeId string `json:"EmployeeId"`
-		SalaryCode string `json:"SalaryCode"`
-		SalaryRow  int    `json:"SalaryRow"`
-		Date       string `json:"Date"`
-		Number     string `json:"Number"`
-		Amount     string `json:"Amount"`
-		Total      string `json:"Total"`
-		Expense    string `json:"Expense"`
-		VAT        string `json:"VAT"`
-		TextRow    string `json:"TextRow"`
-		CostCenter string `json:"CostCenter"`
-		Project    string `json:"Project"`
-	} `json:"SalaryTransaction"`
+	SalaryTransaction SalaryTransaction `json:"SalaryTransaction"`
 }
 
 type DeleteSalaryTransactionForEmployeeResp struct {
-	SalaryTransaction struct {
-		EmployeeId string `json:"EmployeeId"`
-		SalaryCode string `json:"SalaryCode"`
-		SalaryRow  int    `json:"SalaryRow"`
-		Date       string `json:"Date"`
-		Number     string `json:"Number"`
-		Amount     string `json:"Amount"`
-		Total      string `json:"Total"`
-		Expense    string `json:"Expense"`
-		VAT        string `json:"VAT"`
-		TextRow    string `json:"TextRow"`
-		CostCenter string `json:"CostCenter"`
-		Project    string `json:"Project"`
-	} `json:"SalaryTransaction"`
+	SalaryTransaction SalaryTransaction `json:"SalaryTransaction"`
 }

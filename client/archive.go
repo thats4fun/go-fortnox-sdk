@@ -137,16 +137,12 @@ func (f *PathFileIDFilter) urlValues() url.Values {
 }
 
 type Folder struct {
-	Url     string `json:"@url"`
-	Email   string `json:"Email"`
-	Files   []File `json:"Files"`
-	Folders []struct {
-		Url  string `json:"@url"`
-		Id   string `json:"Id"`
-		Name string `json:"Name"`
-	} `json:"Folders"`
-	Id   string `json:"Id"`
-	Name string `json:"Name"`
+	Url     string   `json:"@url"`
+	Email   string   `json:"Email,omitempty"`
+	Files   []File   `json:"Files,omitempty"`
+	Folders []Folder `json:"Folders,omitempty"`
+	Id      string   `json:"Id"`
+	Name    string   `json:"Name"`
 }
 
 type File struct {

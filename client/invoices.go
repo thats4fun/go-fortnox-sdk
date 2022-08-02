@@ -14,7 +14,7 @@ const (
 // GetInvoice does _GET https://api.fortnox.se/3/invoices/{DocumentNumber}
 //
 // documentNumber - identifies the invoice
-func (c *Client) GetInvoice(ctx context.Context, documentNumber string) (*GetInvoiceResp, error) {
+func (c *Client) GetInvoice(ctx context.Context, documentNumber string) (*Invoice, error) {
 	resp := &GetInvoiceResp{}
 
 	uri := fmt.Sprintf("%s/%s", invoicesURI, documentNumber)
@@ -24,7 +24,7 @@ func (c *Client) GetInvoice(ctx context.Context, documentNumber string) (*GetInv
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Invoice, nil
 }
 
 // UpdateInvoice odes _PUT https://api.fortnox.se/3/invoices/{DocumentNumber}
@@ -35,8 +35,9 @@ func (c *Client) GetInvoice(ctx context.Context, documentNumber string) (*GetInv
 func (c *Client) UpdateInvoice(
 	ctx context.Context,
 	documentNumber string,
-	req *UpdateInvoiceReq) (*UpdateInvoiceResp, error) {
+	i *Invoice) (*Invoice, error) {
 
+	req := &UpdateInvoiceReq{*i}
 	resp := &UpdateInvoiceResp{}
 
 	uri := fmt.Sprintf("%s/%s", invoicesURI, documentNumber)
@@ -46,13 +47,13 @@ func (c *Client) UpdateInvoice(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Invoice, nil
 }
 
 // GetAllInvoices does _GET https://api.fortnox.se/3/invoices
 //
 // queryParams - filters
-func (c *Client) GetAllInvoices(ctx context.Context, queryParams *GetAllInvoicesQueryParams) (*GetAllInvoicesResp, error) {
+func (c *Client) GetAllInvoices(ctx context.Context, queryParams *GetAllInvoicesQueryParams) ([]Invoice, error) {
 	resp := &GetAllInvoicesResp{}
 
 	var params url.Values
@@ -65,13 +66,14 @@ func (c *Client) GetAllInvoices(ctx context.Context, queryParams *GetAllInvoices
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.Invoices, nil
 }
 
 // CreateInvoice does _POST https://api.fortnox.se/3/invoices
 //
 // req - payload
-func (c *Client) CreateInvoice(ctx context.Context, req *CreateInvoiceReq) (*CreateInvoiceResp, error) {
+func (c *Client) CreateInvoice(ctx context.Context, i *Invoice) (*Invoice, error) {
+	req := &CreateInvoiceReq{Invoice: *i}
 	resp := &CreateInvoiceResp{}
 
 	err := c._POST(ctx, invoicesURI, nil, req, resp)
@@ -79,13 +81,13 @@ func (c *Client) CreateInvoice(ctx context.Context, req *CreateInvoiceReq) (*Cre
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Invoice, nil
 }
 
 // BookKeepInvoice does _PUT https://api.fortnox.se/3/invoices/{DocumentNumber}/bookkeep
 //
 // documentNumber - identifies the invoice
-func (c *Client) BookKeepInvoice(ctx context.Context, documentNumber string) (*BookKeepInvoiceResp, error) {
+func (c *Client) BookKeepInvoice(ctx context.Context, documentNumber string) (*Invoice, error) {
 	resp := &BookKeepInvoiceResp{}
 
 	uri := fmt.Sprintf("%s/%s/bookkeep", invoicesURI, documentNumber)
@@ -95,13 +97,13 @@ func (c *Client) BookKeepInvoice(ctx context.Context, documentNumber string) (*B
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Invoice, nil
 }
 
 // CancelInvoice does _PUT https://api.fortnox.se/3/invoices/{DocumentNumber}/cancel
 //
 // documentNumber - identifies the invoice
-func (c *Client) CancelInvoice(ctx context.Context, documentNumber string) (*CancelInvoiceResp, error) {
+func (c *Client) CancelInvoice(ctx context.Context, documentNumber string) (*Invoice, error) {
 	resp := &CancelInvoiceResp{}
 
 	uri := fmt.Sprintf("%s/%s/cancel", invoicesURI, documentNumber)
@@ -111,13 +113,13 @@ func (c *Client) CancelInvoice(ctx context.Context, documentNumber string) (*Can
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Invoice, nil
 }
 
 // CreditInvoice does _PUT https://api.fortnox.se/3/invoices/{DocumentNumber}/credit
 //
 // documentNumber - identifies the invoice
-func (c *Client) CreditInvoice(ctx context.Context, documentNumber string) (*CreditInvoiceResp, error) {
+func (c *Client) CreditInvoice(ctx context.Context, documentNumber string) (*Invoice, error) {
 	resp := &CreditInvoiceResp{}
 
 	uri := fmt.Sprintf("%s/%s/credit", invoicesURI, documentNumber)
@@ -127,13 +129,13 @@ func (c *Client) CreditInvoice(ctx context.Context, documentNumber string) (*Cre
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Invoice, nil
 }
 
 // SetInvoiceAsSent does _PUT https://api.fortnox.se/3/invoices/{DocumentNumber}/externalprint
 //
 // documentNumber - identifies the invoice
-func (c *Client) SetInvoiceAsSent(ctx context.Context, documentNumber string) (*SetInvoiceAsSentResp, error) {
+func (c *Client) SetInvoiceAsSent(ctx context.Context, documentNumber string) (*Invoice, error) {
 	resp := &SetInvoiceAsSentResp{}
 
 	uri := fmt.Sprintf("%s/%s/externalprint", invoicesURI, documentNumber)
@@ -143,13 +145,13 @@ func (c *Client) SetInvoiceAsSent(ctx context.Context, documentNumber string) (*
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Invoice, nil
 }
 
 // SetInvoiceAsDone does _PUT https://api.fortnox.se/3/invoices/{DocumentNumber}/warehouseready
 //
 // documentNumber - identifies the invoice
-func (c *Client) SetInvoiceAsDone(ctx context.Context, documentNumber string) (*SetInvoiceAsDoneResp, error) {
+func (c *Client) SetInvoiceAsDone(ctx context.Context, documentNumber string) (*Invoice, error) {
 	resp := &SetInvoiceAsDoneResp{}
 
 	uri := fmt.Sprintf("%s/%s/warehouseready", invoicesURI, documentNumber)
@@ -159,7 +161,7 @@ func (c *Client) SetInvoiceAsDone(ctx context.Context, documentNumber string) (*
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Invoice, nil
 }
 
 // PrintInvoice does _PUT https://api.fortnox.se/3/invoices/{DocumentNumber}/print
@@ -181,7 +183,7 @@ func (c *Client) PrintInvoice(ctx context.Context, documentNumber string) (*[]by
 // SendInvoiceAsEmail does _PUT https://api.fortnox.se/3/invoices/{DocumentNumber}/email
 //
 // documentNumber - identifies the invoice
-func (c *Client) SendInvoiceAsEmail(ctx context.Context, documentNumber string) (*SendInvoiceAsEmailResp, error) {
+func (c *Client) SendInvoiceAsEmail(ctx context.Context, documentNumber string) (*Invoice, error) {
 	resp := &SendInvoiceAsEmailResp{}
 
 	uri := fmt.Sprintf("%s/%s/email", invoicesURI, documentNumber)
@@ -191,7 +193,7 @@ func (c *Client) SendInvoiceAsEmail(ctx context.Context, documentNumber string) 
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Invoice, nil
 }
 
 // SendInvoiceAsReminder does _GET https://api.fortnox.se/3/invoices/{DocumentNumber}/printreminder
@@ -229,7 +231,7 @@ func (c *Client) PreviewInvoice(ctx context.Context, documentNumber string) (*[]
 // SendInvoiceAsEPrint does _GET https://api.fortnox.se/3/invoices/{DocumentNumber}/eprint
 //
 // documentNumber - identifies the invoice
-func (c *Client) SendInvoiceAsEPrint(ctx context.Context, documentNumber string) (*SendInvoiceAsEPrintResp, error) {
+func (c *Client) SendInvoiceAsEPrint(ctx context.Context, documentNumber string) (*Invoice, error) {
 	resp := &SendInvoiceAsEPrintResp{}
 
 	uri := fmt.Sprintf("%s/%s/eprint", invoicesURI, documentNumber)
@@ -239,13 +241,13 @@ func (c *Client) SendInvoiceAsEPrint(ctx context.Context, documentNumber string)
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Invoice, nil
 }
 
 // SendInvoiceAsEInvoice does _GET https://api.fortnox.se/3/invoices/{DocumentNumber}/einvoice
 //
 // documentNumber - identifies the invoice
-func (c *Client) SendInvoiceAsEInvoice(ctx context.Context, documentNumber string) (*SendInvoiceAsEInvoiceResp, error) {
+func (c *Client) SendInvoiceAsEInvoice(ctx context.Context, documentNumber string) (*Invoice, error) {
 	resp := &SendInvoiceAsEInvoiceResp{}
 
 	uri := fmt.Sprintf("%s/%s/einvoice", invoicesURI, documentNumber)
@@ -255,7 +257,7 @@ func (c *Client) SendInvoiceAsEInvoice(ctx context.Context, documentNumber strin
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Invoice, nil
 }
 
 type GetAllInvoicesQueryParams struct {
@@ -322,1676 +324,192 @@ const (
 )
 
 type GetInvoiceResp struct {
-	Invoice struct {
-		Url                    string `json:"@url"`
-		UrlTaxReductionList    string `json:"@urlTaxReductionList"`
-		AdministrationFee      int    `json:"AdministrationFee"`
-		AdministrationFeeVAT   int    `json:"AdministrationFeeVAT"`
-		Address1               string `json:"Address1"`
-		Address2               string `json:"Address2"`
-		Balance                int    `json:"Balance"`
-		BasisTaxReduction      int    `json:"BasisTaxReduction"`
-		Booked                 bool   `json:"Booked"`
-		Cancelled              bool   `json:"Cancelled"`
-		City                   string `json:"City"`
-		Comments               string `json:"Comments"`
-		ContractReference      int    `json:"ContractReference"`
-		ContributionPercent    int    `json:"ContributionPercent"`
-		ContributionValue      int    `json:"ContributionValue"`
-		Country                string `json:"Country"`
-		CostCenter             string `json:"CostCenter"`
-		Credit                 string `json:"Credit"`
-		CreditInvoiceReference string `json:"CreditInvoiceReference"`
-		Currency               string `json:"Currency"`
-		CurrencyRate           int    `json:"CurrencyRate"`
-		CurrencyUnit           int    `json:"CurrencyUnit"`
-		CustomerName           string `json:"CustomerName"`
-		CustomerNumber         string `json:"CustomerNumber"`
-		DeliveryAddress1       string `json:"DeliveryAddress1"`
-		DeliveryAddress2       string `json:"DeliveryAddress2"`
-		DeliveryCity           string `json:"DeliveryCity"`
-		DeliveryCountry        string `json:"DeliveryCountry"`
-		DeliveryDate           string `json:"DeliveryDate"`
-		DeliveryName           string `json:"DeliveryName"`
-		DeliveryZipCode        string `json:"DeliveryZipCode"`
-		DocumentNumber         string `json:"DocumentNumber"`
-		DueDate                string `json:"DueDate"`
-		EDIInformation         struct {
-			EDIGlobalLocationNumber         string `json:"EDIGlobalLocationNumber"`
-			EDIGlobalLocationNumberDelivery string `json:"EDIGlobalLocationNumberDelivery"`
-			EDIInvoiceExtra1                string `json:"EDIInvoiceExtra1"`
-			EDIInvoiceExtra2                string `json:"EDIInvoiceExtra2"`
-			EDIOurElectronicReference       string `json:"EDIOurElectronicReference"`
-			EDIYourElectronicReference      string `json:"EDIYourElectronicReference"`
-			EDIStatus                       string `json:"EDIStatus"`
-		} `json:"EDIInformation"`
-		EmailInformation struct {
-			EmailAddressFrom string `json:"EmailAddressFrom"`
-			EmailAddressTo   string `json:"EmailAddressTo"`
-			EmailAddressCC   string `json:"EmailAddressCC"`
-			EmailAddressBCC  string `json:"EmailAddressBCC"`
-			EmailSubject     string `json:"EmailSubject"`
-			EmailBody        string `json:"EmailBody"`
-		} `json:"EmailInformation"`
-		EUQuarterlyReport         bool   `json:"EUQuarterlyReport"`
-		ExternalInvoiceReference1 string `json:"ExternalInvoiceReference1"`
-		ExternalInvoiceReference2 string `json:"ExternalInvoiceReference2"`
-		Freight                   int    `json:"Freight"`
-		FreightVAT                int    `json:"FreightVAT"`
-		Gross                     int    `json:"Gross"`
-		HouseWork                 bool   `json:"HouseWork"`
-		InvoiceDate               string `json:"InvoiceDate"`
-		InvoicePeriodStart        string `json:"InvoicePeriodStart"`
-		InvoicePeriodEnd          string `json:"InvoicePeriodEnd"`
-		InvoicePeriodReference    string `json:"InvoicePeriodReference"`
-		InvoiceRows               []struct {
-			AccountNumber          int    `json:"AccountNumber"`
-			ArticleNumber          string `json:"ArticleNumber"`
-			ContributionPercent    string `json:"ContributionPercent"`
-			ContributionValue      string `json:"ContributionValue"`
-			CostCenter             string `json:"CostCenter"`
-			DeliveredQuantity      string `json:"DeliveredQuantity"`
-			Description            string `json:"Description"`
-			Discount               int    `json:"Discount"`
-			DiscountType           string `json:"DiscountType"`
-			HouseWork              bool   `json:"HouseWork"`
-			HouseWorkHoursToReport int    `json:"HouseWorkHoursToReport"`
-			HouseWorkType          string `json:"HouseWorkType"`
-			Price                  int    `json:"Price"`
-			PriceExcludingVAT      int    `json:"PriceExcludingVAT"`
-			Project                string `json:"Project"`
-			RowId                  int    `json:"RowId"`
-			StockPointCode         string `json:"StockPointCode"`
-			Total                  int    `json:"Total"`
-			TotalExcludingVAT      int    `json:"TotalExcludingVAT"`
-			Unit                   string `json:"Unit"`
-			VAT                    int    `json:"VAT"`
-		} `json:"InvoiceRows"`
-		InvoiceType string `json:"InvoiceType"`
-		Labels      []struct {
-			Id int `json:"Id"`
-		} `json:"Labels"`
-		Language           string `json:"Language"`
-		LastRemindDate     string `json:"LastRemindDate"`
-		Net                int    `json:"Net"`
-		NotCompleted       bool   `json:"NotCompleted"`
-		NoxFinans          bool   `json:"NoxFinans"`
-		OCR                string `json:"OCR"`
-		OfferReference     string `json:"OfferReference"`
-		OrderReference     string `json:"OrderReference"`
-		OrganisationNumber string `json:"OrganisationNumber"`
-		OurReference       string `json:"OurReference"`
-		PaymentWay         string `json:"PaymentWay"`
-		Phone1             string `json:"Phone1"`
-		Phone2             string `json:"Phone2"`
-		PriceList          string `json:"PriceList"`
-		PrintTemplate      string `json:"PrintTemplate"`
-		Project            string `json:"Project"`
-		WarehouseReady     bool   `json:"WarehouseReady"`
-		OutboundDate       string `json:"OutboundDate"`
-		Remarks            string `json:"Remarks"`
-		Reminders          int    `json:"Reminders"`
-		RoundOff           int    `json:"RoundOff"`
-		Sent               bool   `json:"Sent"`
-		TaxReduction       int    `json:"TaxReduction"`
-		TermsOfDelivery    string `json:"TermsOfDelivery"`
-		TermsOfPayment     string `json:"TermsOfPayment"`
-		TimeBasisReference int    `json:"TimeBasisReference"`
-		Total              int    `json:"Total"`
-		TotalToPay         int    `json:"TotalToPay"`
-		TotalVAT           int    `json:"TotalVAT"`
-		VATIncluded        bool   `json:"VATIncluded"`
-		VoucherNumber      int    `json:"VoucherNumber"`
-		VoucherSeries      string `json:"VoucherSeries"`
-		VoucherYear        int    `json:"VoucherYear"`
-		WayOfDelivery      string `json:"WayOfDelivery"`
-		YourOrderNumber    string `json:"YourOrderNumber"`
-		YourReference      string `json:"YourReference"`
-		ZipCode            string `json:"ZipCode"`
-		AccountingMethod   string `json:"AccountingMethod"`
-		TaxReductionType   string `json:"TaxReductionType"`
-		FinalPayDate       string `json:"FinalPayDate"`
-	} `json:"Invoice"`
+	Invoice Invoice `json:"Invoice"`
 }
 
 type UpdateInvoiceReq struct {
-	Invoice struct {
-		AdministrationFee      int    `json:"AdministrationFee"`
-		Address1               string `json:"Address1"`
-		Address2               string `json:"Address2"`
-		City                   string `json:"City"`
-		Comments               string `json:"Comments"`
-		Country                string `json:"Country"`
-		CostCenter             string `json:"CostCenter"`
-		CreditInvoiceReference string `json:"CreditInvoiceReference"`
-		Currency               string `json:"Currency"`
-		CurrencyRate           int    `json:"CurrencyRate"`
-		CurrencyUnit           int    `json:"CurrencyUnit"`
-		CustomerName           string `json:"CustomerName"`
-		CustomerNumber         string `json:"CustomerNumber"`
-		DeliveryAddress1       string `json:"DeliveryAddress1"`
-		DeliveryAddress2       string `json:"DeliveryAddress2"`
-		DeliveryCity           string `json:"DeliveryCity"`
-		DeliveryCountry        string `json:"DeliveryCountry"`
-		DeliveryDate           string `json:"DeliveryDate"`
-		DeliveryName           string `json:"DeliveryName"`
-		DeliveryZipCode        string `json:"DeliveryZipCode"`
-		DocumentNumber         string `json:"DocumentNumber"`
-		DueDate                string `json:"DueDate"`
-		EDIInformation         struct {
-			EDIGlobalLocationNumber         string `json:"EDIGlobalLocationNumber"`
-			EDIGlobalLocationNumberDelivery string `json:"EDIGlobalLocationNumberDelivery"`
-			EDIInvoiceExtra1                string `json:"EDIInvoiceExtra1"`
-			EDIInvoiceExtra2                string `json:"EDIInvoiceExtra2"`
-			EDIOurElectronicReference       string `json:"EDIOurElectronicReference"`
-			EDIYourElectronicReference      string `json:"EDIYourElectronicReference"`
-		} `json:"EDIInformation"`
-		EmailInformation struct {
-			EmailAddressFrom string `json:"EmailAddressFrom"`
-			EmailAddressTo   string `json:"EmailAddressTo"`
-			EmailAddressCC   string `json:"EmailAddressCC"`
-			EmailAddressBCC  string `json:"EmailAddressBCC"`
-			EmailSubject     string `json:"EmailSubject"`
-			EmailBody        string `json:"EmailBody"`
-		} `json:"EmailInformation"`
-		EUQuarterlyReport         bool   `json:"EUQuarterlyReport"`
-		ExternalInvoiceReference1 string `json:"ExternalInvoiceReference1"`
-		ExternalInvoiceReference2 string `json:"ExternalInvoiceReference2"`
-		Freight                   int    `json:"Freight"`
-		InvoiceDate               string `json:"InvoiceDate"`
-		InvoiceRows               []struct {
-			AccountNumber          int    `json:"AccountNumber"`
-			ArticleNumber          string `json:"ArticleNumber"`
-			CostCenter             string `json:"CostCenter"`
-			DeliveredQuantity      string `json:"DeliveredQuantity"`
-			Description            string `json:"Description"`
-			Discount               int    `json:"Discount"`
-			DiscountType           string `json:"DiscountType"`
-			HouseWork              bool   `json:"HouseWork"`
-			HouseWorkHoursToReport int    `json:"HouseWorkHoursToReport"`
-			HouseWorkType          string `json:"HouseWorkType"`
-			Price                  int    `json:"Price"`
-			Project                string `json:"Project"`
-			RowId                  int    `json:"RowId"`
-			StockPointCode         string `json:"StockPointCode"`
-			Unit                   string `json:"Unit"`
-			VAT                    int    `json:"VAT"`
-		} `json:"InvoiceRows"`
-		InvoiceType string `json:"InvoiceType"`
-		Labels      []struct {
-			Id int `json:"Id"`
-		} `json:"Labels"`
-		Language         string `json:"Language"`
-		NotCompleted     bool   `json:"NotCompleted"`
-		OCR              string `json:"OCR"`
-		OurReference     string `json:"OurReference"`
-		PaymentWay       string `json:"PaymentWay"`
-		Phone1           string `json:"Phone1"`
-		Phone2           string `json:"Phone2"`
-		PriceList        string `json:"PriceList"`
-		PrintTemplate    string `json:"PrintTemplate"`
-		Project          string `json:"Project"`
-		OutboundDate     string `json:"OutboundDate"`
-		Remarks          string `json:"Remarks"`
-		TermsOfDelivery  string `json:"TermsOfDelivery"`
-		TermsOfPayment   string `json:"TermsOfPayment"`
-		VATIncluded      bool   `json:"VATIncluded"`
-		WayOfDelivery    string `json:"WayOfDelivery"`
-		YourOrderNumber  string `json:"YourOrderNumber"`
-		YourReference    string `json:"YourReference"`
-		ZipCode          string `json:"ZipCode"`
-		TaxReductionType string `json:"TaxReductionType"`
-	} `json:"Invoice"`
+	Invoice Invoice `json:"Invoice"`
 }
 
 type UpdateInvoiceResp struct {
-	Invoice struct {
-		Url                    string `json:"@url"`
-		UrlTaxReductionList    string `json:"@urlTaxReductionList"`
-		AdministrationFee      int    `json:"AdministrationFee"`
-		AdministrationFeeVAT   int    `json:"AdministrationFeeVAT"`
-		Address1               string `json:"Address1"`
-		Address2               string `json:"Address2"`
-		Balance                int    `json:"Balance"`
-		BasisTaxReduction      int    `json:"BasisTaxReduction"`
-		Booked                 bool   `json:"Booked"`
-		Cancelled              bool   `json:"Cancelled"`
-		City                   string `json:"City"`
-		Comments               string `json:"Comments"`
-		ContractReference      int    `json:"ContractReference"`
-		ContributionPercent    int    `json:"ContributionPercent"`
-		ContributionValue      int    `json:"ContributionValue"`
-		Country                string `json:"Country"`
-		CostCenter             string `json:"CostCenter"`
-		Credit                 string `json:"Credit"`
-		CreditInvoiceReference string `json:"CreditInvoiceReference"`
-		Currency               string `json:"Currency"`
-		CurrencyRate           int    `json:"CurrencyRate"`
-		CurrencyUnit           int    `json:"CurrencyUnit"`
-		CustomerName           string `json:"CustomerName"`
-		CustomerNumber         string `json:"CustomerNumber"`
-		DeliveryAddress1       string `json:"DeliveryAddress1"`
-		DeliveryAddress2       string `json:"DeliveryAddress2"`
-		DeliveryCity           string `json:"DeliveryCity"`
-		DeliveryCountry        string `json:"DeliveryCountry"`
-		DeliveryDate           string `json:"DeliveryDate"`
-		DeliveryName           string `json:"DeliveryName"`
-		DeliveryZipCode        string `json:"DeliveryZipCode"`
-		DocumentNumber         string `json:"DocumentNumber"`
-		DueDate                string `json:"DueDate"`
-		EDIInformation         struct {
-			EDIGlobalLocationNumber         string `json:"EDIGlobalLocationNumber"`
-			EDIGlobalLocationNumberDelivery string `json:"EDIGlobalLocationNumberDelivery"`
-			EDIInvoiceExtra1                string `json:"EDIInvoiceExtra1"`
-			EDIInvoiceExtra2                string `json:"EDIInvoiceExtra2"`
-			EDIOurElectronicReference       string `json:"EDIOurElectronicReference"`
-			EDIYourElectronicReference      string `json:"EDIYourElectronicReference"`
-			EDIStatus                       string `json:"EDIStatus"`
-		} `json:"EDIInformation"`
-		EmailInformation struct {
-			EmailAddressFrom string `json:"EmailAddressFrom"`
-			EmailAddressTo   string `json:"EmailAddressTo"`
-			EmailAddressCC   string `json:"EmailAddressCC"`
-			EmailAddressBCC  string `json:"EmailAddressBCC"`
-			EmailSubject     string `json:"EmailSubject"`
-			EmailBody        string `json:"EmailBody"`
-		} `json:"EmailInformation"`
-		EUQuarterlyReport         bool   `json:"EUQuarterlyReport"`
-		ExternalInvoiceReference1 string `json:"ExternalInvoiceReference1"`
-		ExternalInvoiceReference2 string `json:"ExternalInvoiceReference2"`
-		Freight                   int    `json:"Freight"`
-		FreightVAT                int    `json:"FreightVAT"`
-		Gross                     int    `json:"Gross"`
-		HouseWork                 bool   `json:"HouseWork"`
-		InvoiceDate               string `json:"InvoiceDate"`
-		InvoicePeriodStart        string `json:"InvoicePeriodStart"`
-		InvoicePeriodEnd          string `json:"InvoicePeriodEnd"`
-		InvoicePeriodReference    string `json:"InvoicePeriodReference"`
-		InvoiceRows               []struct {
-			AccountNumber          int    `json:"AccountNumber"`
-			ArticleNumber          string `json:"ArticleNumber"`
-			ContributionPercent    string `json:"ContributionPercent"`
-			ContributionValue      string `json:"ContributionValue"`
-			CostCenter             string `json:"CostCenter"`
-			DeliveredQuantity      string `json:"DeliveredQuantity"`
-			Description            string `json:"Description"`
-			Discount               int    `json:"Discount"`
-			DiscountType           string `json:"DiscountType"`
-			HouseWork              bool   `json:"HouseWork"`
-			HouseWorkHoursToReport int    `json:"HouseWorkHoursToReport"`
-			HouseWorkType          string `json:"HouseWorkType"`
-			Price                  int    `json:"Price"`
-			PriceExcludingVAT      int    `json:"PriceExcludingVAT"`
-			Project                string `json:"Project"`
-			RowId                  int    `json:"RowId"`
-			StockPointCode         string `json:"StockPointCode"`
-			Total                  int    `json:"Total"`
-			TotalExcludingVAT      int    `json:"TotalExcludingVAT"`
-			Unit                   string `json:"Unit"`
-			VAT                    int    `json:"VAT"`
-		} `json:"InvoiceRows"`
-		InvoiceType string `json:"InvoiceType"`
-		Labels      []struct {
-			Id int `json:"Id"`
-		} `json:"Labels"`
-		Language           string `json:"Language"`
-		LastRemindDate     string `json:"LastRemindDate"`
-		Net                int    `json:"Net"`
-		NotCompleted       bool   `json:"NotCompleted"`
-		NoxFinans          bool   `json:"NoxFinans"`
-		OCR                string `json:"OCR"`
-		OfferReference     string `json:"OfferReference"`
-		OrderReference     string `json:"OrderReference"`
-		OrganisationNumber string `json:"OrganisationNumber"`
-		OurReference       string `json:"OurReference"`
-		PaymentWay         string `json:"PaymentWay"`
-		Phone1             string `json:"Phone1"`
-		Phone2             string `json:"Phone2"`
-		PriceList          string `json:"PriceList"`
-		PrintTemplate      string `json:"PrintTemplate"`
-		Project            string `json:"Project"`
-		WarehouseReady     bool   `json:"WarehouseReady"`
-		OutboundDate       string `json:"OutboundDate"`
-		Remarks            string `json:"Remarks"`
-		Reminders          int    `json:"Reminders"`
-		RoundOff           int    `json:"RoundOff"`
-		Sent               bool   `json:"Sent"`
-		TaxReduction       int    `json:"TaxReduction"`
-		TermsOfDelivery    string `json:"TermsOfDelivery"`
-		TermsOfPayment     string `json:"TermsOfPayment"`
-		TimeBasisReference int    `json:"TimeBasisReference"`
-		Total              int    `json:"Total"`
-		TotalToPay         int    `json:"TotalToPay"`
-		TotalVAT           int    `json:"TotalVAT"`
-		VATIncluded        bool   `json:"VATIncluded"`
-		VoucherNumber      int    `json:"VoucherNumber"`
-		VoucherSeries      string `json:"VoucherSeries"`
-		VoucherYear        int    `json:"VoucherYear"`
-		WayOfDelivery      string `json:"WayOfDelivery"`
-		YourOrderNumber    string `json:"YourOrderNumber"`
-		YourReference      string `json:"YourReference"`
-		ZipCode            string `json:"ZipCode"`
-		AccountingMethod   string `json:"AccountingMethod"`
-		TaxReductionType   string `json:"TaxReductionType"`
-		FinalPayDate       string `json:"FinalPayDate"`
-	} `json:"Invoice"`
+	Invoice Invoice `json:"Invoice"`
 }
 
 type GetAllInvoicesResp struct {
-	Invoices []struct {
-		Url                       string `json:"@url"`
-		Balance                   int    `json:"Balance"`
-		Booked                    bool   `json:"Booked"`
-		Cancelled                 bool   `json:"Cancelled"`
-		CostCenter                string `json:"CostCenter"`
-		Currency                  string `json:"Currency"`
-		CurrencyRate              int    `json:"CurrencyRate"`
-		CurrencyUnit              int    `json:"CurrencyUnit"`
-		CustomerName              string `json:"CustomerName"`
-		CustomerNumber            string `json:"CustomerNumber"`
-		DocumentNumber            string `json:"DocumentNumber"`
-		DueDate                   string `json:"DueDate"`
-		ExternalInvoiceReference1 string `json:"ExternalInvoiceReference1"`
-		ExternalInvoiceReference2 string `json:"ExternalInvoiceReference2"`
-		InvoiceDate               string `json:"InvoiceDate"`
-		InvoiceType               string `json:"InvoiceType"`
-		NoxFinans                 bool   `json:"NoxFinans"`
-		OCR                       string `json:"OCR"`
-		VoucherNumber             int    `json:"VoucherNumber"`
-		VoucherSeries             string `json:"VoucherSeries"`
-		VoucherYear               int    `json:"VoucherYear"`
-		WayOfDelivery             string `json:"WayOfDelivery"`
-		TermsOfPayment            string `json:"TermsOfPayment"`
-		Project                   string `json:"Project"`
-		Sent                      bool   `json:"Sent"`
-		Total                     int    `json:"Total"`
-		FinalPayDate              string `json:"FinalPayDate"`
-	} `json:"Invoices"`
+	Invoices []Invoice `json:"Invoices"`
 }
 
 type CreateInvoiceReq struct {
-	Invoice struct {
-		AdministrationFee      int    `json:"AdministrationFee"`
-		Address1               string `json:"Address1"`
-		Address2               string `json:"Address2"`
-		City                   string `json:"City"`
-		Comments               string `json:"Comments"`
-		Country                string `json:"Country"`
-		CostCenter             string `json:"CostCenter"`
-		CreditInvoiceReference string `json:"CreditInvoiceReference"`
-		Currency               string `json:"Currency"`
-		CurrencyRate           int    `json:"CurrencyRate"`
-		CurrencyUnit           int    `json:"CurrencyUnit"`
-		CustomerName           string `json:"CustomerName"`
-		CustomerNumber         string `json:"CustomerNumber"`
-		DeliveryAddress1       string `json:"DeliveryAddress1"`
-		DeliveryAddress2       string `json:"DeliveryAddress2"`
-		DeliveryCity           string `json:"DeliveryCity"`
-		DeliveryCountry        string `json:"DeliveryCountry"`
-		DeliveryDate           string `json:"DeliveryDate"`
-		DeliveryName           string `json:"DeliveryName"`
-		DeliveryZipCode        string `json:"DeliveryZipCode"`
-		DocumentNumber         string `json:"DocumentNumber"`
-		DueDate                string `json:"DueDate"`
-		EDIInformation         struct {
-			EDIGlobalLocationNumber         string `json:"EDIGlobalLocationNumber"`
-			EDIGlobalLocationNumberDelivery string `json:"EDIGlobalLocationNumberDelivery"`
-			EDIInvoiceExtra1                string `json:"EDIInvoiceExtra1"`
-			EDIInvoiceExtra2                string `json:"EDIInvoiceExtra2"`
-			EDIOurElectronicReference       string `json:"EDIOurElectronicReference"`
-			EDIYourElectronicReference      string `json:"EDIYourElectronicReference"`
-		} `json:"EDIInformation"`
-		EmailInformation struct {
-			EmailAddressFrom string `json:"EmailAddressFrom"`
-			EmailAddressTo   string `json:"EmailAddressTo"`
-			EmailAddressCC   string `json:"EmailAddressCC"`
-			EmailAddressBCC  string `json:"EmailAddressBCC"`
-			EmailSubject     string `json:"EmailSubject"`
-			EmailBody        string `json:"EmailBody"`
-		} `json:"EmailInformation"`
-		EUQuarterlyReport         bool   `json:"EUQuarterlyReport"`
-		ExternalInvoiceReference1 string `json:"ExternalInvoiceReference1"`
-		ExternalInvoiceReference2 string `json:"ExternalInvoiceReference2"`
-		Freight                   int    `json:"Freight"`
-		InvoiceDate               string `json:"InvoiceDate"`
-		InvoiceRows               []struct {
-			AccountNumber          int    `json:"AccountNumber"`
-			ArticleNumber          string `json:"ArticleNumber"`
-			CostCenter             string `json:"CostCenter"`
-			DeliveredQuantity      string `json:"DeliveredQuantity"`
-			Description            string `json:"Description"`
-			Discount               int    `json:"Discount"`
-			DiscountType           string `json:"DiscountType"`
-			HouseWork              bool   `json:"HouseWork"`
-			HouseWorkHoursToReport int    `json:"HouseWorkHoursToReport"`
-			HouseWorkType          string `json:"HouseWorkType"`
-			Price                  int    `json:"Price"`
-			Project                string `json:"Project"`
-			RowId                  int    `json:"RowId"`
-			StockPointCode         string `json:"StockPointCode"`
-			Unit                   string `json:"Unit"`
-			VAT                    int    `json:"VAT"`
-		} `json:"InvoiceRows"`
-		InvoiceType string `json:"InvoiceType"`
-		Labels      []struct {
-			Id int `json:"Id"`
-		} `json:"Labels"`
-		Language         string `json:"Language"`
-		NotCompleted     bool   `json:"NotCompleted"`
-		OCR              string `json:"OCR"`
-		OurReference     string `json:"OurReference"`
-		PaymentWay       string `json:"PaymentWay"`
-		Phone1           string `json:"Phone1"`
-		Phone2           string `json:"Phone2"`
-		PriceList        string `json:"PriceList"`
-		PrintTemplate    string `json:"PrintTemplate"`
-		Project          string `json:"Project"`
-		OutboundDate     string `json:"OutboundDate"`
-		Remarks          string `json:"Remarks"`
-		TermsOfDelivery  string `json:"TermsOfDelivery"`
-		TermsOfPayment   string `json:"TermsOfPayment"`
-		VATIncluded      bool   `json:"VATIncluded"`
-		WayOfDelivery    string `json:"WayOfDelivery"`
-		YourOrderNumber  string `json:"YourOrderNumber"`
-		YourReference    string `json:"YourReference"`
-		ZipCode          string `json:"ZipCode"`
-		TaxReductionType string `json:"TaxReductionType"`
-	} `json:"Invoice"`
+	Invoice Invoice `json:"Invoice"`
 }
 
 type CreateInvoiceResp struct {
-	Invoice struct {
-		Url                    string `json:"@url"`
-		UrlTaxReductionList    string `json:"@urlTaxReductionList"`
-		AdministrationFee      int    `json:"AdministrationFee"`
-		AdministrationFeeVAT   int    `json:"AdministrationFeeVAT"`
-		Address1               string `json:"Address1"`
-		Address2               string `json:"Address2"`
-		Balance                int    `json:"Balance"`
-		BasisTaxReduction      int    `json:"BasisTaxReduction"`
-		Booked                 bool   `json:"Booked"`
-		Cancelled              bool   `json:"Cancelled"`
-		City                   string `json:"City"`
-		Comments               string `json:"Comments"`
-		ContractReference      int    `json:"ContractReference"`
-		ContributionPercent    int    `json:"ContributionPercent"`
-		ContributionValue      int    `json:"ContributionValue"`
-		Country                string `json:"Country"`
-		CostCenter             string `json:"CostCenter"`
-		Credit                 string `json:"Credit"`
-		CreditInvoiceReference string `json:"CreditInvoiceReference"`
-		Currency               string `json:"Currency"`
-		CurrencyRate           int    `json:"CurrencyRate"`
-		CurrencyUnit           int    `json:"CurrencyUnit"`
-		CustomerName           string `json:"CustomerName"`
-		CustomerNumber         string `json:"CustomerNumber"`
-		DeliveryAddress1       string `json:"DeliveryAddress1"`
-		DeliveryAddress2       string `json:"DeliveryAddress2"`
-		DeliveryCity           string `json:"DeliveryCity"`
-		DeliveryCountry        string `json:"DeliveryCountry"`
-		DeliveryDate           string `json:"DeliveryDate"`
-		DeliveryName           string `json:"DeliveryName"`
-		DeliveryZipCode        string `json:"DeliveryZipCode"`
-		DocumentNumber         string `json:"DocumentNumber"`
-		DueDate                string `json:"DueDate"`
-		EDIInformation         struct {
-			EDIGlobalLocationNumber         string `json:"EDIGlobalLocationNumber"`
-			EDIGlobalLocationNumberDelivery string `json:"EDIGlobalLocationNumberDelivery"`
-			EDIInvoiceExtra1                string `json:"EDIInvoiceExtra1"`
-			EDIInvoiceExtra2                string `json:"EDIInvoiceExtra2"`
-			EDIOurElectronicReference       string `json:"EDIOurElectronicReference"`
-			EDIYourElectronicReference      string `json:"EDIYourElectronicReference"`
-			EDIStatus                       string `json:"EDIStatus"`
-		} `json:"EDIInformation"`
-		EmailInformation struct {
-			EmailAddressFrom string `json:"EmailAddressFrom"`
-			EmailAddressTo   string `json:"EmailAddressTo"`
-			EmailAddressCC   string `json:"EmailAddressCC"`
-			EmailAddressBCC  string `json:"EmailAddressBCC"`
-			EmailSubject     string `json:"EmailSubject"`
-			EmailBody        string `json:"EmailBody"`
-		} `json:"EmailInformation"`
-		EUQuarterlyReport         bool   `json:"EUQuarterlyReport"`
-		ExternalInvoiceReference1 string `json:"ExternalInvoiceReference1"`
-		ExternalInvoiceReference2 string `json:"ExternalInvoiceReference2"`
-		Freight                   int    `json:"Freight"`
-		FreightVAT                int    `json:"FreightVAT"`
-		Gross                     int    `json:"Gross"`
-		HouseWork                 bool   `json:"HouseWork"`
-		InvoiceDate               string `json:"InvoiceDate"`
-		InvoicePeriodStart        string `json:"InvoicePeriodStart"`
-		InvoicePeriodEnd          string `json:"InvoicePeriodEnd"`
-		InvoicePeriodReference    string `json:"InvoicePeriodReference"`
-		InvoiceRows               []struct {
-			AccountNumber          int    `json:"AccountNumber"`
-			ArticleNumber          string `json:"ArticleNumber"`
-			ContributionPercent    string `json:"ContributionPercent"`
-			ContributionValue      string `json:"ContributionValue"`
-			CostCenter             string `json:"CostCenter"`
-			DeliveredQuantity      string `json:"DeliveredQuantity"`
-			Description            string `json:"Description"`
-			Discount               int    `json:"Discount"`
-			DiscountType           string `json:"DiscountType"`
-			HouseWork              bool   `json:"HouseWork"`
-			HouseWorkHoursToReport int    `json:"HouseWorkHoursToReport"`
-			HouseWorkType          string `json:"HouseWorkType"`
-			Price                  int    `json:"Price"`
-			PriceExcludingVAT      int    `json:"PriceExcludingVAT"`
-			Project                string `json:"Project"`
-			RowId                  int    `json:"RowId"`
-			StockPointCode         string `json:"StockPointCode"`
-			Total                  int    `json:"Total"`
-			TotalExcludingVAT      int    `json:"TotalExcludingVAT"`
-			Unit                   string `json:"Unit"`
-			VAT                    int    `json:"VAT"`
-		} `json:"InvoiceRows"`
-		InvoiceType string `json:"InvoiceType"`
-		Labels      []struct {
-			Id int `json:"Id"`
-		} `json:"Labels"`
-		Language           string `json:"Language"`
-		LastRemindDate     string `json:"LastRemindDate"`
-		Net                int    `json:"Net"`
-		NotCompleted       bool   `json:"NotCompleted"`
-		NoxFinans          bool   `json:"NoxFinans"`
-		OCR                string `json:"OCR"`
-		OfferReference     string `json:"OfferReference"`
-		OrderReference     string `json:"OrderReference"`
-		OrganisationNumber string `json:"OrganisationNumber"`
-		OurReference       string `json:"OurReference"`
-		PaymentWay         string `json:"PaymentWay"`
-		Phone1             string `json:"Phone1"`
-		Phone2             string `json:"Phone2"`
-		PriceList          string `json:"PriceList"`
-		PrintTemplate      string `json:"PrintTemplate"`
-		Project            string `json:"Project"`
-		WarehouseReady     bool   `json:"WarehouseReady"`
-		OutboundDate       string `json:"OutboundDate"`
-		Remarks            string `json:"Remarks"`
-		Reminders          int    `json:"Reminders"`
-		RoundOff           int    `json:"RoundOff"`
-		Sent               bool   `json:"Sent"`
-		TaxReduction       int    `json:"TaxReduction"`
-		TermsOfDelivery    string `json:"TermsOfDelivery"`
-		TermsOfPayment     string `json:"TermsOfPayment"`
-		TimeBasisReference int    `json:"TimeBasisReference"`
-		Total              int    `json:"Total"`
-		TotalToPay         int    `json:"TotalToPay"`
-		TotalVAT           int    `json:"TotalVAT"`
-		VATIncluded        bool   `json:"VATIncluded"`
-		VoucherNumber      int    `json:"VoucherNumber"`
-		VoucherSeries      string `json:"VoucherSeries"`
-		VoucherYear        int    `json:"VoucherYear"`
-		WayOfDelivery      string `json:"WayOfDelivery"`
-		YourOrderNumber    string `json:"YourOrderNumber"`
-		YourReference      string `json:"YourReference"`
-		ZipCode            string `json:"ZipCode"`
-		AccountingMethod   string `json:"AccountingMethod"`
-		TaxReductionType   string `json:"TaxReductionType"`
-		FinalPayDate       string `json:"FinalPayDate"`
-	} `json:"Invoice"`
+	Invoice Invoice `json:"Invoice"`
 }
 
 type BookKeepInvoiceResp struct {
-	Invoice struct {
-		Url                    string `json:"@url"`
-		UrlTaxReductionList    string `json:"@urlTaxReductionList"`
-		AdministrationFee      int    `json:"AdministrationFee"`
-		AdministrationFeeVAT   int    `json:"AdministrationFeeVAT"`
-		Address1               string `json:"Address1"`
-		Address2               string `json:"Address2"`
-		Balance                int    `json:"Balance"`
-		BasisTaxReduction      int    `json:"BasisTaxReduction"`
-		Booked                 bool   `json:"Booked"`
-		Cancelled              bool   `json:"Cancelled"`
-		City                   string `json:"City"`
-		Comments               string `json:"Comments"`
-		ContractReference      int    `json:"ContractReference"`
-		ContributionPercent    int    `json:"ContributionPercent"`
-		ContributionValue      int    `json:"ContributionValue"`
-		Country                string `json:"Country"`
-		CostCenter             string `json:"CostCenter"`
-		Credit                 string `json:"Credit"`
-		CreditInvoiceReference string `json:"CreditInvoiceReference"`
-		Currency               string `json:"Currency"`
-		CurrencyRate           int    `json:"CurrencyRate"`
-		CurrencyUnit           int    `json:"CurrencyUnit"`
-		CustomerName           string `json:"CustomerName"`
-		CustomerNumber         string `json:"CustomerNumber"`
-		DeliveryAddress1       string `json:"DeliveryAddress1"`
-		DeliveryAddress2       string `json:"DeliveryAddress2"`
-		DeliveryCity           string `json:"DeliveryCity"`
-		DeliveryCountry        string `json:"DeliveryCountry"`
-		DeliveryDate           string `json:"DeliveryDate"`
-		DeliveryName           string `json:"DeliveryName"`
-		DeliveryZipCode        string `json:"DeliveryZipCode"`
-		DocumentNumber         string `json:"DocumentNumber"`
-		DueDate                string `json:"DueDate"`
-		EDIInformation         struct {
-			EDIGlobalLocationNumber         string `json:"EDIGlobalLocationNumber"`
-			EDIGlobalLocationNumberDelivery string `json:"EDIGlobalLocationNumberDelivery"`
-			EDIInvoiceExtra1                string `json:"EDIInvoiceExtra1"`
-			EDIInvoiceExtra2                string `json:"EDIInvoiceExtra2"`
-			EDIOurElectronicReference       string `json:"EDIOurElectronicReference"`
-			EDIYourElectronicReference      string `json:"EDIYourElectronicReference"`
-			EDIStatus                       string `json:"EDIStatus"`
-		} `json:"EDIInformation"`
-		EmailInformation struct {
-			EmailAddressFrom string `json:"EmailAddressFrom"`
-			EmailAddressTo   string `json:"EmailAddressTo"`
-			EmailAddressCC   string `json:"EmailAddressCC"`
-			EmailAddressBCC  string `json:"EmailAddressBCC"`
-			EmailSubject     string `json:"EmailSubject"`
-			EmailBody        string `json:"EmailBody"`
-		} `json:"EmailInformation"`
-		EUQuarterlyReport         bool   `json:"EUQuarterlyReport"`
-		ExternalInvoiceReference1 string `json:"ExternalInvoiceReference1"`
-		ExternalInvoiceReference2 string `json:"ExternalInvoiceReference2"`
-		Freight                   int    `json:"Freight"`
-		FreightVAT                int    `json:"FreightVAT"`
-		Gross                     int    `json:"Gross"`
-		HouseWork                 bool   `json:"HouseWork"`
-		InvoiceDate               string `json:"InvoiceDate"`
-		InvoicePeriodStart        string `json:"InvoicePeriodStart"`
-		InvoicePeriodEnd          string `json:"InvoicePeriodEnd"`
-		InvoicePeriodReference    string `json:"InvoicePeriodReference"`
-		InvoiceRows               []struct {
-			AccountNumber          int    `json:"AccountNumber"`
-			ArticleNumber          string `json:"ArticleNumber"`
-			ContributionPercent    string `json:"ContributionPercent"`
-			ContributionValue      string `json:"ContributionValue"`
-			CostCenter             string `json:"CostCenter"`
-			DeliveredQuantity      string `json:"DeliveredQuantity"`
-			Description            string `json:"Description"`
-			Discount               int    `json:"Discount"`
-			DiscountType           string `json:"DiscountType"`
-			HouseWork              bool   `json:"HouseWork"`
-			HouseWorkHoursToReport int    `json:"HouseWorkHoursToReport"`
-			HouseWorkType          string `json:"HouseWorkType"`
-			Price                  int    `json:"Price"`
-			PriceExcludingVAT      int    `json:"PriceExcludingVAT"`
-			Project                string `json:"Project"`
-			RowId                  int    `json:"RowId"`
-			StockPointCode         string `json:"StockPointCode"`
-			Total                  int    `json:"Total"`
-			TotalExcludingVAT      int    `json:"TotalExcludingVAT"`
-			Unit                   string `json:"Unit"`
-			VAT                    int    `json:"VAT"`
-		} `json:"InvoiceRows"`
-		InvoiceType string `json:"InvoiceType"`
-		Labels      []struct {
-			Id int `json:"Id"`
-		} `json:"Labels"`
-		Language           string `json:"Language"`
-		LastRemindDate     string `json:"LastRemindDate"`
-		Net                int    `json:"Net"`
-		NotCompleted       bool   `json:"NotCompleted"`
-		NoxFinans          bool   `json:"NoxFinans"`
-		OCR                string `json:"OCR"`
-		OfferReference     string `json:"OfferReference"`
-		OrderReference     string `json:"OrderReference"`
-		OrganisationNumber string `json:"OrganisationNumber"`
-		OurReference       string `json:"OurReference"`
-		PaymentWay         string `json:"PaymentWay"`
-		Phone1             string `json:"Phone1"`
-		Phone2             string `json:"Phone2"`
-		PriceList          string `json:"PriceList"`
-		PrintTemplate      string `json:"PrintTemplate"`
-		Project            string `json:"Project"`
-		WarehouseReady     bool   `json:"WarehouseReady"`
-		OutboundDate       string `json:"OutboundDate"`
-		Remarks            string `json:"Remarks"`
-		Reminders          int    `json:"Reminders"`
-		RoundOff           int    `json:"RoundOff"`
-		Sent               bool   `json:"Sent"`
-		TaxReduction       int    `json:"TaxReduction"`
-		TermsOfDelivery    string `json:"TermsOfDelivery"`
-		TermsOfPayment     string `json:"TermsOfPayment"`
-		TimeBasisReference int    `json:"TimeBasisReference"`
-		Total              int    `json:"Total"`
-		TotalToPay         int    `json:"TotalToPay"`
-		TotalVAT           int    `json:"TotalVAT"`
-		VATIncluded        bool   `json:"VATIncluded"`
-		VoucherNumber      int    `json:"VoucherNumber"`
-		VoucherSeries      string `json:"VoucherSeries"`
-		VoucherYear        int    `json:"VoucherYear"`
-		WayOfDelivery      string `json:"WayOfDelivery"`
-		YourOrderNumber    string `json:"YourOrderNumber"`
-		YourReference      string `json:"YourReference"`
-		ZipCode            string `json:"ZipCode"`
-		AccountingMethod   string `json:"AccountingMethod"`
-		TaxReductionType   string `json:"TaxReductionType"`
-		FinalPayDate       string `json:"FinalPayDate"`
-	} `json:"Invoice"`
+	Invoice Invoice `json:"Invoice"`
 }
 
 type CancelInvoiceResp struct {
-	Invoice struct {
-		Url                    string `json:"@url"`
-		UrlTaxReductionList    string `json:"@urlTaxReductionList"`
-		AdministrationFee      int    `json:"AdministrationFee"`
-		AdministrationFeeVAT   int    `json:"AdministrationFeeVAT"`
-		Address1               string `json:"Address1"`
-		Address2               string `json:"Address2"`
-		Balance                int    `json:"Balance"`
-		BasisTaxReduction      int    `json:"BasisTaxReduction"`
-		Booked                 bool   `json:"Booked"`
-		Cancelled              bool   `json:"Cancelled"`
-		City                   string `json:"City"`
-		Comments               string `json:"Comments"`
-		ContractReference      int    `json:"ContractReference"`
-		ContributionPercent    int    `json:"ContributionPercent"`
-		ContributionValue      int    `json:"ContributionValue"`
-		Country                string `json:"Country"`
-		CostCenter             string `json:"CostCenter"`
-		Credit                 string `json:"Credit"`
-		CreditInvoiceReference string `json:"CreditInvoiceReference"`
-		Currency               string `json:"Currency"`
-		CurrencyRate           int    `json:"CurrencyRate"`
-		CurrencyUnit           int    `json:"CurrencyUnit"`
-		CustomerName           string `json:"CustomerName"`
-		CustomerNumber         string `json:"CustomerNumber"`
-		DeliveryAddress1       string `json:"DeliveryAddress1"`
-		DeliveryAddress2       string `json:"DeliveryAddress2"`
-		DeliveryCity           string `json:"DeliveryCity"`
-		DeliveryCountry        string `json:"DeliveryCountry"`
-		DeliveryDate           string `json:"DeliveryDate"`
-		DeliveryName           string `json:"DeliveryName"`
-		DeliveryZipCode        string `json:"DeliveryZipCode"`
-		DocumentNumber         string `json:"DocumentNumber"`
-		DueDate                string `json:"DueDate"`
-		EDIInformation         struct {
-			EDIGlobalLocationNumber         string `json:"EDIGlobalLocationNumber"`
-			EDIGlobalLocationNumberDelivery string `json:"EDIGlobalLocationNumberDelivery"`
-			EDIInvoiceExtra1                string `json:"EDIInvoiceExtra1"`
-			EDIInvoiceExtra2                string `json:"EDIInvoiceExtra2"`
-			EDIOurElectronicReference       string `json:"EDIOurElectronicReference"`
-			EDIYourElectronicReference      string `json:"EDIYourElectronicReference"`
-			EDIStatus                       string `json:"EDIStatus"`
-		} `json:"EDIInformation"`
-		EmailInformation struct {
-			EmailAddressFrom string `json:"EmailAddressFrom"`
-			EmailAddressTo   string `json:"EmailAddressTo"`
-			EmailAddressCC   string `json:"EmailAddressCC"`
-			EmailAddressBCC  string `json:"EmailAddressBCC"`
-			EmailSubject     string `json:"EmailSubject"`
-			EmailBody        string `json:"EmailBody"`
-		} `json:"EmailInformation"`
-		EUQuarterlyReport         bool   `json:"EUQuarterlyReport"`
-		ExternalInvoiceReference1 string `json:"ExternalInvoiceReference1"`
-		ExternalInvoiceReference2 string `json:"ExternalInvoiceReference2"`
-		Freight                   int    `json:"Freight"`
-		FreightVAT                int    `json:"FreightVAT"`
-		Gross                     int    `json:"Gross"`
-		HouseWork                 bool   `json:"HouseWork"`
-		InvoiceDate               string `json:"InvoiceDate"`
-		InvoicePeriodStart        string `json:"InvoicePeriodStart"`
-		InvoicePeriodEnd          string `json:"InvoicePeriodEnd"`
-		InvoicePeriodReference    string `json:"InvoicePeriodReference"`
-		InvoiceRows               []struct {
-			AccountNumber          int    `json:"AccountNumber"`
-			ArticleNumber          string `json:"ArticleNumber"`
-			ContributionPercent    string `json:"ContributionPercent"`
-			ContributionValue      string `json:"ContributionValue"`
-			CostCenter             string `json:"CostCenter"`
-			DeliveredQuantity      string `json:"DeliveredQuantity"`
-			Description            string `json:"Description"`
-			Discount               int    `json:"Discount"`
-			DiscountType           string `json:"DiscountType"`
-			HouseWork              bool   `json:"HouseWork"`
-			HouseWorkHoursToReport int    `json:"HouseWorkHoursToReport"`
-			HouseWorkType          string `json:"HouseWorkType"`
-			Price                  int    `json:"Price"`
-			PriceExcludingVAT      int    `json:"PriceExcludingVAT"`
-			Project                string `json:"Project"`
-			RowId                  int    `json:"RowId"`
-			StockPointCode         string `json:"StockPointCode"`
-			Total                  int    `json:"Total"`
-			TotalExcludingVAT      int    `json:"TotalExcludingVAT"`
-			Unit                   string `json:"Unit"`
-			VAT                    int    `json:"VAT"`
-		} `json:"InvoiceRows"`
-		InvoiceType string `json:"InvoiceType"`
-		Labels      []struct {
-			Id int `json:"Id"`
-		} `json:"Labels"`
-		Language           string `json:"Language"`
-		LastRemindDate     string `json:"LastRemindDate"`
-		Net                int    `json:"Net"`
-		NotCompleted       bool   `json:"NotCompleted"`
-		NoxFinans          bool   `json:"NoxFinans"`
-		OCR                string `json:"OCR"`
-		OfferReference     string `json:"OfferReference"`
-		OrderReference     string `json:"OrderReference"`
-		OrganisationNumber string `json:"OrganisationNumber"`
-		OurReference       string `json:"OurReference"`
-		PaymentWay         string `json:"PaymentWay"`
-		Phone1             string `json:"Phone1"`
-		Phone2             string `json:"Phone2"`
-		PriceList          string `json:"PriceList"`
-		PrintTemplate      string `json:"PrintTemplate"`
-		Project            string `json:"Project"`
-		WarehouseReady     bool   `json:"WarehouseReady"`
-		OutboundDate       string `json:"OutboundDate"`
-		Remarks            string `json:"Remarks"`
-		Reminders          int    `json:"Reminders"`
-		RoundOff           int    `json:"RoundOff"`
-		Sent               bool   `json:"Sent"`
-		TaxReduction       int    `json:"TaxReduction"`
-		TermsOfDelivery    string `json:"TermsOfDelivery"`
-		TermsOfPayment     string `json:"TermsOfPayment"`
-		TimeBasisReference int    `json:"TimeBasisReference"`
-		Total              int    `json:"Total"`
-		TotalToPay         int    `json:"TotalToPay"`
-		TotalVAT           int    `json:"TotalVAT"`
-		VATIncluded        bool   `json:"VATIncluded"`
-		VoucherNumber      int    `json:"VoucherNumber"`
-		VoucherSeries      string `json:"VoucherSeries"`
-		VoucherYear        int    `json:"VoucherYear"`
-		WayOfDelivery      string `json:"WayOfDelivery"`
-		YourOrderNumber    string `json:"YourOrderNumber"`
-		YourReference      string `json:"YourReference"`
-		ZipCode            string `json:"ZipCode"`
-		AccountingMethod   string `json:"AccountingMethod"`
-		TaxReductionType   string `json:"TaxReductionType"`
-		FinalPayDate       string `json:"FinalPayDate"`
-	} `json:"Invoice"`
+	Invoice Invoice `json:"Invoice"`
 }
 
 type CreditInvoiceResp struct {
-	Invoice struct {
-		Url                    string `json:"@url"`
-		UrlTaxReductionList    string `json:"@urlTaxReductionList"`
-		AdministrationFee      int    `json:"AdministrationFee"`
-		AdministrationFeeVAT   int    `json:"AdministrationFeeVAT"`
-		Address1               string `json:"Address1"`
-		Address2               string `json:"Address2"`
-		Balance                int    `json:"Balance"`
-		BasisTaxReduction      int    `json:"BasisTaxReduction"`
-		Booked                 bool   `json:"Booked"`
-		Cancelled              bool   `json:"Cancelled"`
-		City                   string `json:"City"`
-		Comments               string `json:"Comments"`
-		ContractReference      int    `json:"ContractReference"`
-		ContributionPercent    int    `json:"ContributionPercent"`
-		ContributionValue      int    `json:"ContributionValue"`
-		Country                string `json:"Country"`
-		CostCenter             string `json:"CostCenter"`
-		Credit                 string `json:"Credit"`
-		CreditInvoiceReference string `json:"CreditInvoiceReference"`
-		Currency               string `json:"Currency"`
-		CurrencyRate           int    `json:"CurrencyRate"`
-		CurrencyUnit           int    `json:"CurrencyUnit"`
-		CustomerName           string `json:"CustomerName"`
-		CustomerNumber         string `json:"CustomerNumber"`
-		DeliveryAddress1       string `json:"DeliveryAddress1"`
-		DeliveryAddress2       string `json:"DeliveryAddress2"`
-		DeliveryCity           string `json:"DeliveryCity"`
-		DeliveryCountry        string `json:"DeliveryCountry"`
-		DeliveryDate           string `json:"DeliveryDate"`
-		DeliveryName           string `json:"DeliveryName"`
-		DeliveryZipCode        string `json:"DeliveryZipCode"`
-		DocumentNumber         string `json:"DocumentNumber"`
-		DueDate                string `json:"DueDate"`
-		EDIInformation         struct {
-			EDIGlobalLocationNumber         string `json:"EDIGlobalLocationNumber"`
-			EDIGlobalLocationNumberDelivery string `json:"EDIGlobalLocationNumberDelivery"`
-			EDIInvoiceExtra1                string `json:"EDIInvoiceExtra1"`
-			EDIInvoiceExtra2                string `json:"EDIInvoiceExtra2"`
-			EDIOurElectronicReference       string `json:"EDIOurElectronicReference"`
-			EDIYourElectronicReference      string `json:"EDIYourElectronicReference"`
-			EDIStatus                       string `json:"EDIStatus"`
-		} `json:"EDIInformation"`
-		EmailInformation struct {
-			EmailAddressFrom string `json:"EmailAddressFrom"`
-			EmailAddressTo   string `json:"EmailAddressTo"`
-			EmailAddressCC   string `json:"EmailAddressCC"`
-			EmailAddressBCC  string `json:"EmailAddressBCC"`
-			EmailSubject     string `json:"EmailSubject"`
-			EmailBody        string `json:"EmailBody"`
-		} `json:"EmailInformation"`
-		EUQuarterlyReport         bool   `json:"EUQuarterlyReport"`
-		ExternalInvoiceReference1 string `json:"ExternalInvoiceReference1"`
-		ExternalInvoiceReference2 string `json:"ExternalInvoiceReference2"`
-		Freight                   int    `json:"Freight"`
-		FreightVAT                int    `json:"FreightVAT"`
-		Gross                     int    `json:"Gross"`
-		HouseWork                 bool   `json:"HouseWork"`
-		InvoiceDate               string `json:"InvoiceDate"`
-		InvoicePeriodStart        string `json:"InvoicePeriodStart"`
-		InvoicePeriodEnd          string `json:"InvoicePeriodEnd"`
-		InvoicePeriodReference    string `json:"InvoicePeriodReference"`
-		InvoiceRows               []struct {
-			AccountNumber          int    `json:"AccountNumber"`
-			ArticleNumber          string `json:"ArticleNumber"`
-			ContributionPercent    string `json:"ContributionPercent"`
-			ContributionValue      string `json:"ContributionValue"`
-			CostCenter             string `json:"CostCenter"`
-			DeliveredQuantity      string `json:"DeliveredQuantity"`
-			Description            string `json:"Description"`
-			Discount               int    `json:"Discount"`
-			DiscountType           string `json:"DiscountType"`
-			HouseWork              bool   `json:"HouseWork"`
-			HouseWorkHoursToReport int    `json:"HouseWorkHoursToReport"`
-			HouseWorkType          string `json:"HouseWorkType"`
-			Price                  int    `json:"Price"`
-			PriceExcludingVAT      int    `json:"PriceExcludingVAT"`
-			Project                string `json:"Project"`
-			RowId                  int    `json:"RowId"`
-			StockPointCode         string `json:"StockPointCode"`
-			Total                  int    `json:"Total"`
-			TotalExcludingVAT      int    `json:"TotalExcludingVAT"`
-			Unit                   string `json:"Unit"`
-			VAT                    int    `json:"VAT"`
-		} `json:"InvoiceRows"`
-		InvoiceType string `json:"InvoiceType"`
-		Labels      []struct {
-			Id int `json:"Id"`
-		} `json:"Labels"`
-		Language           string `json:"Language"`
-		LastRemindDate     string `json:"LastRemindDate"`
-		Net                int    `json:"Net"`
-		NotCompleted       bool   `json:"NotCompleted"`
-		NoxFinans          bool   `json:"NoxFinans"`
-		OCR                string `json:"OCR"`
-		OfferReference     string `json:"OfferReference"`
-		OrderReference     string `json:"OrderReference"`
-		OrganisationNumber string `json:"OrganisationNumber"`
-		OurReference       string `json:"OurReference"`
-		PaymentWay         string `json:"PaymentWay"`
-		Phone1             string `json:"Phone1"`
-		Phone2             string `json:"Phone2"`
-		PriceList          string `json:"PriceList"`
-		PrintTemplate      string `json:"PrintTemplate"`
-		Project            string `json:"Project"`
-		WarehouseReady     bool   `json:"WarehouseReady"`
-		OutboundDate       string `json:"OutboundDate"`
-		Remarks            string `json:"Remarks"`
-		Reminders          int    `json:"Reminders"`
-		RoundOff           int    `json:"RoundOff"`
-		Sent               bool   `json:"Sent"`
-		TaxReduction       int    `json:"TaxReduction"`
-		TermsOfDelivery    string `json:"TermsOfDelivery"`
-		TermsOfPayment     string `json:"TermsOfPayment"`
-		TimeBasisReference int    `json:"TimeBasisReference"`
-		Total              int    `json:"Total"`
-		TotalToPay         int    `json:"TotalToPay"`
-		TotalVAT           int    `json:"TotalVAT"`
-		VATIncluded        bool   `json:"VATIncluded"`
-		VoucherNumber      int    `json:"VoucherNumber"`
-		VoucherSeries      string `json:"VoucherSeries"`
-		VoucherYear        int    `json:"VoucherYear"`
-		WayOfDelivery      string `json:"WayOfDelivery"`
-		YourOrderNumber    string `json:"YourOrderNumber"`
-		YourReference      string `json:"YourReference"`
-		ZipCode            string `json:"ZipCode"`
-		AccountingMethod   string `json:"AccountingMethod"`
-		TaxReductionType   string `json:"TaxReductionType"`
-		FinalPayDate       string `json:"FinalPayDate"`
-	} `json:"Invoice"`
+	Invoice Invoice `json:"Invoice"`
 }
 
 type SetInvoiceAsSentResp struct {
-	Invoice struct {
-		Url                    string `json:"@url"`
-		UrlTaxReductionList    string `json:"@urlTaxReductionList"`
-		AdministrationFee      int    `json:"AdministrationFee"`
-		AdministrationFeeVAT   int    `json:"AdministrationFeeVAT"`
-		Address1               string `json:"Address1"`
-		Address2               string `json:"Address2"`
-		Balance                int    `json:"Balance"`
-		BasisTaxReduction      int    `json:"BasisTaxReduction"`
-		Booked                 bool   `json:"Booked"`
-		Cancelled              bool   `json:"Cancelled"`
-		City                   string `json:"City"`
-		Comments               string `json:"Comments"`
-		ContractReference      int    `json:"ContractReference"`
-		ContributionPercent    int    `json:"ContributionPercent"`
-		ContributionValue      int    `json:"ContributionValue"`
-		Country                string `json:"Country"`
-		CostCenter             string `json:"CostCenter"`
-		Credit                 string `json:"Credit"`
-		CreditInvoiceReference string `json:"CreditInvoiceReference"`
-		Currency               string `json:"Currency"`
-		CurrencyRate           int    `json:"CurrencyRate"`
-		CurrencyUnit           int    `json:"CurrencyUnit"`
-		CustomerName           string `json:"CustomerName"`
-		CustomerNumber         string `json:"CustomerNumber"`
-		DeliveryAddress1       string `json:"DeliveryAddress1"`
-		DeliveryAddress2       string `json:"DeliveryAddress2"`
-		DeliveryCity           string `json:"DeliveryCity"`
-		DeliveryCountry        string `json:"DeliveryCountry"`
-		DeliveryDate           string `json:"DeliveryDate"`
-		DeliveryName           string `json:"DeliveryName"`
-		DeliveryZipCode        string `json:"DeliveryZipCode"`
-		DocumentNumber         string `json:"DocumentNumber"`
-		DueDate                string `json:"DueDate"`
-		EDIInformation         struct {
-			EDIGlobalLocationNumber         string `json:"EDIGlobalLocationNumber"`
-			EDIGlobalLocationNumberDelivery string `json:"EDIGlobalLocationNumberDelivery"`
-			EDIInvoiceExtra1                string `json:"EDIInvoiceExtra1"`
-			EDIInvoiceExtra2                string `json:"EDIInvoiceExtra2"`
-			EDIOurElectronicReference       string `json:"EDIOurElectronicReference"`
-			EDIYourElectronicReference      string `json:"EDIYourElectronicReference"`
-			EDIStatus                       string `json:"EDIStatus"`
-		} `json:"EDIInformation"`
-		EmailInformation struct {
-			EmailAddressFrom string `json:"EmailAddressFrom"`
-			EmailAddressTo   string `json:"EmailAddressTo"`
-			EmailAddressCC   string `json:"EmailAddressCC"`
-			EmailAddressBCC  string `json:"EmailAddressBCC"`
-			EmailSubject     string `json:"EmailSubject"`
-			EmailBody        string `json:"EmailBody"`
-		} `json:"EmailInformation"`
-		EUQuarterlyReport         bool   `json:"EUQuarterlyReport"`
-		ExternalInvoiceReference1 string `json:"ExternalInvoiceReference1"`
-		ExternalInvoiceReference2 string `json:"ExternalInvoiceReference2"`
-		Freight                   int    `json:"Freight"`
-		FreightVAT                int    `json:"FreightVAT"`
-		Gross                     int    `json:"Gross"`
-		HouseWork                 bool   `json:"HouseWork"`
-		InvoiceDate               string `json:"InvoiceDate"`
-		InvoicePeriodStart        string `json:"InvoicePeriodStart"`
-		InvoicePeriodEnd          string `json:"InvoicePeriodEnd"`
-		InvoicePeriodReference    string `json:"InvoicePeriodReference"`
-		InvoiceRows               []struct {
-			AccountNumber          int    `json:"AccountNumber"`
-			ArticleNumber          string `json:"ArticleNumber"`
-			ContributionPercent    string `json:"ContributionPercent"`
-			ContributionValue      string `json:"ContributionValue"`
-			CostCenter             string `json:"CostCenter"`
-			DeliveredQuantity      string `json:"DeliveredQuantity"`
-			Description            string `json:"Description"`
-			Discount               int    `json:"Discount"`
-			DiscountType           string `json:"DiscountType"`
-			HouseWork              bool   `json:"HouseWork"`
-			HouseWorkHoursToReport int    `json:"HouseWorkHoursToReport"`
-			HouseWorkType          string `json:"HouseWorkType"`
-			Price                  int    `json:"Price"`
-			PriceExcludingVAT      int    `json:"PriceExcludingVAT"`
-			Project                string `json:"Project"`
-			RowId                  int    `json:"RowId"`
-			StockPointCode         string `json:"StockPointCode"`
-			Total                  int    `json:"Total"`
-			TotalExcludingVAT      int    `json:"TotalExcludingVAT"`
-			Unit                   string `json:"Unit"`
-			VAT                    int    `json:"VAT"`
-		} `json:"InvoiceRows"`
-		InvoiceType string `json:"InvoiceType"`
-		Labels      []struct {
-			Id int `json:"Id"`
-		} `json:"Labels"`
-		Language           string `json:"Language"`
-		LastRemindDate     string `json:"LastRemindDate"`
-		Net                int    `json:"Net"`
-		NotCompleted       bool   `json:"NotCompleted"`
-		NoxFinans          bool   `json:"NoxFinans"`
-		OCR                string `json:"OCR"`
-		OfferReference     string `json:"OfferReference"`
-		OrderReference     string `json:"OrderReference"`
-		OrganisationNumber string `json:"OrganisationNumber"`
-		OurReference       string `json:"OurReference"`
-		PaymentWay         string `json:"PaymentWay"`
-		Phone1             string `json:"Phone1"`
-		Phone2             string `json:"Phone2"`
-		PriceList          string `json:"PriceList"`
-		PrintTemplate      string `json:"PrintTemplate"`
-		Project            string `json:"Project"`
-		WarehouseReady     bool   `json:"WarehouseReady"`
-		OutboundDate       string `json:"OutboundDate"`
-		Remarks            string `json:"Remarks"`
-		Reminders          int    `json:"Reminders"`
-		RoundOff           int    `json:"RoundOff"`
-		Sent               bool   `json:"Sent"`
-		TaxReduction       int    `json:"TaxReduction"`
-		TermsOfDelivery    string `json:"TermsOfDelivery"`
-		TermsOfPayment     string `json:"TermsOfPayment"`
-		TimeBasisReference int    `json:"TimeBasisReference"`
-		Total              int    `json:"Total"`
-		TotalToPay         int    `json:"TotalToPay"`
-		TotalVAT           int    `json:"TotalVAT"`
-		VATIncluded        bool   `json:"VATIncluded"`
-		VoucherNumber      int    `json:"VoucherNumber"`
-		VoucherSeries      string `json:"VoucherSeries"`
-		VoucherYear        int    `json:"VoucherYear"`
-		WayOfDelivery      string `json:"WayOfDelivery"`
-		YourOrderNumber    string `json:"YourOrderNumber"`
-		YourReference      string `json:"YourReference"`
-		ZipCode            string `json:"ZipCode"`
-		AccountingMethod   string `json:"AccountingMethod"`
-		TaxReductionType   string `json:"TaxReductionType"`
-		FinalPayDate       string `json:"FinalPayDate"`
-	} `json:"Invoice"`
+	Invoice Invoice `json:"Invoice"`
 }
 
 type SetInvoiceAsDoneResp struct {
-	Invoice struct {
-		Url                    string `json:"@url"`
-		UrlTaxReductionList    string `json:"@urlTaxReductionList"`
-		AdministrationFee      int    `json:"AdministrationFee"`
-		AdministrationFeeVAT   int    `json:"AdministrationFeeVAT"`
-		Address1               string `json:"Address1"`
-		Address2               string `json:"Address2"`
-		Balance                int    `json:"Balance"`
-		BasisTaxReduction      int    `json:"BasisTaxReduction"`
-		Booked                 bool   `json:"Booked"`
-		Cancelled              bool   `json:"Cancelled"`
-		City                   string `json:"City"`
-		Comments               string `json:"Comments"`
-		ContractReference      int    `json:"ContractReference"`
-		ContributionPercent    int    `json:"ContributionPercent"`
-		ContributionValue      int    `json:"ContributionValue"`
-		Country                string `json:"Country"`
-		CostCenter             string `json:"CostCenter"`
-		Credit                 string `json:"Credit"`
-		CreditInvoiceReference string `json:"CreditInvoiceReference"`
-		Currency               string `json:"Currency"`
-		CurrencyRate           int    `json:"CurrencyRate"`
-		CurrencyUnit           int    `json:"CurrencyUnit"`
-		CustomerName           string `json:"CustomerName"`
-		CustomerNumber         string `json:"CustomerNumber"`
-		DeliveryAddress1       string `json:"DeliveryAddress1"`
-		DeliveryAddress2       string `json:"DeliveryAddress2"`
-		DeliveryCity           string `json:"DeliveryCity"`
-		DeliveryCountry        string `json:"DeliveryCountry"`
-		DeliveryDate           string `json:"DeliveryDate"`
-		DeliveryName           string `json:"DeliveryName"`
-		DeliveryZipCode        string `json:"DeliveryZipCode"`
-		DocumentNumber         string `json:"DocumentNumber"`
-		DueDate                string `json:"DueDate"`
-		EDIInformation         struct {
-			EDIGlobalLocationNumber         string `json:"EDIGlobalLocationNumber"`
-			EDIGlobalLocationNumberDelivery string `json:"EDIGlobalLocationNumberDelivery"`
-			EDIInvoiceExtra1                string `json:"EDIInvoiceExtra1"`
-			EDIInvoiceExtra2                string `json:"EDIInvoiceExtra2"`
-			EDIOurElectronicReference       string `json:"EDIOurElectronicReference"`
-			EDIYourElectronicReference      string `json:"EDIYourElectronicReference"`
-			EDIStatus                       string `json:"EDIStatus"`
-		} `json:"EDIInformation"`
-		EmailInformation struct {
-			EmailAddressFrom string `json:"EmailAddressFrom"`
-			EmailAddressTo   string `json:"EmailAddressTo"`
-			EmailAddressCC   string `json:"EmailAddressCC"`
-			EmailAddressBCC  string `json:"EmailAddressBCC"`
-			EmailSubject     string `json:"EmailSubject"`
-			EmailBody        string `json:"EmailBody"`
-		} `json:"EmailInformation"`
-		EUQuarterlyReport         bool   `json:"EUQuarterlyReport"`
-		ExternalInvoiceReference1 string `json:"ExternalInvoiceReference1"`
-		ExternalInvoiceReference2 string `json:"ExternalInvoiceReference2"`
-		Freight                   int    `json:"Freight"`
-		FreightVAT                int    `json:"FreightVAT"`
-		Gross                     int    `json:"Gross"`
-		HouseWork                 bool   `json:"HouseWork"`
-		InvoiceDate               string `json:"InvoiceDate"`
-		InvoicePeriodStart        string `json:"InvoicePeriodStart"`
-		InvoicePeriodEnd          string `json:"InvoicePeriodEnd"`
-		InvoicePeriodReference    string `json:"InvoicePeriodReference"`
-		InvoiceRows               []struct {
-			AccountNumber          int    `json:"AccountNumber"`
-			ArticleNumber          string `json:"ArticleNumber"`
-			ContributionPercent    string `json:"ContributionPercent"`
-			ContributionValue      string `json:"ContributionValue"`
-			CostCenter             string `json:"CostCenter"`
-			DeliveredQuantity      string `json:"DeliveredQuantity"`
-			Description            string `json:"Description"`
-			Discount               int    `json:"Discount"`
-			DiscountType           string `json:"DiscountType"`
-			HouseWork              bool   `json:"HouseWork"`
-			HouseWorkHoursToReport int    `json:"HouseWorkHoursToReport"`
-			HouseWorkType          string `json:"HouseWorkType"`
-			Price                  int    `json:"Price"`
-			PriceExcludingVAT      int    `json:"PriceExcludingVAT"`
-			Project                string `json:"Project"`
-			RowId                  int    `json:"RowId"`
-			StockPointCode         string `json:"StockPointCode"`
-			Total                  int    `json:"Total"`
-			TotalExcludingVAT      int    `json:"TotalExcludingVAT"`
-			Unit                   string `json:"Unit"`
-			VAT                    int    `json:"VAT"`
-		} `json:"InvoiceRows"`
-		InvoiceType string `json:"InvoiceType"`
-		Labels      []struct {
-			Id int `json:"Id"`
-		} `json:"Labels"`
-		Language           string `json:"Language"`
-		LastRemindDate     string `json:"LastRemindDate"`
-		Net                int    `json:"Net"`
-		NotCompleted       bool   `json:"NotCompleted"`
-		NoxFinans          bool   `json:"NoxFinans"`
-		OCR                string `json:"OCR"`
-		OfferReference     string `json:"OfferReference"`
-		OrderReference     string `json:"OrderReference"`
-		OrganisationNumber string `json:"OrganisationNumber"`
-		OurReference       string `json:"OurReference"`
-		PaymentWay         string `json:"PaymentWay"`
-		Phone1             string `json:"Phone1"`
-		Phone2             string `json:"Phone2"`
-		PriceList          string `json:"PriceList"`
-		PrintTemplate      string `json:"PrintTemplate"`
-		Project            string `json:"Project"`
-		WarehouseReady     bool   `json:"WarehouseReady"`
-		OutboundDate       string `json:"OutboundDate"`
-		Remarks            string `json:"Remarks"`
-		Reminders          int    `json:"Reminders"`
-		RoundOff           int    `json:"RoundOff"`
-		Sent               bool   `json:"Sent"`
-		TaxReduction       int    `json:"TaxReduction"`
-		TermsOfDelivery    string `json:"TermsOfDelivery"`
-		TermsOfPayment     string `json:"TermsOfPayment"`
-		TimeBasisReference int    `json:"TimeBasisReference"`
-		Total              int    `json:"Total"`
-		TotalToPay         int    `json:"TotalToPay"`
-		TotalVAT           int    `json:"TotalVAT"`
-		VATIncluded        bool   `json:"VATIncluded"`
-		VoucherNumber      int    `json:"VoucherNumber"`
-		VoucherSeries      string `json:"VoucherSeries"`
-		VoucherYear        int    `json:"VoucherYear"`
-		WayOfDelivery      string `json:"WayOfDelivery"`
-		YourOrderNumber    string `json:"YourOrderNumber"`
-		YourReference      string `json:"YourReference"`
-		ZipCode            string `json:"ZipCode"`
-		AccountingMethod   string `json:"AccountingMethod"`
-		TaxReductionType   string `json:"TaxReductionType"`
-		FinalPayDate       string `json:"FinalPayDate"`
-	} `json:"Invoice"`
+	Invoice Invoice `json:"Invoice"`
 }
 
 type SendInvoiceAsEmailResp struct {
-	Invoice struct {
-		Url                    string `json:"@url"`
-		UrlTaxReductionList    string `json:"@urlTaxReductionList"`
-		AdministrationFee      int    `json:"AdministrationFee"`
-		AdministrationFeeVAT   int    `json:"AdministrationFeeVAT"`
-		Address1               string `json:"Address1"`
-		Address2               string `json:"Address2"`
-		Balance                int    `json:"Balance"`
-		BasisTaxReduction      int    `json:"BasisTaxReduction"`
-		Booked                 bool   `json:"Booked"`
-		Cancelled              bool   `json:"Cancelled"`
-		City                   string `json:"City"`
-		Comments               string `json:"Comments"`
-		ContractReference      int    `json:"ContractReference"`
-		ContributionPercent    int    `json:"ContributionPercent"`
-		ContributionValue      int    `json:"ContributionValue"`
-		Country                string `json:"Country"`
-		CostCenter             string `json:"CostCenter"`
-		Credit                 string `json:"Credit"`
-		CreditInvoiceReference string `json:"CreditInvoiceReference"`
-		Currency               string `json:"Currency"`
-		CurrencyRate           int    `json:"CurrencyRate"`
-		CurrencyUnit           int    `json:"CurrencyUnit"`
-		CustomerName           string `json:"CustomerName"`
-		CustomerNumber         string `json:"CustomerNumber"`
-		DeliveryAddress1       string `json:"DeliveryAddress1"`
-		DeliveryAddress2       string `json:"DeliveryAddress2"`
-		DeliveryCity           string `json:"DeliveryCity"`
-		DeliveryCountry        string `json:"DeliveryCountry"`
-		DeliveryDate           string `json:"DeliveryDate"`
-		DeliveryName           string `json:"DeliveryName"`
-		DeliveryZipCode        string `json:"DeliveryZipCode"`
-		DocumentNumber         string `json:"DocumentNumber"`
-		DueDate                string `json:"DueDate"`
-		EDIInformation         struct {
-			EDIGlobalLocationNumber         string `json:"EDIGlobalLocationNumber"`
-			EDIGlobalLocationNumberDelivery string `json:"EDIGlobalLocationNumberDelivery"`
-			EDIInvoiceExtra1                string `json:"EDIInvoiceExtra1"`
-			EDIInvoiceExtra2                string `json:"EDIInvoiceExtra2"`
-			EDIOurElectronicReference       string `json:"EDIOurElectronicReference"`
-			EDIYourElectronicReference      string `json:"EDIYourElectronicReference"`
-			EDIStatus                       string `json:"EDIStatus"`
-		} `json:"EDIInformation"`
-		EmailInformation struct {
-			EmailAddressFrom string `json:"EmailAddressFrom"`
-			EmailAddressTo   string `json:"EmailAddressTo"`
-			EmailAddressCC   string `json:"EmailAddressCC"`
-			EmailAddressBCC  string `json:"EmailAddressBCC"`
-			EmailSubject     string `json:"EmailSubject"`
-			EmailBody        string `json:"EmailBody"`
-		} `json:"EmailInformation"`
-		EUQuarterlyReport         bool   `json:"EUQuarterlyReport"`
-		ExternalInvoiceReference1 string `json:"ExternalInvoiceReference1"`
-		ExternalInvoiceReference2 string `json:"ExternalInvoiceReference2"`
-		Freight                   int    `json:"Freight"`
-		FreightVAT                int    `json:"FreightVAT"`
-		Gross                     int    `json:"Gross"`
-		HouseWork                 bool   `json:"HouseWork"`
-		InvoiceDate               string `json:"InvoiceDate"`
-		InvoicePeriodStart        string `json:"InvoicePeriodStart"`
-		InvoicePeriodEnd          string `json:"InvoicePeriodEnd"`
-		InvoicePeriodReference    string `json:"InvoicePeriodReference"`
-		InvoiceRows               []struct {
-			AccountNumber          int    `json:"AccountNumber"`
-			ArticleNumber          string `json:"ArticleNumber"`
-			ContributionPercent    string `json:"ContributionPercent"`
-			ContributionValue      string `json:"ContributionValue"`
-			CostCenter             string `json:"CostCenter"`
-			DeliveredQuantity      string `json:"DeliveredQuantity"`
-			Description            string `json:"Description"`
-			Discount               int    `json:"Discount"`
-			DiscountType           string `json:"DiscountType"`
-			HouseWork              bool   `json:"HouseWork"`
-			HouseWorkHoursToReport int    `json:"HouseWorkHoursToReport"`
-			HouseWorkType          string `json:"HouseWorkType"`
-			Price                  int    `json:"Price"`
-			PriceExcludingVAT      int    `json:"PriceExcludingVAT"`
-			Project                string `json:"Project"`
-			RowId                  int    `json:"RowId"`
-			StockPointCode         string `json:"StockPointCode"`
-			Total                  int    `json:"Total"`
-			TotalExcludingVAT      int    `json:"TotalExcludingVAT"`
-			Unit                   string `json:"Unit"`
-			VAT                    int    `json:"VAT"`
-		} `json:"InvoiceRows"`
-		InvoiceType string `json:"InvoiceType"`
-		Labels      []struct {
-			Id int `json:"Id"`
-		} `json:"Labels"`
-		Language           string `json:"Language"`
-		LastRemindDate     string `json:"LastRemindDate"`
-		Net                int    `json:"Net"`
-		NotCompleted       bool   `json:"NotCompleted"`
-		NoxFinans          bool   `json:"NoxFinans"`
-		OCR                string `json:"OCR"`
-		OfferReference     string `json:"OfferReference"`
-		OrderReference     string `json:"OrderReference"`
-		OrganisationNumber string `json:"OrganisationNumber"`
-		OurReference       string `json:"OurReference"`
-		PaymentWay         string `json:"PaymentWay"`
-		Phone1             string `json:"Phone1"`
-		Phone2             string `json:"Phone2"`
-		PriceList          string `json:"PriceList"`
-		PrintTemplate      string `json:"PrintTemplate"`
-		Project            string `json:"Project"`
-		WarehouseReady     bool   `json:"WarehouseReady"`
-		OutboundDate       string `json:"OutboundDate"`
-		Remarks            string `json:"Remarks"`
-		Reminders          int    `json:"Reminders"`
-		RoundOff           int    `json:"RoundOff"`
-		Sent               bool   `json:"Sent"`
-		TaxReduction       int    `json:"TaxReduction"`
-		TermsOfDelivery    string `json:"TermsOfDelivery"`
-		TermsOfPayment     string `json:"TermsOfPayment"`
-		TimeBasisReference int    `json:"TimeBasisReference"`
-		Total              int    `json:"Total"`
-		TotalToPay         int    `json:"TotalToPay"`
-		TotalVAT           int    `json:"TotalVAT"`
-		VATIncluded        bool   `json:"VATIncluded"`
-		VoucherNumber      int    `json:"VoucherNumber"`
-		VoucherSeries      string `json:"VoucherSeries"`
-		VoucherYear        int    `json:"VoucherYear"`
-		WayOfDelivery      string `json:"WayOfDelivery"`
-		YourOrderNumber    string `json:"YourOrderNumber"`
-		YourReference      string `json:"YourReference"`
-		ZipCode            string `json:"ZipCode"`
-		AccountingMethod   string `json:"AccountingMethod"`
-		TaxReductionType   string `json:"TaxReductionType"`
-		FinalPayDate       string `json:"FinalPayDate"`
-	} `json:"Invoice"`
+	Invoice Invoice `json:"Invoice"`
 }
 
 type SendInvoiceAsEPrintResp struct {
-	Invoice struct {
-		Url                    string `json:"@url"`
-		UrlTaxReductionList    string `json:"@urlTaxReductionList"`
-		AdministrationFee      int    `json:"AdministrationFee"`
-		AdministrationFeeVAT   int    `json:"AdministrationFeeVAT"`
-		Address1               string `json:"Address1"`
-		Address2               string `json:"Address2"`
-		Balance                int    `json:"Balance"`
-		BasisTaxReduction      int    `json:"BasisTaxReduction"`
-		Booked                 bool   `json:"Booked"`
-		Cancelled              bool   `json:"Cancelled"`
-		City                   string `json:"City"`
-		Comments               string `json:"Comments"`
-		ContractReference      int    `json:"ContractReference"`
-		ContributionPercent    int    `json:"ContributionPercent"`
-		ContributionValue      int    `json:"ContributionValue"`
-		Country                string `json:"Country"`
-		CostCenter             string `json:"CostCenter"`
-		Credit                 string `json:"Credit"`
-		CreditInvoiceReference string `json:"CreditInvoiceReference"`
-		Currency               string `json:"Currency"`
-		CurrencyRate           int    `json:"CurrencyRate"`
-		CurrencyUnit           int    `json:"CurrencyUnit"`
-		CustomerName           string `json:"CustomerName"`
-		CustomerNumber         string `json:"CustomerNumber"`
-		DeliveryAddress1       string `json:"DeliveryAddress1"`
-		DeliveryAddress2       string `json:"DeliveryAddress2"`
-		DeliveryCity           string `json:"DeliveryCity"`
-		DeliveryCountry        string `json:"DeliveryCountry"`
-		DeliveryDate           string `json:"DeliveryDate"`
-		DeliveryName           string `json:"DeliveryName"`
-		DeliveryZipCode        string `json:"DeliveryZipCode"`
-		DocumentNumber         string `json:"DocumentNumber"`
-		DueDate                string `json:"DueDate"`
-		EDIInformation         struct {
-			EDIGlobalLocationNumber         string `json:"EDIGlobalLocationNumber"`
-			EDIGlobalLocationNumberDelivery string `json:"EDIGlobalLocationNumberDelivery"`
-			EDIInvoiceExtra1                string `json:"EDIInvoiceExtra1"`
-			EDIInvoiceExtra2                string `json:"EDIInvoiceExtra2"`
-			EDIOurElectronicReference       string `json:"EDIOurElectronicReference"`
-			EDIYourElectronicReference      string `json:"EDIYourElectronicReference"`
-			EDIStatus                       string `json:"EDIStatus"`
-		} `json:"EDIInformation"`
-		EmailInformation struct {
-			EmailAddressFrom string `json:"EmailAddressFrom"`
-			EmailAddressTo   string `json:"EmailAddressTo"`
-			EmailAddressCC   string `json:"EmailAddressCC"`
-			EmailAddressBCC  string `json:"EmailAddressBCC"`
-			EmailSubject     string `json:"EmailSubject"`
-			EmailBody        string `json:"EmailBody"`
-		} `json:"EmailInformation"`
-		EUQuarterlyReport         bool   `json:"EUQuarterlyReport"`
-		ExternalInvoiceReference1 string `json:"ExternalInvoiceReference1"`
-		ExternalInvoiceReference2 string `json:"ExternalInvoiceReference2"`
-		Freight                   int    `json:"Freight"`
-		FreightVAT                int    `json:"FreightVAT"`
-		Gross                     int    `json:"Gross"`
-		HouseWork                 bool   `json:"HouseWork"`
-		InvoiceDate               string `json:"InvoiceDate"`
-		InvoicePeriodStart        string `json:"InvoicePeriodStart"`
-		InvoicePeriodEnd          string `json:"InvoicePeriodEnd"`
-		InvoicePeriodReference    string `json:"InvoicePeriodReference"`
-		InvoiceRows               []struct {
-			AccountNumber          int    `json:"AccountNumber"`
-			ArticleNumber          string `json:"ArticleNumber"`
-			ContributionPercent    string `json:"ContributionPercent"`
-			ContributionValue      string `json:"ContributionValue"`
-			CostCenter             string `json:"CostCenter"`
-			DeliveredQuantity      string `json:"DeliveredQuantity"`
-			Description            string `json:"Description"`
-			Discount               int    `json:"Discount"`
-			DiscountType           string `json:"DiscountType"`
-			HouseWork              bool   `json:"HouseWork"`
-			HouseWorkHoursToReport int    `json:"HouseWorkHoursToReport"`
-			HouseWorkType          string `json:"HouseWorkType"`
-			Price                  int    `json:"Price"`
-			PriceExcludingVAT      int    `json:"PriceExcludingVAT"`
-			Project                string `json:"Project"`
-			RowId                  int    `json:"RowId"`
-			StockPointCode         string `json:"StockPointCode"`
-			Total                  int    `json:"Total"`
-			TotalExcludingVAT      int    `json:"TotalExcludingVAT"`
-			Unit                   string `json:"Unit"`
-			VAT                    int    `json:"VAT"`
-		} `json:"InvoiceRows"`
-		InvoiceType string `json:"InvoiceType"`
-		Labels      []struct {
-			Id int `json:"Id"`
-		} `json:"Labels"`
-		Language           string `json:"Language"`
-		LastRemindDate     string `json:"LastRemindDate"`
-		Net                int    `json:"Net"`
-		NotCompleted       bool   `json:"NotCompleted"`
-		NoxFinans          bool   `json:"NoxFinans"`
-		OCR                string `json:"OCR"`
-		OfferReference     string `json:"OfferReference"`
-		OrderReference     string `json:"OrderReference"`
-		OrganisationNumber string `json:"OrganisationNumber"`
-		OurReference       string `json:"OurReference"`
-		PaymentWay         string `json:"PaymentWay"`
-		Phone1             string `json:"Phone1"`
-		Phone2             string `json:"Phone2"`
-		PriceList          string `json:"PriceList"`
-		PrintTemplate      string `json:"PrintTemplate"`
-		Project            string `json:"Project"`
-		WarehouseReady     bool   `json:"WarehouseReady"`
-		OutboundDate       string `json:"OutboundDate"`
-		Remarks            string `json:"Remarks"`
-		Reminders          int    `json:"Reminders"`
-		RoundOff           int    `json:"RoundOff"`
-		Sent               bool   `json:"Sent"`
-		TaxReduction       int    `json:"TaxReduction"`
-		TermsOfDelivery    string `json:"TermsOfDelivery"`
-		TermsOfPayment     string `json:"TermsOfPayment"`
-		TimeBasisReference int    `json:"TimeBasisReference"`
-		Total              int    `json:"Total"`
-		TotalToPay         int    `json:"TotalToPay"`
-		TotalVAT           int    `json:"TotalVAT"`
-		VATIncluded        bool   `json:"VATIncluded"`
-		VoucherNumber      int    `json:"VoucherNumber"`
-		VoucherSeries      string `json:"VoucherSeries"`
-		VoucherYear        int    `json:"VoucherYear"`
-		WayOfDelivery      string `json:"WayOfDelivery"`
-		YourOrderNumber    string `json:"YourOrderNumber"`
-		YourReference      string `json:"YourReference"`
-		ZipCode            string `json:"ZipCode"`
-		AccountingMethod   string `json:"AccountingMethod"`
-		TaxReductionType   string `json:"TaxReductionType"`
-		FinalPayDate       string `json:"FinalPayDate"`
-	} `json:"Invoice"`
+	Invoice Invoice `json:"Invoice"`
 }
 
 type SendInvoiceAsEInvoiceResp struct {
-	Invoice struct {
-		Url                    string `json:"@url"`
-		UrlTaxReductionList    string `json:"@urlTaxReductionList"`
-		AdministrationFee      int    `json:"AdministrationFee"`
-		AdministrationFeeVAT   int    `json:"AdministrationFeeVAT"`
-		Address1               string `json:"Address1"`
-		Address2               string `json:"Address2"`
-		Balance                int    `json:"Balance"`
-		BasisTaxReduction      int    `json:"BasisTaxReduction"`
-		Booked                 bool   `json:"Booked"`
-		Cancelled              bool   `json:"Cancelled"`
-		City                   string `json:"City"`
-		Comments               string `json:"Comments"`
-		ContractReference      int    `json:"ContractReference"`
-		ContributionPercent    int    `json:"ContributionPercent"`
-		ContributionValue      int    `json:"ContributionValue"`
-		Country                string `json:"Country"`
-		CostCenter             string `json:"CostCenter"`
-		Credit                 string `json:"Credit"`
-		CreditInvoiceReference string `json:"CreditInvoiceReference"`
-		Currency               string `json:"Currency"`
-		CurrencyRate           int    `json:"CurrencyRate"`
-		CurrencyUnit           int    `json:"CurrencyUnit"`
-		CustomerName           string `json:"CustomerName"`
-		CustomerNumber         string `json:"CustomerNumber"`
-		DeliveryAddress1       string `json:"DeliveryAddress1"`
-		DeliveryAddress2       string `json:"DeliveryAddress2"`
-		DeliveryCity           string `json:"DeliveryCity"`
-		DeliveryCountry        string `json:"DeliveryCountry"`
-		DeliveryDate           string `json:"DeliveryDate"`
-		DeliveryName           string `json:"DeliveryName"`
-		DeliveryZipCode        string `json:"DeliveryZipCode"`
-		DocumentNumber         string `json:"DocumentNumber"`
-		DueDate                string `json:"DueDate"`
-		EDIInformation         struct {
-			EDIGlobalLocationNumber         string `json:"EDIGlobalLocationNumber"`
-			EDIGlobalLocationNumberDelivery string `json:"EDIGlobalLocationNumberDelivery"`
-			EDIInvoiceExtra1                string `json:"EDIInvoiceExtra1"`
-			EDIInvoiceExtra2                string `json:"EDIInvoiceExtra2"`
-			EDIOurElectronicReference       string `json:"EDIOurElectronicReference"`
-			EDIYourElectronicReference      string `json:"EDIYourElectronicReference"`
-			EDIStatus                       string `json:"EDIStatus"`
-		} `json:"EDIInformation"`
-		EmailInformation struct {
-			EmailAddressFrom string `json:"EmailAddressFrom"`
-			EmailAddressTo   string `json:"EmailAddressTo"`
-			EmailAddressCC   string `json:"EmailAddressCC"`
-			EmailAddressBCC  string `json:"EmailAddressBCC"`
-			EmailSubject     string `json:"EmailSubject"`
-			EmailBody        string `json:"EmailBody"`
-		} `json:"EmailInformation"`
-		EUQuarterlyReport         bool   `json:"EUQuarterlyReport"`
-		ExternalInvoiceReference1 string `json:"ExternalInvoiceReference1"`
-		ExternalInvoiceReference2 string `json:"ExternalInvoiceReference2"`
-		Freight                   int    `json:"Freight"`
-		FreightVAT                int    `json:"FreightVAT"`
-		Gross                     int    `json:"Gross"`
-		HouseWork                 bool   `json:"HouseWork"`
-		InvoiceDate               string `json:"InvoiceDate"`
-		InvoicePeriodStart        string `json:"InvoicePeriodStart"`
-		InvoicePeriodEnd          string `json:"InvoicePeriodEnd"`
-		InvoicePeriodReference    string `json:"InvoicePeriodReference"`
-		InvoiceRows               []struct {
-			AccountNumber          int    `json:"AccountNumber"`
-			ArticleNumber          string `json:"ArticleNumber"`
-			ContributionPercent    string `json:"ContributionPercent"`
-			ContributionValue      string `json:"ContributionValue"`
-			CostCenter             string `json:"CostCenter"`
-			DeliveredQuantity      string `json:"DeliveredQuantity"`
-			Description            string `json:"Description"`
-			Discount               int    `json:"Discount"`
-			DiscountType           string `json:"DiscountType"`
-			HouseWork              bool   `json:"HouseWork"`
-			HouseWorkHoursToReport int    `json:"HouseWorkHoursToReport"`
-			HouseWorkType          string `json:"HouseWorkType"`
-			Price                  int    `json:"Price"`
-			PriceExcludingVAT      int    `json:"PriceExcludingVAT"`
-			Project                string `json:"Project"`
-			RowId                  int    `json:"RowId"`
-			StockPointCode         string `json:"StockPointCode"`
-			Total                  int    `json:"Total"`
-			TotalExcludingVAT      int    `json:"TotalExcludingVAT"`
-			Unit                   string `json:"Unit"`
-			VAT                    int    `json:"VAT"`
-		} `json:"InvoiceRows"`
-		InvoiceType string `json:"InvoiceType"`
-		Labels      []struct {
-			Id int `json:"Id"`
-		} `json:"Labels"`
-		Language           string `json:"Language"`
-		LastRemindDate     string `json:"LastRemindDate"`
-		Net                int    `json:"Net"`
-		NotCompleted       bool   `json:"NotCompleted"`
-		NoxFinans          bool   `json:"NoxFinans"`
-		OCR                string `json:"OCR"`
-		OfferReference     string `json:"OfferReference"`
-		OrderReference     string `json:"OrderReference"`
-		OrganisationNumber string `json:"OrganisationNumber"`
-		OurReference       string `json:"OurReference"`
-		PaymentWay         string `json:"PaymentWay"`
-		Phone1             string `json:"Phone1"`
-		Phone2             string `json:"Phone2"`
-		PriceList          string `json:"PriceList"`
-		PrintTemplate      string `json:"PrintTemplate"`
-		Project            string `json:"Project"`
-		WarehouseReady     bool   `json:"WarehouseReady"`
-		OutboundDate       string `json:"OutboundDate"`
-		Remarks            string `json:"Remarks"`
-		Reminders          int    `json:"Reminders"`
-		RoundOff           int    `json:"RoundOff"`
-		Sent               bool   `json:"Sent"`
-		TaxReduction       int    `json:"TaxReduction"`
-		TermsOfDelivery    string `json:"TermsOfDelivery"`
-		TermsOfPayment     string `json:"TermsOfPayment"`
-		TimeBasisReference int    `json:"TimeBasisReference"`
-		Total              int    `json:"Total"`
-		TotalToPay         int    `json:"TotalToPay"`
-		TotalVAT           int    `json:"TotalVAT"`
-		VATIncluded        bool   `json:"VATIncluded"`
-		VoucherNumber      int    `json:"VoucherNumber"`
-		VoucherSeries      string `json:"VoucherSeries"`
-		VoucherYear        int    `json:"VoucherYear"`
-		WayOfDelivery      string `json:"WayOfDelivery"`
-		YourOrderNumber    string `json:"YourOrderNumber"`
-		YourReference      string `json:"YourReference"`
-		ZipCode            string `json:"ZipCode"`
-		AccountingMethod   string `json:"AccountingMethod"`
-		TaxReductionType   string `json:"TaxReductionType"`
-		FinalPayDate       string `json:"FinalPayDate"`
-	} `json:"Invoice"`
+	Invoice Invoice `json:"Invoice"`
+}
+
+type Invoice struct {
+	Url                       string           `json:"@url,omitempty"`
+	UrlTaxReductionList       string           `json:"@urlTaxReductionList,omitempty"`
+	AdministrationFee         int              `json:"AdministrationFee,omitempty"`
+	AdministrationFeeVAT      int              `json:"AdministrationFeeVAT,omitempty"`
+	Address1                  string           `json:"Address1,omitempty"`
+	Address2                  string           `json:"Address2,omitempty"`
+	Balance                   int              `json:"Balance,omitempty"`
+	BasisTaxReduction         int              `json:"BasisTaxReduction,omitempty"`
+	Booked                    bool             `json:"Booked,omitempty"`
+	Cancelled                 bool             `json:"Cancelled,omitempty"`
+	City                      string           `json:"City,omitempty"`
+	Comments                  string           `json:"Comments,omitempty"`
+	ContractReference         int              `json:"ContractReference,omitempty"`
+	ContributionPercent       int              `json:"ContributionPercent,omitempty"`
+	ContributionValue         int              `json:"ContributionValue,omitempty"`
+	Country                   string           `json:"Country,omitempty"`
+	CostCenter                string           `json:"CostCenter,omitempty"`
+	Credit                    string           `json:"Credit,omitempty"`
+	CreditInvoiceReference    string           `json:"CreditInvoiceReference,omitempty"`
+	Currency                  string           `json:"Currency,omitempty"`
+	CurrencyRate              int              `json:"CurrencyRate,omitempty"`
+	CurrencyUnit              int              `json:"CurrencyUnit,omitempty"`
+	CustomerName              string           `json:"CustomerName,omitempty"`
+	CustomerNumber            string           `json:"CustomerNumber,omitempty"`
+	DeliveryAddress1          string           `json:"DeliveryAddress1,omitempty"`
+	DeliveryAddress2          string           `json:"DeliveryAddress2,omitempty"`
+	DeliveryCity              string           `json:"DeliveryCity,omitempty"`
+	DeliveryCountry           string           `json:"DeliveryCountry,omitempty"`
+	DeliveryDate              string           `json:"DeliveryDate,omitempty"`
+	DeliveryName              string           `json:"DeliveryName,omitempty"`
+	DeliveryZipCode           string           `json:"DeliveryZipCode,omitempty"`
+	DocumentNumber            string           `json:"DocumentNumber,omitempty"`
+	DueDate                   string           `json:"DueDate,omitempty"`
+	EDIInformation            EDIInformation   `json:"EDIInformation,omitempty"`
+	EmailInformation          EmailInformation `json:"EmailInformation,omitempty"`
+	EUQuarterlyReport         bool             `json:"EUQuarterlyReport,omitempty"`
+	ExternalInvoiceReference1 string           `json:"ExternalInvoiceReference1,omitempty"`
+	ExternalInvoiceReference2 string           `json:"ExternalInvoiceReference2,omitempty"`
+	Freight                   int              `json:"Freight,omitempty"`
+	FreightVAT                int              `json:"FreightVAT,omitempty"`
+	Gross                     int              `json:"Gross,omitempty"`
+	HouseWork                 bool             `json:"HouseWork,omitempty"`
+	InvoiceDate               string           `json:"InvoiceDate,omitempty"`
+	InvoicePeriodStart        string           `json:"InvoicePeriodStart,omitempty"`
+	InvoicePeriodEnd          string           `json:"InvoicePeriodEnd,omitempty"`
+	InvoicePeriodReference    string           `json:"InvoicePeriodReference,omitempty"`
+	InvoiceRows               []InvoiceRow     `json:"InvoiceRows,omitempty"`
+	InvoiceType               string           `json:"InvoiceType,omitempty"`
+	Labels                    []Label          `json:"Labels,omitempty"`
+	Language                  string           `json:"Language,omitempty"`
+	LastRemindDate            string           `json:"LastRemindDate,omitempty"`
+	Net                       int              `json:"Net,omitempty"`
+	NotCompleted              bool             `json:"NotCompleted,omitempty"`
+	NoxFinans                 bool             `json:"NoxFinans,omitempty"`
+	OCR                       string           `json:"OCR,omitempty"`
+	OfferReference            string           `json:"OfferReference,omitempty"`
+	OrderReference            string           `json:"OrderReference,omitempty"`
+	OrganisationNumber        string           `json:"OrganisationNumber,omitempty"`
+	OurReference              string           `json:"OurReference,omitempty"`
+	PaymentWay                string           `json:"PaymentWay,omitempty"`
+	Phone1                    string           `json:"Phone1,omitempty"`
+	Phone2                    string           `json:"Phone2,omitempty"`
+	PriceList                 string           `json:"PriceList,omitempty"`
+	PrintTemplate             string           `json:"PrintTemplate,omitempty"`
+	Project                   string           `json:"Project,omitempty"`
+	WarehouseReady            bool             `json:"WarehouseReady,omitempty"`
+	OutboundDate              string           `json:"OutboundDate,omitempty"`
+	Remarks                   string           `json:"Remarks,omitempty"`
+	Reminders                 int              `json:"Reminders,omitempty"`
+	RoundOff                  int              `json:"RoundOff,omitempty"`
+	Sent                      bool             `json:"Sent,omitempty"`
+	TaxReduction              int              `json:"TaxReduction,omitempty"`
+	TermsOfDelivery           string           `json:"TermsOfDelivery,omitempty"`
+	TermsOfPayment            string           `json:"TermsOfPayment,omitempty"`
+	TimeBasisReference        int              `json:"TimeBasisReference,omitempty"`
+	Total                     int              `json:"Total,omitempty"`
+	TotalToPay                int              `json:"TotalToPay,omitempty"`
+	TotalVAT                  int              `json:"TotalVAT,omitempty"`
+	VATIncluded               bool             `json:"VATIncluded,omitempty"`
+	VoucherNumber             int              `json:"VoucherNumber,omitempty"`
+	VoucherSeries             string           `json:"VoucherSeries,omitempty"`
+	VoucherYear               int              `json:"VoucherYear,omitempty"`
+	WayOfDelivery             string           `json:"WayOfDelivery,omitempty"`
+	YourOrderNumber           string           `json:"YourOrderNumber,omitempty"`
+	YourReference             string           `json:"YourReference,omitempty"`
+	ZipCode                   string           `json:"ZipCode,omitempty"`
+	AccountingMethod          string           `json:"AccountingMethod,omitempty"`
+	TaxReductionType          string           `json:"TaxReductionType,omitempty"`
+	FinalPayDate              string           `json:"FinalPayDate,omitempty"`
+}
+
+type EDIInformation struct {
+	EDIGlobalLocationNumber         string `json:"EDIGlobalLocationNumber,omitempty"`
+	EDIGlobalLocationNumberDelivery string `json:"EDIGlobalLocationNumberDelivery,omitempty"`
+	EDIInvoiceExtra1                string `json:"EDIInvoiceExtra1,omitempty"`
+	EDIInvoiceExtra2                string `json:"EDIInvoiceExtra2,omitempty"`
+	EDIOurElectronicReference       string `json:"EDIOurElectronicReference,omitempty"`
+	EDIYourElectronicReference      string `json:"EDIYourElectronicReference,omitempty"`
+	EDIStatus                       string `json:"EDIStatus,omitempty"`
+}
+
+type EmailInformation struct {
+	EmailAddressFrom string `json:"EmailAddressFrom,omitempty"`
+	EmailAddressTo   string `json:"EmailAddressTo,omitempty"`
+	EmailAddressCC   string `json:"EmailAddressCC,omitempty"`
+	EmailAddressBCC  string `json:"EmailAddressBCC,omitempty"`
+	EmailSubject     string `json:"EmailSubject,omitempty"`
+	EmailBody        string `json:"EmailBody,omitempty"`
+}
+
+type InvoiceRow struct {
+	AccountNumber          int    `json:"AccountNumber,omitempty"`
+	ArticleNumber          string `json:"ArticleNumber,omitempty"`
+	ContributionPercent    string `json:"ContributionPercent,omitempty"`
+	ContributionValue      string `json:"ContributionValue,omitempty"`
+	CostCenter             string `json:"CostCenter,omitempty"`
+	DeliveredQuantity      string `json:"DeliveredQuantity,omitempty"`
+	Description            string `json:"Description,omitempty"`
+	Discount               int    `json:"Discount,omitempty"`
+	DiscountType           string `json:"DiscountType,omitempty"`
+	HouseWork              bool   `json:"HouseWork,omitempty"`
+	HouseWorkHoursToReport int    `json:"HouseWorkHoursToReport,omitempty"`
+	HouseWorkType          string `json:"HouseWorkType,omitempty"`
+	Price                  int    `json:"Price,omitempty"`
+	PriceExcludingVAT      int    `json:"PriceExcludingVAT,omitempty"`
+	Project                string `json:"Project,omitempty"`
+	RowId                  int    `json:"RowId,omitempty"`
+	StockPointCode         string `json:"StockPointCode,omitempty"`
+	Total                  int    `json:"Total,omitempty"`
+	TotalExcludingVAT      int    `json:"TotalExcludingVAT,omitempty"`
+	Unit                   string `json:"Unit,omitempty"`
+	VAT                    int    `json:"VAT,omitempty"`
 }

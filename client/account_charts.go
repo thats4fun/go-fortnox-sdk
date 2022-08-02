@@ -7,7 +7,7 @@ const (
 )
 
 // GetAccountCharts does _GET https://api.fortnox.se/3/accountcharts
-func (c *Client) GetAccountCharts(ctx context.Context) (*AccountChartResp, error) {
+func (c *Client) GetAccountCharts(ctx context.Context) ([]AccountChart, error) {
 	resp := &AccountChartResp{}
 
 	err := c._GET(ctx, accountChartsURI, nil, resp)
@@ -15,11 +15,13 @@ func (c *Client) GetAccountCharts(ctx context.Context) (*AccountChartResp, error
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.AccountCharts, nil
+}
+
+type AccountChart struct {
+	Name string `json:"Name,omitempty"`
 }
 
 type AccountChartResp struct {
-	AccountCharts []struct {
-		Name string `json:"Name"`
-	} `json:"AccountCharts"`
+	AccountCharts []AccountChart `json:"AccountCharts"`
 }

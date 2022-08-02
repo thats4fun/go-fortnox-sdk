@@ -11,7 +11,7 @@ const (
 
 // GetAllSupplierInvoiceFileConnections does _GET https://api.fortnox.se/3/supplierinvoicefileconnections/
 func (c *Client) GetAllSupplierInvoiceFileConnections(
-	ctx context.Context) (*GetAllSupplierInvoiceFileConnectionsResp, error) {
+	ctx context.Context) ([]SupplierInvoiceFileConnection, error) {
 
 	resp := &GetAllSupplierInvoiceFileConnectionsResp{}
 
@@ -20,7 +20,7 @@ func (c *Client) GetAllSupplierInvoiceFileConnections(
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.SupplierInvoiceFileConnections, nil
 }
 
 // CreateSupplierInvoiceFileConnection does _POST https://api.fortnox.se/3/supplierinvoicefileconnections/
@@ -28,8 +28,9 @@ func (c *Client) GetAllSupplierInvoiceFileConnections(
 // req - supplier invoice file connection to create
 func (c *Client) CreateSupplierInvoiceFileConnection(
 	ctx context.Context,
-	req *CreateSupplierInvoiceFileConnectionReq) (*CreateSupplierInvoiceFileConnectionResp, error) {
+	sifc *SupplierInvoiceFileConnection) (*SupplierInvoiceFileConnection, error) {
 
+	req := &CreateSupplierInvoiceFileConnectionReq{SupplierInvoiceFileConnection: *sifc}
 	resp := &CreateSupplierInvoiceFileConnectionResp{}
 
 	err := c._POST(ctx, supplierInvoiceFileConnectionsURI, nil, req, resp)
@@ -37,7 +38,7 @@ func (c *Client) CreateSupplierInvoiceFileConnection(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.SupplierInvoiceFileConnection, nil
 }
 
 // GetSupplierInvoiceFileConnection does _GET https://api.fortnox.se/3/supplierinvoicefileconnections/{FileId}
@@ -45,7 +46,7 @@ func (c *Client) CreateSupplierInvoiceFileConnection(
 // fileID - identifies the file connection
 func (c *Client) GetSupplierInvoiceFileConnection(
 	ctx context.Context,
-	fileID string) (*GetSupplierInvoiceFileConnectionResp, error) {
+	fileID string) (*SupplierInvoiceFileConnection, error) {
 
 	resp := &GetSupplierInvoiceFileConnectionResp{}
 
@@ -56,7 +57,7 @@ func (c *Client) GetSupplierInvoiceFileConnection(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.SupplierInvoiceFileConnection, nil
 }
 
 // RemoveSupplierInvoiceFileConnections does _DELETE https://api.fortnox.se/3/supplierinvoicefileconnections/{FileId}
@@ -67,42 +68,26 @@ func (c *Client) RemoveSupplierInvoiceFileConnections(ctx context.Context, field
 	return c._DELETE(ctx, uri)
 }
 
+type SupplierInvoiceFileConnection struct {
+	Url                   string `json:"@url"`
+	FileId                string `json:"FileId"`
+	Name                  string `json:"Name"`
+	SupplierInvoiceNumber string `json:"SupplierInvoiceNumber"`
+	SupplierName          string `json:"SupplierName"`
+}
+
 type GetAllSupplierInvoiceFileConnectionsResp struct {
-	SupplierInvoiceFileConnections []struct {
-		Url                   string `json:"@url"`
-		FileId                string `json:"FileId"`
-		Name                  string `json:"Name"`
-		SupplierInvoiceNumber string `json:"SupplierInvoiceNumber"`
-		SupplierName          string `json:"SupplierName"`
-	} `json:"SupplierInvoiceFileConnections"`
+	SupplierInvoiceFileConnections []SupplierInvoiceFileConnection `json:"SupplierInvoiceFileConnections"`
 }
 
 type CreateSupplierInvoiceFileConnectionReq struct {
-	SupplierInvoiceFileConnection struct {
-		Url                   string `json:"@url"`
-		FileId                string `json:"FileId"`
-		Name                  string `json:"Name"`
-		SupplierInvoiceNumber string `json:"SupplierInvoiceNumber"`
-		SupplierName          string `json:"SupplierName"`
-	} `json:"SupplierInvoiceFileConnection"`
+	SupplierInvoiceFileConnection SupplierInvoiceFileConnection `json:"SupplierInvoiceFileConnection"`
 }
 
 type CreateSupplierInvoiceFileConnectionResp struct {
-	SupplierInvoiceFileConnection struct {
-		Url                   string `json:"@url"`
-		FileId                string `json:"FileId"`
-		Name                  string `json:"Name"`
-		SupplierInvoiceNumber string `json:"SupplierInvoiceNumber"`
-		SupplierName          string `json:"SupplierName"`
-	} `json:"SupplierInvoiceFileConnection"`
+	SupplierInvoiceFileConnection SupplierInvoiceFileConnection `json:"SupplierInvoiceFileConnection"`
 }
 
 type GetSupplierInvoiceFileConnectionResp struct {
-	SupplierInvoiceFileConnection struct {
-		Url                   string `json:"@url"`
-		FileId                string `json:"FileId"`
-		Name                  string `json:"Name"`
-		SupplierInvoiceNumber string `json:"SupplierInvoiceNumber"`
-		SupplierName          string `json:"SupplierName"`
-	} `json:"SupplierInvoiceFileConnection"`
+	SupplierInvoiceFileConnection SupplierInvoiceFileConnection `json:"SupplierInvoiceFileConnection"`
 }
