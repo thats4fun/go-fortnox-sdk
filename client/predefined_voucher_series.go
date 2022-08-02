@@ -41,7 +41,7 @@ func (c *Client) GetPredefinedVoucherSeries(ctx context.Context, name string) (*
 //
 // name - identifies the predefined voucher series
 //
-// req - predefined voucher series to update
+// pdvs - predefined voucher series to update
 func (c *Client) UpdatePredefinedVoucherSeries(
 	ctx context.Context,
 	name string,
@@ -61,9 +61,9 @@ func (c *Client) UpdatePredefinedVoucherSeries(
 }
 
 type PreDefinedVoucherSeries struct {
-	Url           string `json:"@url"`
-	Name          string `json:"Name"`
-	VoucherSeries string `json:"VoucherSeries"`
+	Url           string `json:"@url,omitempty"`
+	Name          string `json:"Name,omitempty"`
+	VoucherSeries string `json:"VoucherSeries,omitempty"`
 }
 
 type GetAllPredefinedVoucherSeriesResp struct {

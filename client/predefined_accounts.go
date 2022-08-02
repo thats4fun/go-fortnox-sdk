@@ -41,7 +41,7 @@ func (c *Client) GetPredefinedAccount(ctx context.Context, name string) (*PreDef
 //
 // name - identifies the predefined account
 //
-// req - predefined account to update
+// pda - predefined account to update
 func (c *Client) UpdatePredefinedAccount(
 	ctx context.Context,
 	name string,
@@ -61,9 +61,9 @@ func (c *Client) UpdatePredefinedAccount(
 }
 
 type PreDefinedAccount struct {
-	Url     string `json:"@url"`
-	Name    string `json:"Name"`
-	Account int    `json:"Account"`
+	Url     string `json:"@url,omitempty"`
+	Name    string `json:"Name,omitempty"`
+	Account int    `json:"Account,omitempty"`
 }
 
 type GetAllPredefinedAccountsResp struct {
