@@ -47,16 +47,16 @@ func (c *Client) DeleteAssetFileConnection(ctx context.Context, fileID string) e
 }
 
 type AssetFileConnection struct {
-	Url     string `json:"@url"`
-	FileId  string `json:"FileId"`
-	Name    string `json:"Name"`
-	AssetId string `json:"AssetId"`
+	Url     string `json:"@url,omitempty"`
+	FileId  string `json:"FileId,omitempty"`
+	Name    string `json:"Name,omitempty"`
+	AssetId string `json:"AssetId,omitempty"`
 }
 
 type AssetFileConnectionMetaInformation struct {
-	TotalResources int `json:"@TotalResources"`
-	TotalPages     int `json:"@TotalPages"`
-	CurrentPage    int `json:"@CurrentPage"`
+	TotalResources int `json:"@TotalResources,omitempty"`
+	TotalPages     int `json:"@TotalPages,omitempty"`
+	CurrentPage    int `json:"@CurrentPage,omitempty"`
 }
 
 type GetAllAssetFileConnectionsResp struct {

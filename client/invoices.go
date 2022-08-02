@@ -291,7 +291,6 @@ type GetAllInvoicesQueryParams struct {
 	SortBy                    GetAllInvoicesSortBy
 }
 
-// TODO: update param names
 func (p GetAllInvoicesQueryParams) urlValues() url.Values {
 	params := url.Values{}
 
@@ -306,83 +305,80 @@ func (p GetAllInvoicesQueryParams) urlValues() url.Values {
 		params["customername"] = []string{p.CostCenter}
 	}
 	if strings.TrimSpace(p.CustomerNumber) != "" {
-		params["customername"] = []string{p.CustomerNumber}
+		params["customernumber"] = []string{p.CustomerNumber}
 	}
 	if strings.TrimSpace(p.Label) != "" {
-		params["customername"] = []string{p.Label}
+		params["label"] = []string{p.Label}
 	}
 	if strings.TrimSpace(p.DocumentNumber) != "" {
-		params["customername"] = []string{p.DocumentNumber}
+		params["documentnumber"] = []string{p.DocumentNumber}
 	}
 	if strings.TrimSpace(p.FromDate) != "" {
-		params["customername"] = []string{p.FromDate}
+		params["fromdate"] = []string{p.FromDate}
 	}
 	if strings.TrimSpace(p.ToDate) != "" {
-		params["filter"] = []string{p.ToDate}
+		params["todate"] = []string{p.ToDate}
 	}
 	if strings.TrimSpace(p.FromFinalPayDate) != "" {
-		params["costcenter"] = []string{p.FromFinalPayDate}
+		params["fromfinalpaydate"] = []string{p.FromFinalPayDate}
 	}
 	if strings.TrimSpace(p.ToFinalPayDate) != "" {
-		params["customername"] = []string{p.ToFinalPayDate}
+		params["tofinalpaydate"] = []string{p.ToFinalPayDate}
 	}
 	if strings.TrimSpace(p.LastModified) != "" {
-		params["customername"] = []string{p.LastModified}
+		params["lastmodified"] = []string{p.LastModified}
 	}
 	if strings.TrimSpace(p.NotCompleted) != "" {
-		params["customername"] = []string{p.NotCompleted}
-	}
-	if strings.TrimSpace(p.DocumentNumber) != "" {
-		params["customername"] = []string{p.DocumentNumber}
+		params["notcompleted"] = []string{p.NotCompleted}
 	}
 	if strings.TrimSpace(p.Ocr) != "" {
-		params["customername"] = []string{p.Ocr}
+		params["ocr"] = []string{p.Ocr}
 	}
 	if strings.TrimSpace(p.OurReference) != "" {
-		params["filter"] = []string{p.OurReference}
+		params["ourreference"] = []string{p.OurReference}
 	}
 	if strings.TrimSpace(p.Project) != "" {
-		params["costcenter"] = []string{p.Project}
+		params["project"] = []string{p.Project}
 	}
 	if strings.TrimSpace(p.Sent) != "" {
-		params["customername"] = []string{p.Sent}
+		params["sent"] = []string{p.Sent}
 	}
 	if strings.TrimSpace(p.ExternalInvoiceReference1) != "" {
-		params["customername"] = []string{p.ExternalInvoiceReference1}
+		params["externalinvoicereference1"] = []string{p.ExternalInvoiceReference1}
 	}
 	if strings.TrimSpace(p.ExternalInvoiceReference2) != "" {
-		params["customername"] = []string{p.ExternalInvoiceReference2}
+		params["externalinvoicereference2"] = []string{p.ExternalInvoiceReference2}
 	}
 	if strings.TrimSpace(p.YourReference) != "" {
-		params["customername"] = []string{p.YourReference}
+		params["yourreference"] = []string{p.YourReference}
 	}
 	if strings.TrimSpace(p.InvoiceType) != "" {
-		params["customername"] = []string{p.InvoiceType}
+		params["invoicetype"] = []string{p.InvoiceType}
 	}
 	if strings.TrimSpace(p.ArticleNumber) != "" {
-		params["customername"] = []string{p.ArticleNumber}
+		params["articlenumber"] = []string{p.ArticleNumber}
 	}
 	if strings.TrimSpace(p.ArticleDescription) != "" {
-		params["customername"] = []string{p.ArticleDescription}
+		params["articledescription"] = []string{p.ArticleDescription}
 	}
 	if strings.TrimSpace(p.Currency) != "" {
-		params["customername"] = []string{p.Currency}
+		params["currency"] = []string{p.Currency}
 	}
 	if strings.TrimSpace(p.AccountNumberFrom) != "" {
-		params["customername"] = []string{p.AccountNumberFrom}
+		params["accountnumberfrom"] = []string{p.AccountNumberFrom}
 	}
 	if strings.TrimSpace(p.AccountNumberTo) != "" {
-		params["customername"] = []string{p.AccountNumberTo}
+		params["accountnumberto"] = []string{p.AccountNumberTo}
 	}
 	if strings.TrimSpace(p.YourOrderNumber) != "" {
-		params["customername"] = []string{p.YourOrderNumber}
+		params["yourordernumber"] = []string{p.YourOrderNumber}
 	}
 	if strings.TrimSpace(p.Credit) != "" {
-		params["customername"] = []string{p.Credit}
+		params["credit"] = []string{p.Credit}
 	}
 	sortBy := string(p.SortBy)
 	if strings.TrimSpace(sortBy) != "" {
-		params["customername"] = []string{sortBy}
+		params["sortby"] = []string{sortBy}
 	}
 
 	return params
@@ -391,12 +387,12 @@ func (p GetAllInvoicesQueryParams) urlValues() url.Values {
 type GetAllInvoicesSortBy string
 
 const (
-	CustomerName   = "customername"
-	CustomerNumber = "customernumber"
-	DocumentNumber = "documentnumber"
-	InvoiceDate    = "invoicedate"
-	Ocr            = "ocr"
-	Total          = "total"
+	CustomerName   GetAllInvoicesSortBy = "customername"
+	CustomerNumber GetAllInvoicesSortBy = "customernumber"
+	DocumentNumber GetAllInvoicesSortBy = "documentnumber"
+	InvoiceDate    GetAllInvoicesSortBy = "invoicedate"
+	Ocr            GetAllInvoicesSortBy = "ocr"
+	Total          GetAllInvoicesSortBy = "total"
 )
 
 type GetAllInvoicesFilter string

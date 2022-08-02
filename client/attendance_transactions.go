@@ -81,7 +81,7 @@ func (c *Client) GetAllAttendanceTransactions(
 
 // CreateAttendanceTransaction does _POST https://api.fortnox.se/3/attendancetransactions
 //
-// req - attendance transaction to create
+// at - attendance transaction to create
 func (c *Client) CreateAttendanceTransaction(
 	ctx context.Context,
 	at *AttendanceTransaction) (*AttendanceTransaction, error) {
@@ -116,6 +116,8 @@ func (c *Client) GetAttendanceTransaction(ctx context.Context, id string) (*Atte
 // UpdateAttendanceTransaction does _PUT https://api.fortnox.se/3/attendancetransactions/{id}
 //
 // id - identifies the transaction
+//
+// at - attendance transaction to update
 func (c *Client) UpdateAttendanceTransaction(
 	ctx context.Context,
 	id string,

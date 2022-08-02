@@ -379,11 +379,13 @@ func request(
 		if errMsg.ErrorInformation.Code == 0 {
 			msg = fmt.Sprintf("%s | try to refresh token", bodyPreview)
 		}
-		return FortnoxError{
+		fe := &FortnoxError{
 			HTTPStatus: resp.StatusCode,
 			Code:       errMsg.ErrorInformation.Code,
 			Message:    msg,
 		}
+		fe.AddTranslation(EN)
+		return fe
 	}
 }
 
@@ -428,11 +430,12 @@ func (f FortnoxError) Error() string {
 		f.HTTPStatus, http.StatusText(f.HTTPStatus), f.Code, f.Message)
 }
 
-// Translate translates error message to languages defined by [langCode]
-func (f FortnoxError) Translate(langCode LangCode) string {
+// AddTranslation translates error message to languages defined by [langCode]
+func (f *FortnoxError) AddTranslation(langCode LangCode) {
 	langToDescriptionMapping := CodeToLanguagesMapping[f.Code]
 	description := langToDescriptionMapping[langCode]
-	return description
+
+	f.Message = fmt.Sprintf("%s\n%s: %s\n", f.Message, langCode, description)
 }
 
 // ErrorMessage response type

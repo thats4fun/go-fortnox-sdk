@@ -10,7 +10,7 @@ const (
 )
 
 // GetAllContractTemplates does _GET https://api.fortnox.se/3/contracttemplates/
-func (c *Client) GetAllContractTemplates(ctx context.Context) (*GetAllContractTemplatesResp, error) {
+func (c *Client) GetAllContractTemplates(ctx context.Context) ([]ContractTemplate, error) {
 	resp := &GetAllContractTemplatesResp{}
 
 	err := c._GET(ctx, contractTemplatesURI, nil, resp)
@@ -18,16 +18,14 @@ func (c *Client) GetAllContractTemplates(ctx context.Context) (*GetAllContractTe
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.ContractTemplates, nil
 }
 
 // CreateContractTemplate does _POST https://api.fortnox.se/3/contracttemplates/
 //
-// req - contract template to create
-func (c *Client) CreateContractTemplate(
-	ctx context.Context,
-	req *CreateContractTemplateReq) (*CreateContractTemplateResp, error) {
-
+// ct - contract template to create
+func (c *Client) CreateContractTemplate(ctx context.Context, ct *ContractTemplate) (*ContractTemplate, error) {
+	req := &CreateContractTemplateReq{ContractTemplate: *ct}
 	resp := &CreateContractTemplateResp{}
 
 	err := c._POST(ctx, contractTemplatesURI, nil, req, resp)
@@ -35,13 +33,13 @@ func (c *Client) CreateContractTemplate(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.ContractTemplate, nil
 }
 
 // GetContractTemplate does _GET https://api.fortnox.se/3/contracttemplates/{DocumentNumber}
 //
 // templateNumber - identifies the contract accrual
-func (c *Client) GetContractTemplate(ctx context.Context, templateNumber int) (*GetContractTemplateResp, error) {
+func (c *Client) GetContractTemplate(ctx context.Context, templateNumber int) (*ContractTemplate, error) {
 	resp := &GetContractTemplateResp{}
 
 	uri := fmt.Sprintf("%s/%d", contractTemplatesURI, templateNumber)
@@ -51,19 +49,20 @@ func (c *Client) GetContractTemplate(ctx context.Context, templateNumber int) (*
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.ContractTemplate, nil
 }
 
 // UpdateContractTemplate does _PUT https://api.fortnox.se/3/contracttemplates/{DocumentNumber}
 //
 // templateNumber - identifies the contract accrual
 //
-// req - contract template to update
+// ct - contract template to update
 func (c *Client) UpdateContractTemplate(
 	ctx context.Context,
 	templateNumber int,
-	req *UpdateContractTemplateReq) (*UpdateContractTemplateResp, error) {
+	ct *ContractTemplate) (*ContractTemplate, error) {
 
+	req := &UpdateContractTemplateReq{ContractTemplate: *ct}
 	resp := &UpdateContractTemplateResp{}
 
 	uri := fmt.Sprintf("%s/%d", contractTemplatesURI, templateNumber)
@@ -73,115 +72,47 @@ func (c *Client) UpdateContractTemplate(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.ContractTemplate, nil
 }
 
 type GetAllContractTemplatesResp struct {
-	ContractTemplates []struct {
-		Url                  string `json:"@url"`
-		ContractLength       int    `json:"ContractLength"`
-		ContractTemplate     int    `json:"ContractTemplate"`
-		ContractTemplateName string `json:"ContractTemplateName"`
-		InvoiceInterval      int    `json:"InvoiceInterval"`
-	} `json:"ContractTemplates"`
+	ContractTemplates []ContractTemplate `json:"ContractTemplates"`
 }
 
 type CreateContractTemplateReq struct {
-	ContractTemplate struct {
-		Url               string       `json:"@url"`
-		AdministrationFee int          `json:"AdministrationFee"`
-		ContractLength    int          `json:"ContractLength"`
-		Freight           int          `json:"Freight"`
-		InvoiceInterval   int          `json:"InvoiceInterval"`
-		InvoiceRows       []InvoiceRow `json:"InvoiceRows"`
-		Continuous        bool         `json:"Continuous"`
-		OurReference      string       `json:"OurReference"`
-		PrintTemplate     string       `json:"PrintTemplate"`
-		Remarks           string       `json:"Remarks"`
-		TemplateName      string       `json:"TemplateName"`
-		TemplateNumber    int          `json:"TemplateNumber"`
-		TermsOfDelivery   string       `json:"TermsOfDelivery"`
-		TermsOfPayment    string       `json:"TermsOfPayment"`
-		WayOfDelivery     string       `json:"WayOfDelivery"`
-	} `json:"ContractTemplate"`
+	ContractTemplate ContractTemplate `json:"ContractTemplate"`
 }
 
 type CreateContractTemplateResp struct {
-	ContractTemplate struct {
-		Url               string       `json:"@url"`
-		AdministrationFee int          `json:"AdministrationFee"`
-		ContractLength    int          `json:"ContractLength"`
-		Freight           int          `json:"Freight"`
-		InvoiceInterval   int          `json:"InvoiceInterval"`
-		InvoiceRows       []InvoiceRow `json:"InvoiceRows"`
-		Continuous        bool         `json:"Continuous"`
-		OurReference      string       `json:"OurReference"`
-		PrintTemplate     string       `json:"PrintTemplate"`
-		Remarks           string       `json:"Remarks"`
-		TemplateName      string       `json:"TemplateName"`
-		TemplateNumber    int          `json:"TemplateNumber"`
-		TermsOfDelivery   string       `json:"TermsOfDelivery"`
-		TermsOfPayment    string       `json:"TermsOfPayment"`
-		WayOfDelivery     string       `json:"WayOfDelivery"`
-	} `json:"ContractTemplate"`
+	ContractTemplate ContractTemplate `json:"ContractTemplate"`
 }
 
 type GetContractTemplateResp struct {
-	ContractTemplate struct {
-		Url               string       `json:"@url"`
-		AdministrationFee int          `json:"AdministrationFee"`
-		ContractLength    int          `json:"ContractLength"`
-		Freight           int          `json:"Freight"`
-		InvoiceInterval   int          `json:"InvoiceInterval"`
-		InvoiceRows       []InvoiceRow `json:"InvoiceRows"`
-		Continuous        bool         `json:"Continuous"`
-		OurReference      string       `json:"OurReference"`
-		PrintTemplate     string       `json:"PrintTemplate"`
-		Remarks           string       `json:"Remarks"`
-		TemplateName      string       `json:"TemplateName"`
-		TemplateNumber    int          `json:"TemplateNumber"`
-		TermsOfDelivery   string       `json:"TermsOfDelivery"`
-		TermsOfPayment    string       `json:"TermsOfPayment"`
-		WayOfDelivery     string       `json:"WayOfDelivery"`
-	} `json:"ContractTemplate"`
+	ContractTemplate ContractTemplate `json:"ContractTemplate"`
 }
 
 type UpdateContractTemplateReq struct {
-	ContractTemplate struct {
-		Url               string       `json:"@url"`
-		AdministrationFee int          `json:"AdministrationFee"`
-		ContractLength    int          `json:"ContractLength"`
-		Freight           int          `json:"Freight"`
-		InvoiceInterval   int          `json:"InvoiceInterval"`
-		InvoiceRows       []InvoiceRow `json:"InvoiceRows"`
-		Continuous        bool         `json:"Continuous"`
-		OurReference      string       `json:"OurReference"`
-		PrintTemplate     string       `json:"PrintTemplate"`
-		Remarks           string       `json:"Remarks"`
-		TemplateName      string       `json:"TemplateName"`
-		TemplateNumber    int          `json:"TemplateNumber"`
-		TermsOfDelivery   string       `json:"TermsOfDelivery"`
-		TermsOfPayment    string       `json:"TermsOfPayment"`
-		WayOfDelivery     string       `json:"WayOfDelivery"`
-	} `json:"ContractTemplate"`
+	ContractTemplate ContractTemplate `json:"ContractTemplate"`
 }
 
 type UpdateContractTemplateResp struct {
-	ContractTemplate struct {
-		Url               string       `json:"@url"`
-		AdministrationFee int          `json:"AdministrationFee"`
-		ContractLength    int          `json:"ContractLength"`
-		Freight           int          `json:"Freight"`
-		InvoiceInterval   int          `json:"InvoiceInterval"`
-		InvoiceRows       []InvoiceRow `json:"InvoiceRows"`
-		Continuous        bool         `json:"Continuous"`
-		OurReference      string       `json:"OurReference"`
-		PrintTemplate     string       `json:"PrintTemplate"`
-		Remarks           string       `json:"Remarks"`
-		TemplateName      string       `json:"TemplateName"`
-		TemplateNumber    int          `json:"TemplateNumber"`
-		TermsOfDelivery   string       `json:"TermsOfDelivery"`
-		TermsOfPayment    string       `json:"TermsOfPayment"`
-		WayOfDelivery     string       `json:"WayOfDelivery"`
-	} `json:"ContractTemplate"`
+	ContractTemplate ContractTemplate `json:"ContractTemplate"`
+}
+
+type ContractTemplate struct {
+	Url               string       `json:"@url,omitempty"`
+	AdministrationFee int          `json:"AdministrationFee,omitempty"`
+	ContractLength    int          `json:"ContractLength,omitempty"`
+	Freight           int          `json:"Freight,omitempty"`
+	InvoiceInterval   int          `json:"InvoiceInterval,omitempty"`
+	InvoiceRows       []InvoiceRow `json:"InvoiceRows,omitempty"`
+	Continuous        bool         `json:"Continuous,omitempty"`
+	OurReference      string       `json:"OurReference,omitempty"`
+	PrintTemplate     string       `json:"PrintTemplate,omitempty"`
+	Remarks           string       `json:"Remarks,omitempty"`
+	TemplateName      string       `json:"TemplateName,omitempty"`
+	TemplateNumber    int          `json:"TemplateNumber,omitempty"`
+	TermsOfDelivery   string       `json:"TermsOfDelivery,omitempty"`
+	TermsOfPayment    string       `json:"TermsOfPayment,omitempty"`
+	WayOfDelivery     string       `json:"WayOfDelivery,omitempty"`
 }

@@ -10,7 +10,7 @@ const (
 )
 
 // GetAllCustomerReferences does _GET https://api.fortnox.se/3/customerreferences/
-func (c *Client) GetAllCustomerReferences(ctx context.Context) (*GetAllCustomerReferencesResp, error) {
+func (c *Client) GetAllCustomerReferences(ctx context.Context) (*CustomerReference, error) {
 	resp := &GetAllCustomerReferencesResp{}
 
 	err := c._GET(ctx, customerReferencesURI, nil, resp)
@@ -18,16 +18,14 @@ func (c *Client) GetAllCustomerReferences(ctx context.Context) (*GetAllCustomerR
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.CustomerReference, nil
 }
 
 // CreateCustomerReference does _POST https://api.fortnox.se/3/customerreferences/
 //
-// req - customer reference row to create
-func (c *Client) CreateCustomerReference(
-	ctx context.Context,
-	req *CreateCustomerReferenceReq) (*CreateCustomerReferenceResp, error) {
-
+// crr - customer reference row to create
+func (c *Client) CreateCustomerReference(ctx context.Context, crr *CustomerReferenceRow) (*CustomerReference, error) {
+	req := &CreateCustomerReferenceReq{CustomerReferenceRow: *crr}
 	resp := &CreateCustomerReferenceResp{}
 
 	err := c._POST(ctx, customerReferencesURI, nil, req, resp)
@@ -35,7 +33,7 @@ func (c *Client) CreateCustomerReference(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.CustomerReference, nil
 }
 
 // GetCustomerReference does _GET https://api.fortnox.se/3/customerreferences/{CustomerReferenceRowId}
@@ -61,12 +59,13 @@ func (c *Client) GetCustomerReference(
 //
 // customerReferenceRowID - identifies the customer reference row
 //
-// req - customer reference row to update
+// crr - customer reference row to update
 func (c *Client) UpdateCustomerReference(
 	ctx context.Context,
 	customerReferenceRowID string,
-	req *UpdateCustomerReferenceReq) (*UpdateCustomerReferenceResp, error) {
+	crr *CustomerReferenceRow) (*Customer, error) {
 
+	req := &UpdateCustomerReferenceReq{CustomerReferenceRow: *crr}
 	resp := &UpdateCustomerReferenceResp{}
 
 	uri := fmt.Sprintf("%s/%s", customersURI, customerReferenceRowID)
@@ -76,7 +75,7 @@ func (c *Client) UpdateCustomerReference(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Customer, nil
 }
 
 // DeleteCustomerReferenceRow does _DELETE https://api.fortnox.se/3/customerreferences/{CustomerReferenceRowId}
@@ -112,76 +111,11 @@ type UpdateCustomerReferenceReq struct {
 }
 
 type CustomerReferenceRow struct {
-	Reference      string `json:"Reference"`
-	CustomerNumber string `json:"CustomerNumber"`
-	Id             int    `json:"Id"`
+	Reference      string `json:"Reference,omitempty"`
+	CustomerNumber int64  `json:"CustomerNumber,omitempty"`
+	Id             int    `json:"Id,omitempty"`
 }
 
 type UpdateCustomerReferenceResp struct {
-	Customer struct {
-		Url                      string               `json:"@url"`
-		Address1                 string               `json:"Address1"`
-		Address2                 string               `json:"Address2"`
-		City                     string               `json:"City"`
-		Country                  string               `json:"Country"`
-		Comments                 string               `json:"Comments"`
-		Currency                 string               `json:"Currency"`
-		CostCenter               string               `json:"CostCenter"`
-		CountryCode              string               `json:"CountryCode"`
-		Active                   bool                 `json:"Active"`
-		CustomerNumber           string               `json:"CustomerNumber"`
-		DefaultDeliveryTypes     DefaultDeliveryTypes `json:"DefaultDeliveryTypes"`
-		DefaultTemplates         DefaultTemplates     `json:"DefaultTemplates"`
-		DeliveryAddress1         string               `json:"DeliveryAddress1"`
-		DeliveryAddress2         string               `json:"DeliveryAddress2"`
-		DeliveryCity             string               `json:"DeliveryCity"`
-		DeliveryCountry          string               `json:"DeliveryCountry"`
-		DeliveryCountryCode      string               `json:"DeliveryCountryCode"`
-		DeliveryFax              string               `json:"DeliveryFax"`
-		DeliveryName             string               `json:"DeliveryName"`
-		DeliveryPhone1           string               `json:"DeliveryPhone1"`
-		DeliveryPhone2           string               `json:"DeliveryPhone2"`
-		DeliveryZipCode          string               `json:"DeliveryZipCode"`
-		Email                    string               `json:"Email"`
-		EmailInvoice             string               `json:"EmailInvoice"`
-		EmailInvoiceBCC          string               `json:"EmailInvoiceBCC"`
-		EmailInvoiceCC           string               `json:"EmailInvoiceCC"`
-		EmailOffer               string               `json:"EmailOffer"`
-		EmailOfferBCC            string               `json:"EmailOfferBCC"`
-		EmailOfferCC             string               `json:"EmailOfferCC"`
-		EmailOrder               string               `json:"EmailOrder"`
-		EmailOrderBCC            string               `json:"EmailOrderBCC"`
-		EmailOrderCC             string               `json:"EmailOrderCC"`
-		ExternalReference        string               `json:"ExternalReference"`
-		Fax                      string               `json:"Fax"`
-		GLN                      string               `json:"GLN"`
-		GLNDelivery              string               `json:"GLNDelivery"`
-		InvoiceAdministrationFee string               `json:"InvoiceAdministrationFee"`
-		InvoiceDiscount          int                  `json:"InvoiceDiscount"`
-		InvoiceFreight           string               `json:"InvoiceFreight"`
-		InvoiceRemark            string               `json:"InvoiceRemark"`
-		Name                     string               `json:"Name"`
-		OrganisationNumber       string               `json:"OrganisationNumber"`
-		OurReference             string               `json:"OurReference"`
-		Phone1                   string               `json:"Phone1"`
-		Phone2                   string               `json:"Phone2"`
-		PriceList                string               `json:"PriceList"`
-		Project                  string               `json:"Project"`
-		SalesAccount             string               `json:"SalesAccount"`
-		ShowPriceVATIncluded     bool                 `json:"ShowPriceVATIncluded"`
-		TermsOfDelivery          string               `json:"TermsOfDelivery"`
-		TermsOfPayment           string               `json:"TermsOfPayment"`
-		Type                     string               `json:"Type"`
-		VATNumber                string               `json:"VATNumber"`
-		VATType                  string               `json:"VATType"`
-		VisitingAddress          string               `json:"VisitingAddress"`
-		VisitingCity             string               `json:"VisitingCity"`
-		VisitingCountry          string               `json:"VisitingCountry"`
-		VisitingCountryCode      string               `json:"VisitingCountryCode"`
-		VisitingZipCode          string               `json:"VisitingZipCode"`
-		WayOfDelivery            string               `json:"WayOfDelivery"`
-		WWW                      string               `json:"WWW"`
-		YourReference            string               `json:"YourReference"`
-		ZipCode                  string               `json:"ZipCode"`
-	} `json:"Customer"`
+	Customer Customer `json:"Customer"`
 }
