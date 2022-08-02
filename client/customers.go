@@ -160,9 +160,9 @@ type Customer struct {
 	ShowPriceVATIncluded     bool                 `json:"ShowPriceVATIncluded,omitempty"`
 	TermsOfDelivery          string               `json:"TermsOfDelivery,omitempty"`
 	TermsOfPayment           string               `json:"TermsOfPayment,omitempty"`
-	Type                     string               `json:"Type,omitempty"`
+	Type                     CustomerType         `json:"Type,omitempty"`
 	VATNumber                string               `json:"VATNumber,omitempty"`
-	VATType                  string               `json:"VATType,omitempty"`
+	VATType                  VATType              `json:"VATType,omitempty"`
 	VisitingAddress          string               `json:"VisitingAddress,omitempty"`
 	VisitingCity             string               `json:"VisitingCity,omitempty"`
 	VisitingCountry          string               `json:"VisitingCountry,omitempty"`
@@ -185,3 +185,20 @@ type DefaultTemplates struct {
 	Offer       string `json:"Offer,omitempty"`
 	Order       string `json:"Order,omitempty"`
 }
+
+type CustomerType string
+
+var (
+	CustomerTypePrivate CustomerType = "PRIVATE"
+	CustomerTypeCompany CustomerType = "COMPANY"
+)
+
+type VATType string
+
+var (
+	VATTypeSEVAT         VATType = "SEVAT"
+	VATTypeSEReversedVAT VATType = "SEREVERSEDVAT"
+	VATTypeEUReversedVAT VATType = "EUREVERSEDVAT"
+	VATTypeEUVat         VATType = "EUVAT"
+	VATTypeExport        VATType = "EXPORT"
+)
