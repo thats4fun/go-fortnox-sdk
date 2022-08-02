@@ -7,7 +7,7 @@ const (
 )
 
 // GetAllPrintTemplates does _GET https://api.fortnox.se/3/printtemplates
-func (c *Client) GetAllPrintTemplates(ctx context.Context) (*GetAllPrintTemplatesResp, error) {
+func (c *Client) GetAllPrintTemplates(ctx context.Context) ([]PrintTemplate, error) {
 	resp := &GetAllPrintTemplatesResp{}
 
 	err := c._GET(ctx, printTemplatesURI, nil, resp)
@@ -15,12 +15,14 @@ func (c *Client) GetAllPrintTemplates(ctx context.Context) (*GetAllPrintTemplate
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.PrintTemplates, nil
 }
 
 type GetAllPrintTemplatesResp struct {
-	PrintTemplates []struct {
-		Template string `json:"Template"`
-		Name     string `json:"Name"`
-	} `json:"PrintTemplates"`
+	PrintTemplates []PrintTemplate `json:"PrintTemplates"`
+}
+
+type PrintTemplate struct {
+	Template string `json:"Template,omitempty"`
+	Name     string `json:"Name,omitempty"`
 }

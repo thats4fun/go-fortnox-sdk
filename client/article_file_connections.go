@@ -10,7 +10,7 @@ const (
 )
 
 // GetAllArticleFileConnections does _GET https://api.fortnox.se/3/articlefileconnections/
-func (c *Client) GetAllArticleFileConnections(ctx context.Context) (*GetAllArticleFileConnectionsResp, error) {
+func (c *Client) GetAllArticleFileConnections(ctx context.Context) ([]ArticleFileConnection, error) {
 	resp := &GetAllArticleFileConnectionsResp{}
 
 	err := c._GET(ctx, articleFileConnectionsURI, nil, resp)
@@ -18,13 +18,14 @@ func (c *Client) GetAllArticleFileConnections(ctx context.Context) (*GetAllArtic
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.ArticleFileConnections, nil
 }
 
 // CreateArticleFileConnection does _POST https://api.fortnox.se/3/articlefileconnections/
 //
 // req - article file connection to create
-func (c *Client) CreateArticleFileConnection(ctx context.Context, req *CreateArticleFileConnectionReq) (*CreateArticleFileConnectionResp, error) {
+func (c *Client) CreateArticleFileConnection(ctx context.Context, afc *ArticleFileConnection) (*ArticleFileConnection, error) {
+	req := CreateArticleFileConnectionReq{ArticleFileConnection: *afc}
 	resp := &CreateArticleFileConnectionResp{}
 
 	err := c._POST(ctx, articleFileConnectionsURI, nil, req, resp)
@@ -32,13 +33,13 @@ func (c *Client) CreateArticleFileConnection(ctx context.Context, req *CreateArt
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.ArticleFileConnection, nil
 }
 
 // GetArticleFileConnectionByID does _GET https://api.fortnox.se/3/articlefileconnections/{FileId}
 //
 // fileID - identifies the article file connection
-func (c *Client) GetArticleFileConnectionByID(ctx context.Context, fileID string) (*GetArticleFileConnectionByIDResp, error) {
+func (c *Client) GetArticleFileConnectionByID(ctx context.Context, fileID string) (*ArticleFileConnection, error) {
 	resp := &GetArticleFileConnectionByIDResp{}
 
 	uri := fmt.Sprintf("%s/%s", articleFileConnectionsURI, fileID)
@@ -48,7 +49,7 @@ func (c *Client) GetArticleFileConnectionByID(ctx context.Context, fileID string
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.ArticleFileConnection, nil
 }
 
 // DeleteArticleFileConnection does _DELETE https://api.fortnox.se/3/articlefileconnections/{FileId}
@@ -59,34 +60,24 @@ func (c *Client) DeleteArticleFileConnection(ctx context.Context, fileID string)
 	return c._DELETE(ctx, uri)
 }
 
+type ArticleFileConnection struct {
+	Url           string `json:"@url,omitempty"`
+	FileId        string `json:"FileId,omitempty"`
+	ArticleNumber string `json:"ArticleNumber,omitempty"`
+}
+
 type GetAllArticleFileConnectionsResp struct {
-	ArticleFileConnections []struct {
-		Url           string `json:"@url"`
-		FileId        string `json:"FileId"`
-		ArticleNumber string `json:"ArticleNumber"`
-	} `json:"ArticleFileConnections"`
+	ArticleFileConnections []ArticleFileConnection `json:"ArticleFileConnections"`
 }
 
 type CreateArticleFileConnectionReq struct {
-	ArticleFileConnection struct {
-		Url           string `json:"@url"`
-		FileId        string `json:"FileId"`
-		ArticleNumber string `json:"ArticleNumber"`
-	} `json:"ArticleFileConnection"`
+	ArticleFileConnection ArticleFileConnection `json:"ArticleFileConnection"`
 }
 
 type CreateArticleFileConnectionResp struct {
-	ArticleFileConnection struct {
-		Url           string `json:"@url"`
-		FileId        string `json:"FileId"`
-		ArticleNumber string `json:"ArticleNumber"`
-	} `json:"ArticleFileConnection"`
+	ArticleFileConnection ArticleFileConnection `json:"ArticleFileConnection"`
 }
 
 type GetArticleFileConnectionByIDResp struct {
-	ArticleFileConnection struct {
-		Url           string `json:"@url"`
-		FileId        string `json:"FileId"`
-		ArticleNumber string `json:"ArticleNumber"`
-	} `json:"ArticleFileConnection"`
+	ArticleFileConnection ArticleFileConnection `json:"ArticleFileConnection"`
 }

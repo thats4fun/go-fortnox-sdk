@@ -10,7 +10,7 @@ const (
 )
 
 // GetAllCurrencies does _GET https://api.fortnox.se/3/currencies
-func (c *Client) GetAllCurrencies(ctx context.Context) (*GetAllCurrenciesResp, error) {
+func (c *Client) GetAllCurrencies(ctx context.Context) ([]Currency, error) {
 	resp := &GetAllCurrenciesResp{}
 
 	err := c._GET(ctx, currenciesURI, nil, resp)
@@ -18,13 +18,14 @@ func (c *Client) GetAllCurrencies(ctx context.Context) (*GetAllCurrenciesResp, e
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.Currencies, nil
 }
 
 // CreateCurrency does _POST https://api.fortnox.se/3/currencies
 //
 // req - currency to create
-func (c *Client) CreateCurrency(ctx context.Context, req *CreateCurrencyReq) (*CreateCurrencyResp, error) {
+func (c *Client) CreateCurrency(ctx context.Context, cur *Currency) (*Currency, error) {
+	req := &CreateCurrencyReq{Currency: *cur}
 	resp := &CreateCurrencyResp{}
 
 	err := c._POST(ctx, currenciesURI, nil, req, resp)
@@ -32,13 +33,13 @@ func (c *Client) CreateCurrency(ctx context.Context, req *CreateCurrencyReq) (*C
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Currency, nil
 }
 
 // GetCurrency does _GET https://api.fortnox.se/3/currencies/{Code}
 //
 // code - identifies currency
-func (c *Client) GetCurrency(ctx context.Context, code string) (*GetCurrencyResp, error) {
+func (c *Client) GetCurrency(ctx context.Context, code string) (*Currency, error) {
 	resp := &GetCurrencyResp{}
 
 	uri := fmt.Sprintf("%s/%s", currenciesURI, code)
@@ -48,7 +49,7 @@ func (c *Client) GetCurrency(ctx context.Context, code string) (*GetCurrencyResp
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Currency, nil
 }
 
 // UpdateCurrency does _PUT https://api.fortnox.se/3/currencies/{Code}
@@ -56,7 +57,8 @@ func (c *Client) GetCurrency(ctx context.Context, code string) (*GetCurrencyResp
 // code - identifies currency
 //
 // req - currency to update
-func (c *Client) UpdateCurrency(ctx context.Context, code string, req *UpdateCurrencyReq) (*UpdateCurrencyResp, error) {
+func (c *Client) UpdateCurrency(ctx context.Context, code string, cur *Currency) (*Currency, error) {
+	req := &UpdateCurrencyReq{Currency: *cur}
 	resp := &UpdateCurrencyResp{}
 
 	uri := fmt.Sprintf("%s/%s", currenciesURI, code)
@@ -66,7 +68,7 @@ func (c *Client) UpdateCurrency(ctx context.Context, code string, req *UpdateCur
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Currency, nil
 }
 
 // RemoveCurrency does _DELETE
@@ -77,50 +79,32 @@ func (c *Client) RemoveCurrency(ctx context.Context, code string) error {
 	return c._DELETE(ctx, uri)
 }
 
+type Currency struct {
+	Currency string  `json:"currency,omitempty"`
+	Rate     float64 `json:"rate,omitempty"`
+	Unit     int     `json:"unit,omitempty"`
+}
+
 type GetAllCurrenciesResp struct {
-	Currencies []struct {
-		Currency string  `json:"currency"`
-		Rate     float64 `json:"rate"`
-		Unit     int     `json:"unit"`
-	} `json:"Currencies"`
+	Currencies []Currency `json:"Currencies"`
 }
 
 type CreateCurrencyReq struct {
-	Currency struct {
-		Currency string  `json:"currency"`
-		Rate     float64 `json:"rate"`
-		Unit     int     `json:"unit"`
-	} `json:"Currency"`
+	Currency Currency `json:"Currency"`
 }
 
 type CreateCurrencyResp struct {
-	Currency struct {
-		Currency string  `json:"currency"`
-		Rate     float64 `json:"rate"`
-		Unit     int     `json:"unit"`
-	} `json:"Currency"`
+	Currency Currency `json:"Currency"`
 }
 
 type GetCurrencyResp struct {
-	Currency struct {
-		Currency string  `json:"currency"`
-		Rate     float64 `json:"rate"`
-		Unit     int     `json:"unit"`
-	} `json:"Currency"`
+	Currency Currency `json:"Currency"`
 }
 
 type UpdateCurrencyReq struct {
-	Currency struct {
-		Currency string  `json:"currency"`
-		Rate     float64 `json:"rate"`
-		Unit     int     `json:"unit"`
-	} `json:"Currency"`
+	Currency Currency `json:"Currency"`
 }
 
 type UpdateCurrencyResp struct {
-	Currency struct {
-		Currency string  `json:"currency"`
-		Rate     float64 `json:"rate"`
-		Unit     int     `json:"unit"`
-	} `json:"Currency"`
+	Currency Currency `json:"Currency"`
 }

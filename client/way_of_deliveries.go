@@ -10,7 +10,7 @@ const (
 )
 
 // GetAllWayOfDeliveries does _GET https://api.fortnox.se/3/wayofdeliveries
-func (c *Client) GetAllWayOfDeliveries(ctx context.Context) (*GetAllWayOfDeliveriesResp, error) {
+func (c *Client) GetAllWayOfDeliveries(ctx context.Context) ([]WayOfDelivery, error) {
 	resp := &GetAllWayOfDeliveriesResp{}
 
 	err := c._GET(ctx, wayOfDeliveriesURI, nil, resp)
@@ -18,7 +18,7 @@ func (c *Client) GetAllWayOfDeliveries(ctx context.Context) (*GetAllWayOfDeliver
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.WayOfDeliveries, nil
 }
 
 // CreateWayOfDeliveries does _POST https://api.fortnox.se/3/wayofdeliveries
@@ -26,8 +26,9 @@ func (c *Client) GetAllWayOfDeliveries(ctx context.Context) (*GetAllWayOfDeliver
 // req - way of delivery to create
 func (c *Client) CreateWayOfDeliveries(
 	ctx context.Context,
-	req *CreateWayOfDeliveriesReq) (*CreateWayOfDeliveriesResp, error) {
+	wod *WayOfDelivery) (*WayOfDelivery, error) {
 
+	req := CreateWayOfDeliveriesReq{WayOfDelivery: *wod}
 	resp := &CreateWayOfDeliveriesResp{}
 
 	err := c._POST(ctx, wayOfDeliveriesURI, nil, req, resp)
@@ -35,13 +36,13 @@ func (c *Client) CreateWayOfDeliveries(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.WayOfDelivery, nil
 }
 
 // GetWayOfDeliveryByCode does _GET https://api.fortnox.se/3/wayofdeliveries/{Code}
 //
 // code - identifies the way of delivery
-func (c *Client) GetWayOfDeliveryByCode(ctx context.Context, code string) (*GetWayOfDeliveryByCodeResp, error) {
+func (c *Client) GetWayOfDeliveryByCode(ctx context.Context, code string) (*WayOfDelivery, error) {
 	resp := &GetWayOfDeliveryByCodeResp{}
 
 	uri := fmt.Sprintf("%s/%s", wayOfDeliveriesURI, code)
@@ -51,7 +52,7 @@ func (c *Client) GetWayOfDeliveryByCode(ctx context.Context, code string) (*GetW
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.WayOfDelivery, nil
 }
 
 // UpdateWayOfDelivery does _PUT https://api.fortnox.se/3/wayofdeliveries/{Code}
@@ -62,8 +63,9 @@ func (c *Client) GetWayOfDeliveryByCode(ctx context.Context, code string) (*GetW
 func (c *Client) UpdateWayOfDelivery(
 	ctx context.Context,
 	code string,
-	req *UpdateWayOfDeliveryReq) (*UpdateWayOfDeliveryResp, error) {
+	wod *WayOfDelivery) (*WayOfDelivery, error) {
 
+	req := UpdateWayOfDeliveryReq{WayOfDelivery: *wod}
 	resp := &UpdateWayOfDeliveryResp{}
 
 	uri := fmt.Sprintf("%s/%s", wayOfDeliveriesURI, code)
@@ -73,7 +75,7 @@ func (c *Client) UpdateWayOfDelivery(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.WayOfDelivery, nil
 }
 
 // RemoveWayOfDelivery does _DELETE https://api.fortnox.se/3/wayofdeliveries/{Code}
@@ -84,56 +86,33 @@ func (c *Client) RemoveWayOfDelivery(ctx context.Context, code string) error {
 	return c._DELETE(ctx, uri)
 }
 
+type WayOfDelivery struct {
+	Url                string `json:"@url"`
+	Code               string `json:"Code"`
+	Description        string `json:"Description"`
+	DescriptionEnglish string `json:"DescriptionEnglish"`
+}
+
 type GetAllWayOfDeliveriesResp struct {
-	WayOfDeliveries []struct {
-		Url                string `json:"@url"`
-		Code               string `json:"Code"`
-		Description        string `json:"Description"`
-		DescriptionEnglish string `json:"DescriptionEnglish"`
-	} `json:"WayOfDeliveries"`
+	WayOfDeliveries []WayOfDelivery `json:"WayOfDeliveries"`
 }
 
 type CreateWayOfDeliveriesReq struct {
-	WayOfDelivery struct {
-		Url                string `json:"@url"`
-		Code               string `json:"Code"`
-		Description        string `json:"Description"`
-		DescriptionEnglish string `json:"DescriptionEnglish"`
-	} `json:"WayOfDelivery"`
+	WayOfDelivery WayOfDelivery `json:"WayOfDelivery"`
 }
 
 type CreateWayOfDeliveriesResp struct {
-	WayOfDelivery struct {
-		Url                string `json:"@url"`
-		Code               string `json:"Code"`
-		Description        string `json:"Description"`
-		DescriptionEnglish string `json:"DescriptionEnglish"`
-	} `json:"WayOfDelivery"`
+	WayOfDelivery WayOfDelivery `json:"WayOfDelivery"`
 }
 
 type GetWayOfDeliveryByCodeResp struct {
-	WayOfDelivery struct {
-		Url                string `json:"@url"`
-		Code               string `json:"Code"`
-		Description        string `json:"Description"`
-		DescriptionEnglish string `json:"DescriptionEnglish"`
-	} `json:"WayOfDelivery"`
+	WayOfDelivery WayOfDelivery `json:"WayOfDelivery"`
 }
 
 type UpdateWayOfDeliveryReq struct {
-	WayOfDelivery struct {
-		Url                string `json:"@url"`
-		Code               string `json:"Code"`
-		Description        string `json:"Description"`
-		DescriptionEnglish string `json:"DescriptionEnglish"`
-	} `json:"WayOfDelivery"`
+	WayOfDelivery WayOfDelivery `json:"WayOfDelivery"`
 }
 
 type UpdateWayOfDeliveryResp struct {
-	WayOfDelivery struct {
-		Url                string `json:"@url"`
-		Code               string `json:"Code"`
-		Description        string `json:"Description"`
-		DescriptionEnglish string `json:"DescriptionEnglish"`
-	} `json:"WayOfDelivery"`
+	WayOfDelivery WayOfDelivery `json:"WayOfDelivery"`
 }

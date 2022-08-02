@@ -7,7 +7,7 @@ const (
 )
 
 // GetCompanyInformation does _GET https://api.fortnox.se/3/companyinformation
-func (c Client) GetCompanyInformation(ctx context.Context) (*GetCompanyInformationResp, error) {
+func (c Client) GetCompanyInformation(ctx context.Context) (*CompanyInformation, error) {
 	resp := &GetCompanyInformationResp{}
 
 	err := c._GET(ctx, companyInformationURI, nil, resp)
@@ -15,21 +15,23 @@ func (c Client) GetCompanyInformation(ctx context.Context) (*GetCompanyInformati
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.CompanyInformation, nil
+}
+
+type CompanyInformation struct {
+	Address            string `json:"Address,omitempty"`
+	City               string `json:"City,omitempty"`
+	CountryCode        string `json:"CountryCode,omitempty"`
+	DatabaseNumber     int    `json:"DatabaseNumber,omitempty"`
+	CompanyName        string `json:"CompanyName,omitempty"`
+	OrganizationNumber string `json:"OrganizationNumber,omitempty"`
+	VisitAddress       string `json:"VisitAddress,omitempty"`
+	VisitCity          string `json:"VisitCity,omitempty"`
+	VisitCountryCode   string `json:"VisitCountryCode,omitempty"`
+	VisitZipCode       string `json:"VisitZipCode,omitempty"`
+	ZipCode            string `json:"ZipCode,omitempty"`
 }
 
 type GetCompanyInformationResp struct {
-	CompanyInformation struct {
-		Address            string `json:"Address"`
-		City               string `json:"City"`
-		CountryCode        string `json:"CountryCode"`
-		DatabaseNumber     int    `json:"DatabaseNumber"`
-		CompanyName        string `json:"CompanyName"`
-		OrganizationNumber string `json:"OrganizationNumber"`
-		VisitAddress       string `json:"VisitAddress"`
-		VisitCity          string `json:"VisitCity"`
-		VisitCountryCode   string `json:"VisitCountryCode"`
-		VisitZipCode       string `json:"VisitZipCode"`
-		ZipCode            string `json:"ZipCode"`
-	} `json:"CompanyInformation"`
+	CompanyInformation CompanyInformation `json:"CompanyInformation"`
 }

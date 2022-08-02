@@ -11,7 +11,7 @@ const (
 
 // GetAllTrustedAndRejectedEmailSenders does _GET https://api.fortnox.se/3/emailsenders/
 func (c *Client) GetAllTrustedAndRejectedEmailSenders(
-	ctx context.Context) (*GetAllTrustedAndRejectedEmailSendersResp, error) {
+	ctx context.Context) (*EmailSenders, error) {
 
 	resp := &GetAllTrustedAndRejectedEmailSendersResp{}
 
@@ -20,7 +20,7 @@ func (c *Client) GetAllTrustedAndRejectedEmailSenders(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.EmailSenders, nil
 }
 
 // CreateTrustedEmailAddress does _POST https://api.fortnox.se/3/emailsenders/trusted
@@ -28,8 +28,9 @@ func (c *Client) GetAllTrustedAndRejectedEmailSenders(
 // req - trusted email sender to create
 func (c *Client) CreateTrustedEmailAddress(
 	ctx context.Context,
-	req *CreateTrustedEmailAddressReq) (*CreateTrustedEmailAddressResp, error) {
+	ts *TrustedSender) (*TrustedSender, error) {
 
+	req := &CreateTrustedEmailAddressReq{TrustedSender: *ts}
 	resp := &CreateTrustedEmailAddressResp{}
 
 	uri := fmt.Sprintf("%s/trusted", emailSendersURI)
@@ -39,7 +40,7 @@ func (c *Client) CreateTrustedEmailAddress(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.TrustedSender, nil
 }
 
 // RemoveTrustedEmailAddress does _DELETE https://api.fortnox.se/3/emailsenders/trusted/{Id}
@@ -50,29 +51,29 @@ func (c *Client) RemoveTrustedEmailAddress(ctx context.Context, id int) error {
 	return c._DELETE(ctx, uri)
 }
 
+type EmailSenders struct {
+	TrustedSenders  []TrustedSender   `json:"TrustedSenders"`
+	RejectedSenders []RejectedSenders `json:"RejectedSenders"`
+}
+
+type TrustedSender struct {
+	Id    int    `json:"Id"`
+	Email string `json:"Email"`
+}
+
+type RejectedSenders struct {
+	Id    int    `json:"Id"`
+	Email string `json:"Email"`
+}
+
 type GetAllTrustedAndRejectedEmailSendersResp struct {
-	EmailSenders struct {
-		TrustedSenders []struct {
-			Id    int    `json:"Id"`
-			Email string `json:"Email"`
-		} `json:"TrustedSenders"`
-		RejectedSenders []struct {
-			Id    int    `json:"Id"`
-			Email string `json:"Email"`
-		} `json:"RejectedSenders"`
-	} `json:"EmailSenders"`
+	EmailSenders EmailSenders `json:"EmailSenders"`
 }
 
 type CreateTrustedEmailAddressReq struct {
-	TrustedSender struct {
-		Id    int    `json:"Id"`
-		Email string `json:"Email"`
-	} `json:"TrustedSender"`
+	TrustedSender TrustedSender `json:"TrustedSender"`
 }
 
 type CreateTrustedEmailAddressResp struct {
-	TrustedSender struct {
-		Id    int    `json:"Id"`
-		Email string `json:"Email"`
-	} `json:"TrustedSender"`
+	TrustedSender TrustedSender `json:"TrustedSender"`
 }

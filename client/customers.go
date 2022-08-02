@@ -10,7 +10,7 @@ const (
 )
 
 // GetAllCustomers does _GET https://api.fortnox.se/3/customers/
-func (c *Client) GetAllCustomers(ctx context.Context) (*GetAllCustomersResp, error) {
+func (c *Client) GetAllCustomers(ctx context.Context) ([]Customer, error) {
 	resp := &GetAllCustomersResp{}
 
 	err := c._GET(ctx, customersURI, nil, resp)
@@ -18,13 +18,14 @@ func (c *Client) GetAllCustomers(ctx context.Context) (*GetAllCustomersResp, err
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.Customers, nil
 }
 
 // CreateCustomer does _POST https://api.fortnox.se/3/customers/
 //
 // req - customer to create
-func (c *Client) CreateCustomer(ctx context.Context, req *CreateCustomerReq) (*CreateCustomerResp, error) {
+func (c *Client) CreateCustomer(ctx context.Context, cus *Customer) (*Customer, error) {
+	req := &CreateCustomerReq{Customer: *cus}
 	resp := &CreateCustomerResp{}
 
 	err := c._POST(ctx, customersURI, nil, req, resp)
@@ -32,13 +33,13 @@ func (c *Client) CreateCustomer(ctx context.Context, req *CreateCustomerReq) (*C
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Customer, nil
 }
 
 // GetCustomer does _GET https://api.fortnox.se/3/customers/{CustomerId}
 //
 // customerNumber - identifies the customer
-func (c *Client) GetCustomer(ctx context.Context, customerNumber string) (*GetCustomerResp, error) {
+func (c *Client) GetCustomer(ctx context.Context, customerNumber string) (*Customer, error) {
 	resp := &GetCustomerResp{}
 
 	uri := fmt.Sprintf("%s/%s", customersURI, customerNumber)
@@ -48,7 +49,7 @@ func (c *Client) GetCustomer(ctx context.Context, customerNumber string) (*GetCu
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Customer, nil
 }
 
 // UpdateCustomer does _PUT https://api.fortnox.se/3/employees/{CustomerId}
@@ -59,8 +60,9 @@ func (c *Client) GetCustomer(ctx context.Context, customerNumber string) (*GetCu
 func (c *Client) UpdateCustomer(
 	ctx context.Context,
 	customerNumber string,
-	req *UpdateCustomerReq) (*UpdateCustomerResp, error) {
+	cus *Customer) (*Customer, error) {
 
+	req := &UpdateCustomerReq{Customer: *cus}
 	resp := &UpdateCustomerResp{}
 
 	uri := fmt.Sprintf("%s/%s", customersURI, customerNumber)
@@ -70,7 +72,7 @@ func (c *Client) UpdateCustomer(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Customer, nil
 }
 
 // DeleteCustomer does _DELETE https://api.fortnox.se/3/customers/{CustomerNumber}
@@ -82,406 +84,104 @@ func (c *Client) DeleteCustomer(ctx context.Context, customerNumber string) erro
 }
 
 type GetAllCustomersResp struct {
-	Customers []struct {
-		Url                string `json:"@url"`
-		Address1           string `json:"Address1"`
-		Address2           string `json:"Address2"`
-		City               string `json:"City"`
-		CustomerNumber     string `json:"CustomerNumber"`
-		Email              string `json:"Email"`
-		Name               string `json:"Name"`
-		OrganisationNumber string `json:"OrganisationNumber"`
-		Phone              string `json:"Phone"`
-		ZipCode            string `json:"ZipCode"`
-	} `json:"Customers"`
+	Customers []Customer `json:"Customers"`
 }
 
 type CreateCustomerReq struct {
-	Customer struct {
-		Url                  string `json:"@url"`
-		Address1             string `json:"Address1"`
-		Address2             string `json:"Address2"`
-		City                 string `json:"City"`
-		Country              string `json:"Country"`
-		Comments             string `json:"Comments"`
-		Currency             string `json:"Currency"`
-		CostCenter           string `json:"CostCenter"`
-		CountryCode          string `json:"CountryCode"`
-		Active               bool   `json:"Active"`
-		CustomerNumber       string `json:"CustomerNumber"`
-		DefaultDeliveryTypes struct {
-			Invoice string `json:"Invoice"`
-			Order   string `json:"Order"`
-			Offer   string `json:"Offer"`
-		} `json:"DefaultDeliveryTypes"`
-		DefaultTemplates struct {
-			CashInvoice string `json:"CashInvoice"`
-			Invoice     string `json:"Invoice"`
-			Offer       string `json:"Offer"`
-			Order       string `json:"Order"`
-		} `json:"DefaultTemplates"`
-		DeliveryAddress1         string `json:"DeliveryAddress1"`
-		DeliveryAddress2         string `json:"DeliveryAddress2"`
-		DeliveryCity             string `json:"DeliveryCity"`
-		DeliveryCountry          string `json:"DeliveryCountry"`
-		DeliveryCountryCode      string `json:"DeliveryCountryCode"`
-		DeliveryFax              string `json:"DeliveryFax"`
-		DeliveryName             string `json:"DeliveryName"`
-		DeliveryPhone1           string `json:"DeliveryPhone1"`
-		DeliveryPhone2           string `json:"DeliveryPhone2"`
-		DeliveryZipCode          string `json:"DeliveryZipCode"`
-		Email                    string `json:"Email"`
-		EmailInvoice             string `json:"EmailInvoice"`
-		EmailInvoiceBCC          string `json:"EmailInvoiceBCC"`
-		EmailInvoiceCC           string `json:"EmailInvoiceCC"`
-		EmailOffer               string `json:"EmailOffer"`
-		EmailOfferBCC            string `json:"EmailOfferBCC"`
-		EmailOfferCC             string `json:"EmailOfferCC"`
-		EmailOrder               string `json:"EmailOrder"`
-		EmailOrderBCC            string `json:"EmailOrderBCC"`
-		EmailOrderCC             string `json:"EmailOrderCC"`
-		ExternalReference        string `json:"ExternalReference"`
-		Fax                      string `json:"Fax"`
-		GLN                      string `json:"GLN"`
-		GLNDelivery              string `json:"GLNDelivery"`
-		InvoiceAdministrationFee string `json:"InvoiceAdministrationFee"`
-		InvoiceDiscount          int    `json:"InvoiceDiscount"`
-		InvoiceFreight           string `json:"InvoiceFreight"`
-		InvoiceRemark            string `json:"InvoiceRemark"`
-		Name                     string `json:"Name"`
-		OrganisationNumber       string `json:"OrganisationNumber"`
-		OurReference             string `json:"OurReference"`
-		Phone1                   string `json:"Phone1"`
-		Phone2                   string `json:"Phone2"`
-		PriceList                string `json:"PriceList"`
-		Project                  string `json:"Project"`
-		SalesAccount             string `json:"SalesAccount"`
-		ShowPriceVATIncluded     bool   `json:"ShowPriceVATIncluded"`
-		TermsOfDelivery          string `json:"TermsOfDelivery"`
-		TermsOfPayment           string `json:"TermsOfPayment"`
-		Type                     string `json:"Type"`
-		VATNumber                string `json:"VATNumber"`
-		VATType                  string `json:"VATType"`
-		VisitingAddress          string `json:"VisitingAddress"`
-		VisitingCity             string `json:"VisitingCity"`
-		VisitingCountry          string `json:"VisitingCountry"`
-		VisitingCountryCode      string `json:"VisitingCountryCode"`
-		VisitingZipCode          string `json:"VisitingZipCode"`
-		WayOfDelivery            string `json:"WayOfDelivery"`
-		WWW                      string `json:"WWW"`
-		YourReference            string `json:"YourReference"`
-		ZipCode                  string `json:"ZipCode"`
-	} `json:"Customer"`
+	Customer Customer `json:"Customer"`
 }
 
 type CreateCustomerResp struct {
-	Customer struct {
-		Url                  string `json:"@url"`
-		Address1             string `json:"Address1"`
-		Address2             string `json:"Address2"`
-		City                 string `json:"City"`
-		Country              string `json:"Country"`
-		Comments             string `json:"Comments"`
-		Currency             string `json:"Currency"`
-		CostCenter           string `json:"CostCenter"`
-		CountryCode          string `json:"CountryCode"`
-		Active               bool   `json:"Active"`
-		CustomerNumber       string `json:"CustomerNumber"`
-		DefaultDeliveryTypes struct {
-			Invoice string `json:"Invoice"`
-			Order   string `json:"Order"`
-			Offer   string `json:"Offer"`
-		} `json:"DefaultDeliveryTypes"`
-		DefaultTemplates struct {
-			CashInvoice string `json:"CashInvoice"`
-			Invoice     string `json:"Invoice"`
-			Offer       string `json:"Offer"`
-			Order       string `json:"Order"`
-		} `json:"DefaultTemplates"`
-		DeliveryAddress1         string `json:"DeliveryAddress1"`
-		DeliveryAddress2         string `json:"DeliveryAddress2"`
-		DeliveryCity             string `json:"DeliveryCity"`
-		DeliveryCountry          string `json:"DeliveryCountry"`
-		DeliveryCountryCode      string `json:"DeliveryCountryCode"`
-		DeliveryFax              string `json:"DeliveryFax"`
-		DeliveryName             string `json:"DeliveryName"`
-		DeliveryPhone1           string `json:"DeliveryPhone1"`
-		DeliveryPhone2           string `json:"DeliveryPhone2"`
-		DeliveryZipCode          string `json:"DeliveryZipCode"`
-		Email                    string `json:"Email"`
-		EmailInvoice             string `json:"EmailInvoice"`
-		EmailInvoiceBCC          string `json:"EmailInvoiceBCC"`
-		EmailInvoiceCC           string `json:"EmailInvoiceCC"`
-		EmailOffer               string `json:"EmailOffer"`
-		EmailOfferBCC            string `json:"EmailOfferBCC"`
-		EmailOfferCC             string `json:"EmailOfferCC"`
-		EmailOrder               string `json:"EmailOrder"`
-		EmailOrderBCC            string `json:"EmailOrderBCC"`
-		EmailOrderCC             string `json:"EmailOrderCC"`
-		ExternalReference        string `json:"ExternalReference"`
-		Fax                      string `json:"Fax"`
-		GLN                      string `json:"GLN"`
-		GLNDelivery              string `json:"GLNDelivery"`
-		InvoiceAdministrationFee string `json:"InvoiceAdministrationFee"`
-		InvoiceDiscount          int    `json:"InvoiceDiscount"`
-		InvoiceFreight           string `json:"InvoiceFreight"`
-		InvoiceRemark            string `json:"InvoiceRemark"`
-		Name                     string `json:"Name"`
-		OrganisationNumber       string `json:"OrganisationNumber"`
-		OurReference             string `json:"OurReference"`
-		Phone1                   string `json:"Phone1"`
-		Phone2                   string `json:"Phone2"`
-		PriceList                string `json:"PriceList"`
-		Project                  string `json:"Project"`
-		SalesAccount             string `json:"SalesAccount"`
-		ShowPriceVATIncluded     bool   `json:"ShowPriceVATIncluded"`
-		TermsOfDelivery          string `json:"TermsOfDelivery"`
-		TermsOfPayment           string `json:"TermsOfPayment"`
-		Type                     string `json:"Type"`
-		VATNumber                string `json:"VATNumber"`
-		VATType                  string `json:"VATType"`
-		VisitingAddress          string `json:"VisitingAddress"`
-		VisitingCity             string `json:"VisitingCity"`
-		VisitingCountry          string `json:"VisitingCountry"`
-		VisitingCountryCode      string `json:"VisitingCountryCode"`
-		VisitingZipCode          string `json:"VisitingZipCode"`
-		WayOfDelivery            string `json:"WayOfDelivery"`
-		WWW                      string `json:"WWW"`
-		YourReference            string `json:"YourReference"`
-		ZipCode                  string `json:"ZipCode"`
-	} `json:"Customer"`
+	Customer Customer `json:"Customer"`
 }
 
 type GetCustomerResp struct {
-	Customer struct {
-		Url                  string `json:"@url"`
-		Address1             string `json:"Address1"`
-		Address2             string `json:"Address2"`
-		City                 string `json:"City"`
-		Country              string `json:"Country"`
-		Comments             string `json:"Comments"`
-		Currency             string `json:"Currency"`
-		CostCenter           string `json:"CostCenter"`
-		CountryCode          string `json:"CountryCode"`
-		Active               bool   `json:"Active"`
-		CustomerNumber       string `json:"CustomerNumber"`
-		DefaultDeliveryTypes struct {
-			Invoice string `json:"Invoice"`
-			Order   string `json:"Order"`
-			Offer   string `json:"Offer"`
-		} `json:"DefaultDeliveryTypes"`
-		DefaultTemplates struct {
-			CashInvoice string `json:"CashInvoice"`
-			Invoice     string `json:"Invoice"`
-			Offer       string `json:"Offer"`
-			Order       string `json:"Order"`
-		} `json:"DefaultTemplates"`
-		DeliveryAddress1         string `json:"DeliveryAddress1"`
-		DeliveryAddress2         string `json:"DeliveryAddress2"`
-		DeliveryCity             string `json:"DeliveryCity"`
-		DeliveryCountry          string `json:"DeliveryCountry"`
-		DeliveryCountryCode      string `json:"DeliveryCountryCode"`
-		DeliveryFax              string `json:"DeliveryFax"`
-		DeliveryName             string `json:"DeliveryName"`
-		DeliveryPhone1           string `json:"DeliveryPhone1"`
-		DeliveryPhone2           string `json:"DeliveryPhone2"`
-		DeliveryZipCode          string `json:"DeliveryZipCode"`
-		Email                    string `json:"Email"`
-		EmailInvoice             string `json:"EmailInvoice"`
-		EmailInvoiceBCC          string `json:"EmailInvoiceBCC"`
-		EmailInvoiceCC           string `json:"EmailInvoiceCC"`
-		EmailOffer               string `json:"EmailOffer"`
-		EmailOfferBCC            string `json:"EmailOfferBCC"`
-		EmailOfferCC             string `json:"EmailOfferCC"`
-		EmailOrder               string `json:"EmailOrder"`
-		EmailOrderBCC            string `json:"EmailOrderBCC"`
-		EmailOrderCC             string `json:"EmailOrderCC"`
-		ExternalReference        string `json:"ExternalReference"`
-		Fax                      string `json:"Fax"`
-		GLN                      string `json:"GLN"`
-		GLNDelivery              string `json:"GLNDelivery"`
-		InvoiceAdministrationFee string `json:"InvoiceAdministrationFee"`
-		InvoiceDiscount          int    `json:"InvoiceDiscount"`
-		InvoiceFreight           string `json:"InvoiceFreight"`
-		InvoiceRemark            string `json:"InvoiceRemark"`
-		Name                     string `json:"Name"`
-		OrganisationNumber       string `json:"OrganisationNumber"`
-		OurReference             string `json:"OurReference"`
-		Phone1                   string `json:"Phone1"`
-		Phone2                   string `json:"Phone2"`
-		PriceList                string `json:"PriceList"`
-		Project                  string `json:"Project"`
-		SalesAccount             string `json:"SalesAccount"`
-		ShowPriceVATIncluded     bool   `json:"ShowPriceVATIncluded"`
-		TermsOfDelivery          string `json:"TermsOfDelivery"`
-		TermsOfPayment           string `json:"TermsOfPayment"`
-		Type                     string `json:"Type"`
-		VATNumber                string `json:"VATNumber"`
-		VATType                  string `json:"VATType"`
-		VisitingAddress          string `json:"VisitingAddress"`
-		VisitingCity             string `json:"VisitingCity"`
-		VisitingCountry          string `json:"VisitingCountry"`
-		VisitingCountryCode      string `json:"VisitingCountryCode"`
-		VisitingZipCode          string `json:"VisitingZipCode"`
-		WayOfDelivery            string `json:"WayOfDelivery"`
-		WWW                      string `json:"WWW"`
-		YourReference            string `json:"YourReference"`
-		ZipCode                  string `json:"ZipCode"`
-	} `json:"Customer"`
+	Customer Customer `json:"Customer"`
 }
 
 type UpdateCustomerReq struct {
-	Customer struct {
-		Url                  string `json:"@url"`
-		Address1             string `json:"Address1"`
-		Address2             string `json:"Address2"`
-		City                 string `json:"City"`
-		Country              string `json:"Country"`
-		Comments             string `json:"Comments"`
-		Currency             string `json:"Currency"`
-		CostCenter           string `json:"CostCenter"`
-		CountryCode          string `json:"CountryCode"`
-		Active               bool   `json:"Active"`
-		CustomerNumber       string `json:"CustomerNumber"`
-		DefaultDeliveryTypes struct {
-			Invoice string `json:"Invoice"`
-			Order   string `json:"Order"`
-			Offer   string `json:"Offer"`
-		} `json:"DefaultDeliveryTypes"`
-		DefaultTemplates struct {
-			CashInvoice string `json:"CashInvoice"`
-			Invoice     string `json:"Invoice"`
-			Offer       string `json:"Offer"`
-			Order       string `json:"Order"`
-		} `json:"DefaultTemplates"`
-		DeliveryAddress1         string `json:"DeliveryAddress1"`
-		DeliveryAddress2         string `json:"DeliveryAddress2"`
-		DeliveryCity             string `json:"DeliveryCity"`
-		DeliveryCountry          string `json:"DeliveryCountry"`
-		DeliveryCountryCode      string `json:"DeliveryCountryCode"`
-		DeliveryFax              string `json:"DeliveryFax"`
-		DeliveryName             string `json:"DeliveryName"`
-		DeliveryPhone1           string `json:"DeliveryPhone1"`
-		DeliveryPhone2           string `json:"DeliveryPhone2"`
-		DeliveryZipCode          string `json:"DeliveryZipCode"`
-		Email                    string `json:"Email"`
-		EmailInvoice             string `json:"EmailInvoice"`
-		EmailInvoiceBCC          string `json:"EmailInvoiceBCC"`
-		EmailInvoiceCC           string `json:"EmailInvoiceCC"`
-		EmailOffer               string `json:"EmailOffer"`
-		EmailOfferBCC            string `json:"EmailOfferBCC"`
-		EmailOfferCC             string `json:"EmailOfferCC"`
-		EmailOrder               string `json:"EmailOrder"`
-		EmailOrderBCC            string `json:"EmailOrderBCC"`
-		EmailOrderCC             string `json:"EmailOrderCC"`
-		ExternalReference        string `json:"ExternalReference"`
-		Fax                      string `json:"Fax"`
-		GLN                      string `json:"GLN"`
-		GLNDelivery              string `json:"GLNDelivery"`
-		InvoiceAdministrationFee string `json:"InvoiceAdministrationFee"`
-		InvoiceDiscount          int    `json:"InvoiceDiscount"`
-		InvoiceFreight           string `json:"InvoiceFreight"`
-		InvoiceRemark            string `json:"InvoiceRemark"`
-		Name                     string `json:"Name"`
-		OrganisationNumber       string `json:"OrganisationNumber"`
-		OurReference             string `json:"OurReference"`
-		Phone1                   string `json:"Phone1"`
-		Phone2                   string `json:"Phone2"`
-		PriceList                string `json:"PriceList"`
-		Project                  string `json:"Project"`
-		SalesAccount             string `json:"SalesAccount"`
-		ShowPriceVATIncluded     bool   `json:"ShowPriceVATIncluded"`
-		TermsOfDelivery          string `json:"TermsOfDelivery"`
-		TermsOfPayment           string `json:"TermsOfPayment"`
-		Type                     string `json:"Type"`
-		VATNumber                string `json:"VATNumber"`
-		VATType                  string `json:"VATType"`
-		VisitingAddress          string `json:"VisitingAddress"`
-		VisitingCity             string `json:"VisitingCity"`
-		VisitingCountry          string `json:"VisitingCountry"`
-		VisitingCountryCode      string `json:"VisitingCountryCode"`
-		VisitingZipCode          string `json:"VisitingZipCode"`
-		WayOfDelivery            string `json:"WayOfDelivery"`
-		WWW                      string `json:"WWW"`
-		YourReference            string `json:"YourReference"`
-		ZipCode                  string `json:"ZipCode"`
-	} `json:"Customer"`
+	Customer Customer `json:"Customer"`
 }
 
 type UpdateCustomerResp struct {
-	Customer struct {
-		Url                  string `json:"@url"`
-		Address1             string `json:"Address1"`
-		Address2             string `json:"Address2"`
-		City                 string `json:"City"`
-		Country              string `json:"Country"`
-		Comments             string `json:"Comments"`
-		Currency             string `json:"Currency"`
-		CostCenter           string `json:"CostCenter"`
-		CountryCode          string `json:"CountryCode"`
-		Active               bool   `json:"Active"`
-		CustomerNumber       string `json:"CustomerNumber"`
-		DefaultDeliveryTypes struct {
-			Invoice string `json:"Invoice"`
-			Order   string `json:"Order"`
-			Offer   string `json:"Offer"`
-		} `json:"DefaultDeliveryTypes"`
-		DefaultTemplates struct {
-			CashInvoice string `json:"CashInvoice"`
-			Invoice     string `json:"Invoice"`
-			Offer       string `json:"Offer"`
-			Order       string `json:"Order"`
-		} `json:"DefaultTemplates"`
-		DeliveryAddress1         string `json:"DeliveryAddress1"`
-		DeliveryAddress2         string `json:"DeliveryAddress2"`
-		DeliveryCity             string `json:"DeliveryCity"`
-		DeliveryCountry          string `json:"DeliveryCountry"`
-		DeliveryCountryCode      string `json:"DeliveryCountryCode"`
-		DeliveryFax              string `json:"DeliveryFax"`
-		DeliveryName             string `json:"DeliveryName"`
-		DeliveryPhone1           string `json:"DeliveryPhone1"`
-		DeliveryPhone2           string `json:"DeliveryPhone2"`
-		DeliveryZipCode          string `json:"DeliveryZipCode"`
-		Email                    string `json:"Email"`
-		EmailInvoice             string `json:"EmailInvoice"`
-		EmailInvoiceBCC          string `json:"EmailInvoiceBCC"`
-		EmailInvoiceCC           string `json:"EmailInvoiceCC"`
-		EmailOffer               string `json:"EmailOffer"`
-		EmailOfferBCC            string `json:"EmailOfferBCC"`
-		EmailOfferCC             string `json:"EmailOfferCC"`
-		EmailOrder               string `json:"EmailOrder"`
-		EmailOrderBCC            string `json:"EmailOrderBCC"`
-		EmailOrderCC             string `json:"EmailOrderCC"`
-		ExternalReference        string `json:"ExternalReference"`
-		Fax                      string `json:"Fax"`
-		GLN                      string `json:"GLN"`
-		GLNDelivery              string `json:"GLNDelivery"`
-		InvoiceAdministrationFee string `json:"InvoiceAdministrationFee"`
-		InvoiceDiscount          int    `json:"InvoiceDiscount"`
-		InvoiceFreight           string `json:"InvoiceFreight"`
-		InvoiceRemark            string `json:"InvoiceRemark"`
-		Name                     string `json:"Name"`
-		OrganisationNumber       string `json:"OrganisationNumber"`
-		OurReference             string `json:"OurReference"`
-		Phone1                   string `json:"Phone1"`
-		Phone2                   string `json:"Phone2"`
-		PriceList                string `json:"PriceList"`
-		Project                  string `json:"Project"`
-		SalesAccount             string `json:"SalesAccount"`
-		ShowPriceVATIncluded     bool   `json:"ShowPriceVATIncluded"`
-		TermsOfDelivery          string `json:"TermsOfDelivery"`
-		TermsOfPayment           string `json:"TermsOfPayment"`
-		Type                     string `json:"Type"`
-		VATNumber                string `json:"VATNumber"`
-		VATType                  string `json:"VATType"`
-		VisitingAddress          string `json:"VisitingAddress"`
-		VisitingCity             string `json:"VisitingCity"`
-		VisitingCountry          string `json:"VisitingCountry"`
-		VisitingCountryCode      string `json:"VisitingCountryCode"`
-		VisitingZipCode          string `json:"VisitingZipCode"`
-		WayOfDelivery            string `json:"WayOfDelivery"`
-		WWW                      string `json:"WWW"`
-		YourReference            string `json:"YourReference"`
-		ZipCode                  string `json:"ZipCode"`
-	} `json:"Customer"`
+	Customer Customer `json:"Customer"`
+}
+
+type Customer struct {
+	Url                      string               `json:"@url,omitempty"`
+	Address1                 string               `json:"Address1,omitempty"`
+	Address2                 string               `json:"Address2,omitempty"`
+	City                     string               `json:"City,omitempty"`
+	Country                  string               `json:"Country,omitempty"`
+	Comments                 string               `json:"Comments,omitempty"`
+	Currency                 string               `json:"Currency,omitempty"`
+	CostCenter               string               `json:"CostCenter,omitempty"`
+	CountryCode              string               `json:"CountryCode,omitempty"`
+	Active                   bool                 `json:"Active,omitempty"`
+	CustomerNumber           string               `json:"CustomerNumber,omitempty"`
+	DefaultDeliveryTypes     DefaultDeliveryTypes `json:"DefaultDeliveryTypes,omitempty"`
+	DefaultTemplates         DefaultTemplates     `json:"DefaultTemplates,omitempty"`
+	DeliveryAddress1         string               `json:"DeliveryAddress1,omitempty"`
+	DeliveryAddress2         string               `json:"DeliveryAddress2,omitempty"`
+	DeliveryCity             string               `json:"DeliveryCity,omitempty"`
+	DeliveryCountry          string               `json:"DeliveryCountry,omitempty"`
+	DeliveryCountryCode      string               `json:"DeliveryCountryCode,omitempty"`
+	DeliveryFax              string               `json:"DeliveryFax,omitempty"`
+	DeliveryName             string               `json:"DeliveryName,omitempty"`
+	DeliveryPhone1           string               `json:"DeliveryPhone1,omitempty"`
+	DeliveryPhone2           string               `json:"DeliveryPhone2,omitempty"`
+	DeliveryZipCode          string               `json:"DeliveryZipCode,omitempty"`
+	Email                    string               `json:"Email,omitempty"`
+	EmailInvoice             string               `json:"EmailInvoice,omitempty"`
+	EmailInvoiceBCC          string               `json:"EmailInvoiceBCC,omitempty"`
+	EmailInvoiceCC           string               `json:"EmailInvoiceCC,omitempty"`
+	EmailOffer               string               `json:"EmailOffer,omitempty"`
+	EmailOfferBCC            string               `json:"EmailOfferBCC,omitempty"`
+	EmailOfferCC             string               `json:"EmailOfferCC,omitempty"`
+	EmailOrder               string               `json:"EmailOrder,omitempty"`
+	EmailOrderBCC            string               `json:"EmailOrderBCC,omitempty"`
+	EmailOrderCC             string               `json:"EmailOrderCC,omitempty"`
+	ExternalReference        string               `json:"ExternalReference,omitempty"`
+	Fax                      string               `json:"Fax,omitempty"`
+	GLN                      string               `json:"GLN,omitempty"`
+	GLNDelivery              string               `json:"GLNDelivery,omitempty"`
+	InvoiceAdministrationFee string               `json:"InvoiceAdministrationFee,omitempty"`
+	InvoiceDiscount          int                  `json:"InvoiceDiscount,omitempty"`
+	InvoiceFreight           string               `json:"InvoiceFreight,omitempty"`
+	InvoiceRemark            string               `json:"InvoiceRemark,omitempty"`
+	Name                     string               `json:"Name,omitempty"`
+	OrganisationNumber       string               `json:"OrganisationNumber,omitempty"`
+	OurReference             string               `json:"OurReference,omitempty"`
+	Phone1                   string               `json:"Phone1,omitempty"`
+	Phone2                   string               `json:"Phone2,omitempty"`
+	PriceList                string               `json:"PriceList,omitempty"`
+	Project                  string               `json:"Project,omitempty"`
+	SalesAccount             string               `json:"SalesAccount,omitempty"`
+	ShowPriceVATIncluded     bool                 `json:"ShowPriceVATIncluded,omitempty"`
+	TermsOfDelivery          string               `json:"TermsOfDelivery,omitempty"`
+	TermsOfPayment           string               `json:"TermsOfPayment,omitempty"`
+	Type                     string               `json:"Type,omitempty"`
+	VATNumber                string               `json:"VATNumber,omitempty"`
+	VATType                  string               `json:"VATType,omitempty"`
+	VisitingAddress          string               `json:"VisitingAddress,omitempty"`
+	VisitingCity             string               `json:"VisitingCity,omitempty"`
+	VisitingCountry          string               `json:"VisitingCountry,omitempty"`
+	VisitingCountryCode      string               `json:"VisitingCountryCode,omitempty"`
+	VisitingZipCode          string               `json:"VisitingZipCode,omitempty"`
+	WayOfDelivery            string               `json:"WayOfDelivery,omitempty"`
+	WWW                      string               `json:"WWW,omitempty"`
+	YourReference            string               `json:"YourReference,omitempty"`
+	ZipCode                  string               `json:"ZipCode,omitempty"`
+}
+type DefaultDeliveryTypes struct {
+	Invoice string `json:"Invoice,omitempty"`
+	Order   string `json:"Order,omitempty"`
+	Offer   string `json:"Offer,omitempty"`
+}
+
+type DefaultTemplates struct {
+	CashInvoice string `json:"CashInvoice,omitempty"`
+	Invoice     string `json:"Invoice,omitempty"`
+	Offer       string `json:"Offer,omitempty"`
+	Order       string `json:"Order,omitempty"`
 }

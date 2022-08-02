@@ -14,7 +14,7 @@ const (
 // GetAllOrders does _GET https://api.fortnox.se/3/orders/
 //
 // filter - GetAllOffersFilter
-func (c Client) GetAllOrders(ctx context.Context, filter *GetAllOrdersFilter) (*GetAllOrdersResp, error) {
+func (c Client) GetAllOrders(ctx context.Context, filter *GetAllOrdersFilter) ([]Order, error) {
 	resp := &GetAllOrdersResp{}
 
 	params := filter.urlValues()
@@ -24,7 +24,7 @@ func (c Client) GetAllOrders(ctx context.Context, filter *GetAllOrdersFilter) (*
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.Orders, nil
 }
 
 // CreateOrder does _POST https://api.fortnox.se/3/orders/
@@ -220,22 +220,24 @@ func (f *GetAllOrdersFilter) urlValues() url.Values {
 }
 
 type GetAllOrdersResp struct {
-	Orders []struct {
-		Url                       string `json:"@url"`
-		Cancelled                 bool   `json:"Cancelled"`
-		Currency                  string `json:"Currency"`
-		CustomerName              string `json:"CustomerName"`
-		CustomerNumber            string `json:"CustomerNumber"`
-		DeliveryDate              string `json:"DeliveryDate"`
-		DocumentNumber            string `json:"DocumentNumber"`
-		ExternalInvoiceReference1 string `json:"ExternalInvoiceReference1"`
-		ExternalInvoiceReference2 string `json:"ExternalInvoiceReference2"`
-		OrderDate                 string `json:"OrderDate"`
-		OrderType                 string `json:"OrderType"`
-		Project                   string `json:"Project"`
-		Sent                      bool   `json:"Sent"`
-		Total                     int    `json:"Total"`
-	} `json:"Orders"`
+	Orders []Order `json:"Orders"`
+}
+
+type Order struct {
+	Url                       string `json:"@url"`
+	Cancelled                 bool   `json:"Cancelled"`
+	Currency                  string `json:"Currency"`
+	CustomerName              string `json:"CustomerName"`
+	CustomerNumber            string `json:"CustomerNumber"`
+	DeliveryDate              string `json:"DeliveryDate"`
+	DocumentNumber            string `json:"DocumentNumber"`
+	ExternalInvoiceReference1 string `json:"ExternalInvoiceReference1"`
+	ExternalInvoiceReference2 string `json:"ExternalInvoiceReference2"`
+	OrderDate                 string `json:"OrderDate"`
+	OrderType                 string `json:"OrderType"`
+	Project                   string `json:"Project"`
+	Sent                      bool   `json:"Sent"`
+	Total                     int    `json:"Total"`
 }
 
 type CreateOrderReq struct {

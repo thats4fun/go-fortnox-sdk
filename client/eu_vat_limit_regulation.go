@@ -7,7 +7,7 @@ const (
 )
 
 // GetEUVATLimitDetails does _GET https://api.fortnox.se/3/euvatlimitregulation/
-func (c Client) GetEUVATLimitDetails(ctx context.Context) (*GetEUVATLimitDetailsResp, error) {
+func (c Client) GetEUVATLimitDetails(ctx context.Context) (*EUVatLimitRegulation, error) {
 	resp := &GetEUVATLimitDetailsResp{}
 
 	err := c._GET(ctx, euVatLimitRegulationURI, nil, resp)
@@ -15,14 +15,16 @@ func (c Client) GetEUVATLimitDetails(ctx context.Context) (*GetEUVATLimitDetails
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.EUVatLimitRegulation, nil
+}
+
+type EUVatLimitRegulation struct {
+	TotalExclVat int    `json:"TotalExclVat,omitempty"`
+	IsOverLimit  bool   `json:"IsOverLimit,omitempty"`
+	Limit        int    `json:"Limit,omitempty"`
+	Year         string `json:"Year,omitempty"`
 }
 
 type GetEUVATLimitDetailsResp struct {
-	EUVatLimitRegulation struct {
-		TotalExclVat int    `json:"TotalExclVat"`
-		IsOverLimit  bool   `json:"IsOverLimit"`
-		Limit        int    `json:"Limit"`
-		Year         string `json:"Year"`
-	} `json:"EUVatLimitRegulation"`
+	EUVatLimitRegulation EUVatLimitRegulation `json:"EUVatLimitRegulation"`
 }

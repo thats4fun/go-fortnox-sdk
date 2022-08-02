@@ -9,7 +9,7 @@ const (
 // GetLockedPeriod does _GET https://api.fortnox.se/3/settings/lockedperiod/
 //
 // If no date is returned, no period is locked.
-func (c *Client) GetLockedPeriod(ctx context.Context) (*GetLockedPeriodResp, error) {
+func (c *Client) GetLockedPeriod(ctx context.Context) (*LockedPeriod, error) {
 	resp := &GetLockedPeriodResp{}
 
 	err := c._GET(ctx, lockedPeriodURI, nil, resp)
@@ -17,11 +17,13 @@ func (c *Client) GetLockedPeriod(ctx context.Context) (*GetLockedPeriodResp, err
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.LockedPeriod, nil
+}
+
+type LockedPeriod struct {
+	EndDate string `json:"EndDate"`
 }
 
 type GetLockedPeriodResp struct {
-	LockedPeriod struct {
-		EndDate string `json:"EndDate"`
-	} `json:"LockedPeriod"`
+	LockedPeriod LockedPeriod `json:"LockedPeriod"`
 }

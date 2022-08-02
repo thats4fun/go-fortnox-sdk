@@ -10,7 +10,7 @@ const (
 )
 
 // GetAllPredefinedAccounts does _GET https://api.fortnox.se/3/predefinedaccounts/
-func (c *Client) GetAllPredefinedAccounts(ctx context.Context) (*GetAllPredefinedAccountsResp, error) {
+func (c *Client) GetAllPredefinedAccounts(ctx context.Context) ([]PreDefinedAccount, error) {
 	resp := &GetAllPredefinedAccountsResp{}
 
 	err := c._GET(ctx, predefinedAccountsURI, nil, resp)
@@ -18,13 +18,13 @@ func (c *Client) GetAllPredefinedAccounts(ctx context.Context) (*GetAllPredefine
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.PreDefinedAccounts, nil
 }
 
 // GetPredefinedAccount does _GET https://api.fortnox.se/3/predefinedaccounts/{name}
 //
 // name - identifies the predefined account
-func (c *Client) GetPredefinedAccount(ctx context.Context, name string) (*GetPredefinedAccountResp, error) {
+func (c *Client) GetPredefinedAccount(ctx context.Context, name string) (*PreDefinedAccount, error) {
 	resp := &GetPredefinedAccountResp{}
 
 	uri := fmt.Sprintf("%s/%s", predefinedAccountsURI, name)
@@ -34,7 +34,7 @@ func (c *Client) GetPredefinedAccount(ctx context.Context, name string) (*GetPre
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.PreDefinedAccount, nil
 }
 
 // UpdatePredefinedAccount does _PUT https://api.fortnox.se/3/predefinedaccounts/{name}
@@ -45,8 +45,9 @@ func (c *Client) GetPredefinedAccount(ctx context.Context, name string) (*GetPre
 func (c *Client) UpdatePredefinedAccount(
 	ctx context.Context,
 	name string,
-	req *UpdatePredefinedAccountReq) (*UpdatePredefinedAccountResp, error) {
+	pda *PreDefinedAccount) (*PreDefinedAccount, error) {
 
+	req := &UpdatePredefinedAccountReq{PreDefinedAccount: *pda}
 	resp := &UpdatePredefinedAccountResp{}
 
 	uri := fmt.Sprintf("%s/%s", predefinedAccountsURI, name)
@@ -56,37 +57,27 @@ func (c *Client) UpdatePredefinedAccount(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.PreDefinedAccount, nil
+}
+
+type PreDefinedAccount struct {
+	Url     string `json:"@url"`
+	Name    string `json:"Name"`
+	Account int    `json:"Account"`
 }
 
 type GetAllPredefinedAccountsResp struct {
-	PreDefinedAccounts []struct {
-		Url     string `json:"@url"`
-		Name    string `json:"Name"`
-		Account int    `json:"Account"`
-	} `json:"PreDefinedAccounts"`
+	PreDefinedAccounts []PreDefinedAccount `json:"PreDefinedAccounts"`
 }
 
 type GetPredefinedAccountResp struct {
-	PreDefinedAccount struct {
-		Url     string `json:"@url"`
-		Name    string `json:"Name"`
-		Account int    `json:"Account"`
-	} `json:"PreDefinedAccount"`
+	PreDefinedAccount PreDefinedAccount `json:"PreDefinedAccount"`
 }
 
 type UpdatePredefinedAccountReq struct {
-	PreDefinedAccount struct {
-		Url     string `json:"@url"`
-		Name    string `json:"Name"`
-		Account int    `json:"Account"`
-	} `json:"PreDefinedAccount"`
+	PreDefinedAccount PreDefinedAccount `json:"PreDefinedAccount"`
 }
 
 type UpdatePredefinedAccountResp struct {
-	PreDefinedAccount struct {
-		Url     string `json:"@url"`
-		Name    string `json:"Name"`
-		Account int    `json:"Account"`
-	} `json:"PreDefinedAccount"`
+	PreDefinedAccount PreDefinedAccount `json:"PreDefinedAccount"`
 }

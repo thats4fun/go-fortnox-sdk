@@ -10,7 +10,7 @@ const (
 )
 
 // GetAllExpenses does _GET https://api.fortnox.se/3/expenses/
-func (c *Client) GetAllExpenses(ctx context.Context) (*GetAllExpensesResp, error) {
+func (c *Client) GetAllExpenses(ctx context.Context) ([]Expense, error) {
 	resp := &GetAllExpensesResp{}
 
 	err := c._GET(ctx, expensesURI, nil, resp)
@@ -18,13 +18,14 @@ func (c *Client) GetAllExpenses(ctx context.Context) (*GetAllExpensesResp, error
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.Expenses, nil
 }
 
 // CreateExpense does _POST https://api.fortnox.se/3/expenses/
 //
 // req - expense to create
-func (c *Client) CreateExpense(ctx context.Context, req *CreateExpenseReq) (*CreateExpenseResp, error) {
+func (c *Client) CreateExpense(ctx context.Context, e *Expense) (*Expense, error) {
+	req := &CreateExpenseReq{Expense: *e}
 	resp := &CreateExpenseResp{}
 
 	err := c._POST(ctx, expensesURI, nil, req, resp)
@@ -32,13 +33,13 @@ func (c *Client) CreateExpense(ctx context.Context, req *CreateExpenseReq) (*Cre
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Expense, nil
 }
 
 // GetExpense does _GET https://api.fortnox.se/3/expenses/{ExpenseCode}
 //
 // expenseCode - expenseCode
-func (c *Client) GetExpense(ctx context.Context, expenseCode string) (*GetExpenseResp, error) {
+func (c *Client) GetExpense(ctx context.Context, expenseCode string) (*Expense, error) {
 	resp := &GetExpenseResp{}
 
 	uri := fmt.Sprintf("%s/%s", expensesURI, expenseCode)
@@ -48,38 +49,28 @@ func (c *Client) GetExpense(ctx context.Context, expenseCode string) (*GetExpens
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Expense, nil
+}
+
+type Expense struct {
+	Code    string `json:"Code,omitempty"`
+	Text    string `json:"Text,omitempty"`
+	Account int    `json:"Account,omitempty"`
+	Url     string `json:"@url,omitempty,omitempty"`
 }
 
 type GetAllExpensesResp struct {
-	Expenses []struct {
-		Code    string `json:"Code"`
-		Text    string `json:"Text"`
-		Account int    `json:"Account"`
-		Url     string `json:"@url"`
-	} `json:"Expenses"`
+	Expenses []Expense `json:"Expenses"`
 }
 
 type CreateExpenseReq struct {
-	Expense struct {
-		Code    string `json:"Code"`
-		Text    string `json:"Text"`
-		Account int    `json:"Account"`
-	} `json:"Expense"`
+	Expense Expense `json:"Expense"`
 }
 
 type CreateExpenseResp struct {
-	Expense struct {
-		Code    string `json:"Code"`
-		Text    string `json:"Text"`
-		Account int    `json:"Account"`
-	} `json:"Expense"`
+	Expense Expense `json:"Expense"`
 }
 
 type GetExpenseResp struct {
-	Expense struct {
-		Code    string `json:"Code"`
-		Text    string `json:"Text"`
-		Account int    `json:"Account"`
-	} `json:"Expense"`
+	Expense Expense `json:"Expense"`
 }

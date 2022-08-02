@@ -72,91 +72,41 @@ func (c *Client) UpdateVoucherSeries(
 	return resp, nil
 }
 
+type VoucherSeries struct {
+	Url               string   `json:"@url"`
+	Code              string   `json:"Code"`
+	Description       string   `json:"Description"`
+	Manual            bool     `json:"Manual"`
+	NextVoucherNumber int      `json:"NextVoucherNumber,omitempty"`
+	Year              int      `json:"Year"`
+	Approver          Approver `json:"Approver"`
+}
+
+type Approver struct {
+	Id   int    `json:"Id"`
+	Name string `json:"Name"`
+}
+
 type GetAllVoucherSeriesResp struct {
-	VoucherSeriesCollection []struct {
-		Url         string `json:"@url"`
-		Code        string `json:"Code"`
-		Description string `json:"Description"`
-		Manual      bool   `json:"Manual"`
-		Year        int    `json:"Year"`
-		Approver    struct {
-			Id   int    `json:"Id"`
-			Name string `json:"Name"`
-		} `json:"Approver"`
-	} `json:"VoucherSeriesCollection"`
+	VoucherSeriesCollection []VoucherSeries `json:"VoucherSeriesCollection"`
 }
 
 type CreateVoucherSeriesReq struct {
-	VoucherSeries struct {
-		Url               string `json:"@url"`
-		Code              string `json:"Code"`
-		Description       string `json:"Description"`
-		Manual            bool   `json:"Manual"`
-		NextVoucherNumber int    `json:"NextVoucherNumber"`
-		Year              int    `json:"Year"`
-		Approver          struct {
-			Id   int    `json:"Id"`
-			Name string `json:"Name"`
-		} `json:"Approver"`
-	} `json:"VoucherSeries"`
+	VoucherSeries VoucherSeries `json:"VoucherSeries"`
 }
 
 type CreateVoucherSeriesResp struct {
-	VoucherSeries struct {
-		Url               string `json:"@url"`
-		Code              string `json:"Code"`
-		Description       string `json:"Description"`
-		Manual            bool   `json:"Manual"`
-		NextVoucherNumber int    `json:"NextVoucherNumber"`
-		Year              int    `json:"Year"`
-		Approver          struct {
-			Id   int    `json:"Id"`
-			Name string `json:"Name"`
-		} `json:"Approver"`
-	} `json:"VoucherSeries"`
+	VoucherSeries VoucherSeries `json:"VoucherSeries"`
 }
 
 type GetVoucherSeriesByCodeResp struct {
-	VoucherSeries struct {
-		Url               string `json:"@url"`
-		Code              string `json:"Code"`
-		Description       string `json:"Description"`
-		Manual            bool   `json:"Manual"`
-		NextVoucherNumber int    `json:"NextVoucherNumber"`
-		Year              int    `json:"Year"`
-		Approver          struct {
-			Id   int    `json:"Id"`
-			Name string `json:"Name"`
-		} `json:"Approver"`
-	} `json:"VoucherSeries"`
+	VoucherSeries VoucherSeries `json:"VoucherSeries"`
 }
 
 type UpdateVoucherSeriesReq struct {
-	VoucherSeries struct {
-		Url               string `json:"@url"`
-		Code              string `json:"Code"`
-		Description       string `json:"Description"`
-		Manual            bool   `json:"Manual"`
-		NextVoucherNumber int    `json:"NextVoucherNumber"`
-		Year              int    `json:"Year"`
-		Approver          struct {
-			Id   int    `json:"Id"`
-			Name string `json:"Name"`
-		} `json:"Approver"`
-	} `json:"VoucherSeries"`
+	VoucherSeries VoucherSeries `json:"VoucherSeries"`
 }
 
 type UpdateVoucherSeriesResp struct {
-	VoucherSeries struct {
-		Url               string `json:"@url"`
-		Code              string `json:"Code"`
-		Description       string `json:"Description"`
-		Manual            bool   `json:"Manual"`
-		NextVoucherNumber int    `json:"NextVoucherNumber"`
-		Year              int    `json:"Year"`
-		Approver          struct {
-			Id   int    `json:"Id"`
-			Name string `json:"Name"`
-		} `json:"Approver"`
-	} `json:"VoucherSeries"`
+	VoucherSeries VoucherSeries `json:"VoucherSeries"`
 }

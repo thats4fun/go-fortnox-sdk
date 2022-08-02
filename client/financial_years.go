@@ -14,7 +14,7 @@ const (
 // GetAllFinancialYears does _GET https://api.fortnox.se/3/financialyears
 //
 // date - date to filter on, for example 2020-06-30
-func (c *Client) GetAllFinancialYears(ctx context.Context, date *GetAllFinancialYearsFilterDate) (*GetAllFinancialYearsResp, error) {
+func (c *Client) GetAllFinancialYears(ctx context.Context, date *GetAllFinancialYearsFilterDate) ([]FinancialYear, error) {
 	resp := &GetAllFinancialYearsResp{}
 
 	var filter url.Values
@@ -32,27 +32,28 @@ func (c *Client) GetAllFinancialYears(ctx context.Context, date *GetAllFinancial
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.FinancialYears, nil
 }
 
 // CreateFinancialYear does _POST https://api.fortnox.se/3/financialyears
 //
 // financialYear - financial year to create
-func (c *Client) CreateFinancialYear(ctx context.Context, financialYear *CreateFinancialYearReq) (*CreateFinancialYearResp, error) {
+func (c *Client) CreateFinancialYear(ctx context.Context, fy *FinancialYear) (*FinancialYear, error) {
+	req := &CreateFinancialYearReq{FinancialYear: *fy}
 	resp := &CreateFinancialYearResp{}
 
-	err := c._POST(ctx, financialYearsURI, nil, financialYear, resp)
+	err := c._POST(ctx, financialYearsURI, nil, req, resp)
 	if err != nil {
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.FinancialYear, nil
 }
 
 // GetFinancialYearByID does _GET https://api.fortnox.se/3/financialyears/{Id}
 //
 // id - identifies the year
-func (c *Client) GetFinancialYearByID(ctx context.Context, id int) (*GetFinancialYearByIDResp, error) {
+func (c *Client) GetFinancialYearByID(ctx context.Context, id int) (*FinancialYear, error) {
 	resp := &GetFinancialYearByIDResp{}
 
 	uri := fmt.Sprintf("/%s/%d", financialYearsURI, id)
@@ -62,7 +63,7 @@ func (c *Client) GetFinancialYearByID(ctx context.Context, id int) (*GetFinancia
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.FinancialYear, nil
 }
 
 type GetAllFinancialYearsFilterDate struct {
@@ -89,46 +90,27 @@ func (f GetAllFinancialYearsFilterDate) urlValues() url.Values {
 	return urlValues
 }
 
+type FinancialYear struct {
+	Url              string `json:"@url,omitempty"`
+	Id               int    `json:"Id,omitempty"`
+	FromDate         string `json:"FromDate,omitempty"`
+	ToDate           string `json:"ToDate,omitempty"`
+	AccountingMethod string `json:"AccountingMethod,omitempty"`
+	AccountCharts    string `json:"accountCharts,omitempty"`
+}
+
 type GetAllFinancialYearsResp struct {
-	FinancialYears []struct {
-		Url              string `json:"@url"`
-		Id               int    `json:"Id"`
-		FromDate         string `json:"FromDate"`
-		ToDate           string `json:"ToDate"`
-		AccountingMethod string `json:"AccountingMethod"`
-		AccountCharts    string `json:"accountCharts"`
-	} `json:"FinancialYears"`
+	FinancialYears []FinancialYear `json:"FinancialYears"`
 }
 
 type CreateFinancialYearReq struct {
-	FinancialYear struct {
-		Url              string `json:"@url"`
-		Id               int    `json:"Id"`
-		FromDate         string `json:"FromDate"`
-		ToDate           string `json:"ToDate"`
-		AccountingMethod string `json:"AccountingMethod"`
-		AccountCharts    string `json:"accountCharts"`
-	} `json:"FinancialYear"`
+	FinancialYear FinancialYear `json:"FinancialYear"`
 }
 
 type CreateFinancialYearResp struct {
-	FinancialYear struct {
-		Url              string `json:"@url"`
-		Id               int    `json:"Id"`
-		FromDate         string `json:"FromDate"`
-		ToDate           string `json:"ToDate"`
-		AccountingMethod string `json:"AccountingMethod"`
-		AccountCharts    string `json:"accountCharts"`
-	} `json:"FinancialYear"`
+	FinancialYear FinancialYear `json:"FinancialYear"`
 }
 
 type GetFinancialYearByIDResp struct {
-	FinancialYear struct {
-		Url              string `json:"@url"`
-		Id               int    `json:"Id"`
-		FromDate         string `json:"FromDate"`
-		ToDate           string `json:"ToDate"`
-		AccountingMethod string `json:"AccountingMethod"`
-		AccountCharts    string `json:"accountCharts"`
-	} `json:"FinancialYear"`
+	FinancialYear FinancialYear `json:"FinancialYear"`
 }

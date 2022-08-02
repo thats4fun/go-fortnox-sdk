@@ -14,7 +14,7 @@ const (
 // employeeID - identifies the employee
 //
 // date - identifies the date
-func (c *Client) GetScheduleTime(ctx context.Context, employeeID, date string) (*GetScheduleTimeResp, error) {
+func (c *Client) GetScheduleTime(ctx context.Context, employeeID, date string) (*ScheduleTime, error) {
 	resp := &GetScheduleTimeResp{}
 
 	uri := fmt.Sprintf("%s/%s/%s", scheduleTimesURI, employeeID, date)
@@ -24,7 +24,7 @@ func (c *Client) GetScheduleTime(ctx context.Context, employeeID, date string) (
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.ScheduleTime, nil
 }
 
 // UpdateScheduleTime does _PUT https://api.fortnox.se/3/scheduletimes/{EmployeeId}/{Date}
@@ -37,8 +37,9 @@ func (c *Client) GetScheduleTime(ctx context.Context, employeeID, date string) (
 func (c *Client) UpdateScheduleTime(
 	ctx context.Context,
 	employeeID, date string,
-	req *UpdateScheduleTimeReq) (*UpdateScheduleTimeResp, error) {
+	st *ScheduleTime) (*ScheduleTime, error) {
 
+	req := &UpdateScheduleTimeReq{ScheduleTime: *st}
 	resp := &UpdateScheduleTimeResp{}
 
 	uri := fmt.Sprintf("%s/%s/%s", scheduleTimesURI, employeeID, date)
@@ -48,7 +49,7 @@ func (c *Client) UpdateScheduleTime(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.ScheduleTime, nil
 }
 
 // ResetScheduleTime does _PUT https://api.fortnox.se/3/scheduletimes/{EmployeeId}/{Date}/resetday
@@ -56,7 +57,7 @@ func (c *Client) UpdateScheduleTime(
 // employeeID - identifies the employee
 //
 // date - identifies the date
-func (c *Client) ResetScheduleTime(ctx context.Context, employeeID, date string) (*ResetScheduleTimeResp, error) {
+func (c *Client) ResetScheduleTime(ctx context.Context, employeeID, date string) (*ScheduleTime, error) {
 	resp := &ResetScheduleTimeResp{}
 
 	uri := fmt.Sprintf("%s/%s/%s/resetday", scheduleTimesURI, employeeID, date)
@@ -66,61 +67,33 @@ func (c *Client) ResetScheduleTime(ctx context.Context, employeeID, date string)
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.ScheduleTime, nil
+}
+
+type ScheduleTime struct {
+	EmployeeId string `json:"EmployeeId,omitempty"`
+	Date       string `json:"Date,omitempty"`
+	ScheduleId string `json:"ScheduleId,omitempty"`
+	Hours      string `json:"Hours,omitempty"`
+	IWH1       string `json:"IWH1,omitempty"`
+	IWH2       string `json:"IWH2,omitempty"`
+	IWH3       string `json:"IWH3,omitempty"`
+	IWH4       string `json:"IWH4,omitempty"`
+	IWH5       string `json:"IWH5,omitempty"`
 }
 
 type GetScheduleTimeResp struct {
-	ScheduleTime struct {
-		EmployeeId string `json:"EmployeeId"`
-		Date       string `json:"Date"`
-		ScheduleId string `json:"ScheduleId"`
-		Hours      string `json:"Hours"`
-		IWH1       string `json:"IWH1"`
-		IWH2       string `json:"IWH2"`
-		IWH3       string `json:"IWH3"`
-		IWH4       string `json:"IWH4"`
-		IWH5       string `json:"IWH5"`
-	} `json:"ScheduleTime"`
+	ScheduleTime ScheduleTime `json:"ScheduleTime"`
 }
 
 type UpdateScheduleTimeReq struct {
-	ScheduleTime struct {
-		EmployeeId string `json:"EmployeeId"`
-		Date       string `json:"Date"`
-		ScheduleId string `json:"ScheduleId"`
-		Hours      string `json:"Hours"`
-		IWH1       string `json:"IWH1"`
-		IWH2       string `json:"IWH2"`
-		IWH3       string `json:"IWH3"`
-		IWH4       string `json:"IWH4"`
-		IWH5       string `json:"IWH5"`
-	} `json:"ScheduleTime"`
+	ScheduleTime ScheduleTime `json:"ScheduleTime"`
 }
 
 type UpdateScheduleTimeResp struct {
-	ScheduleTime struct {
-		EmployeeId string `json:"EmployeeId"`
-		Date       string `json:"Date"`
-		ScheduleId string `json:"ScheduleId"`
-		Hours      string `json:"Hours"`
-		IWH1       string `json:"IWH1"`
-		IWH2       string `json:"IWH2"`
-		IWH3       string `json:"IWH3"`
-		IWH4       string `json:"IWH4"`
-		IWH5       string `json:"IWH5"`
-	} `json:"ScheduleTime"`
+	ScheduleTime ScheduleTime `json:"ScheduleTime"`
 }
 
 type ResetScheduleTimeResp struct {
-	ScheduleTime struct {
-		EmployeeId string `json:"EmployeeId"`
-		Date       string `json:"Date"`
-		ScheduleId string `json:"ScheduleId"`
-		Hours      string `json:"Hours"`
-		IWH1       string `json:"IWH1"`
-		IWH2       string `json:"IWH2"`
-		IWH3       string `json:"IWH3"`
-		IWH4       string `json:"IWH4"`
-		IWH5       string `json:"IWH5"`
-	} `json:"ScheduleTime"`
+	ScheduleTime ScheduleTime `json:"ScheduleTime"`
 }

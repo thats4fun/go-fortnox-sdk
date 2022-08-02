@@ -10,7 +10,7 @@ const (
 )
 
 // GetAllVoucherFileConnections does _GET https://api.fortnox.se/3/voucherfileconnections/
-func (c *Client) GetAllVoucherFileConnections(ctx context.Context) (*GetAllVoucherFileConnectionsResp, error) {
+func (c *Client) GetAllVoucherFileConnections(ctx context.Context) ([]VoucherFileConnection, error) {
 	resp := &GetAllVoucherFileConnectionsResp{}
 
 	err := c._GET(ctx, voucherFileConnectionsURI, nil, resp)
@@ -18,7 +18,7 @@ func (c *Client) GetAllVoucherFileConnections(ctx context.Context) (*GetAllVouch
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.VoucherFileConnections, nil
 }
 
 // CreateVoucherFileConnection does _POST https://api.fortnox.se/3/voucherfileconnections/
@@ -26,8 +26,9 @@ func (c *Client) GetAllVoucherFileConnections(ctx context.Context) (*GetAllVouch
 // req - voucher file connection to create
 func (c *Client) CreateVoucherFileConnection(
 	ctx context.Context,
-	req *CreateVoucherFileConnectionReq) (*CreateVoucherFileConnectionResp, error) {
+	vfc *VoucherFileConnection) (*VoucherFileConnection, error) {
 
+	req := &CreateVoucherFileConnectionReq{VoucherFileConnection: *vfc}
 	resp := &CreateVoucherFileConnectionResp{}
 
 	err := c._POST(ctx, voucherFileConnectionsURI, nil, req, resp)
@@ -35,7 +36,7 @@ func (c *Client) CreateVoucherFileConnection(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.VoucherFileConnection, nil
 }
 
 // GetVoucherFileConnectionByFileID does _GET https://api.fortnox.se/3/voucherfileconnections/{FileId}
@@ -43,7 +44,7 @@ func (c *Client) CreateVoucherFileConnection(
 // fileID - identifies the voucher file connection
 func (c *Client) GetVoucherFileConnectionByFileID(
 	ctx context.Context,
-	fileID string) (*GetVoucherFileConnectionByFileIDResp, error) {
+	fileID string) (*VoucherFileConnection, error) {
 
 	resp := &GetVoucherFileConnectionByFileIDResp{}
 
@@ -54,7 +55,7 @@ func (c *Client) GetVoucherFileConnectionByFileID(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.VoucherFileConnection, nil
 }
 
 // RemoveVoucherFileConnections does _DELETE https://api.fortnox.se/3/voucherfileconnections/{FileId}
@@ -65,46 +66,27 @@ func (c *Client) RemoveVoucherFileConnections(ctx context.Context, fieldID strin
 	return c._DELETE(ctx, uri)
 }
 
+type VoucherFileConnection struct {
+	Url                string `json:"@url"`
+	FileId             string `json:"FileId"`
+	VoucherDescription string `json:"VoucherDescription"`
+	VoucherNumber      string `json:"VoucherNumber"`
+	VoucherSeries      string `json:"VoucherSeries"`
+	VoucherYear        int    `json:"VoucherYear"`
+}
+
 type GetAllVoucherFileConnectionsResp struct {
-	VoucherFileConnections []struct {
-		Url                string `json:"@url"`
-		FileId             string `json:"FileId"`
-		VoucherDescription string `json:"VoucherDescription"`
-		VoucherNumber      string `json:"VoucherNumber"`
-		VoucherSeries      string `json:"VoucherSeries"`
-		VoucherYear        int    `json:"VoucherYear"`
-	} `json:"VoucherFileConnections"`
+	VoucherFileConnections []VoucherFileConnection `json:"VoucherFileConnections"`
 }
 
 type CreateVoucherFileConnectionReq struct {
-	VoucherFileConnection struct {
-		Url                string `json:"@url"`
-		FileId             string `json:"FileId"`
-		VoucherDescription string `json:"VoucherDescription"`
-		VoucherNumber      string `json:"VoucherNumber"`
-		VoucherSeries      string `json:"VoucherSeries"`
-		VoucherYear        int    `json:"VoucherYear"`
-	} `json:"VoucherFileConnection"`
+	VoucherFileConnection VoucherFileConnection `json:"VoucherFileConnection"`
 }
 
 type CreateVoucherFileConnectionResp struct {
-	VoucherFileConnection struct {
-		Url                string `json:"@url"`
-		FileId             string `json:"FileId"`
-		VoucherDescription string `json:"VoucherDescription"`
-		VoucherNumber      string `json:"VoucherNumber"`
-		VoucherSeries      string `json:"VoucherSeries"`
-		VoucherYear        int    `json:"VoucherYear"`
-	} `json:"VoucherFileConnection"`
+	VoucherFileConnection VoucherFileConnection `json:"VoucherFileConnection"`
 }
 
 type GetVoucherFileConnectionByFileIDResp struct {
-	VoucherFileConnection struct {
-		Url                string `json:"@url"`
-		FileId             string `json:"FileId"`
-		VoucherDescription string `json:"VoucherDescription"`
-		VoucherNumber      string `json:"VoucherNumber"`
-		VoucherSeries      string `json:"VoucherSeries"`
-		VoucherYear        int    `json:"VoucherYear"`
-	} `json:"VoucherFileConnection"`
+	VoucherFileConnection VoucherFileConnection `json:"VoucherFileConnection"`
 }

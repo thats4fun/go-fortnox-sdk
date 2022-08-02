@@ -10,7 +10,7 @@ const (
 )
 
 // GetAllTermsOfPayments does _GET https://api.fortnox.se/3/termsofpayments
-func (c *Client) GetAllTermsOfPayments(ctx context.Context) (*GetAllTermsOfPaymentsResp, error) {
+func (c *Client) GetAllTermsOfPayments(ctx context.Context) ([]TermsOfPayment, error) {
 	resp := &GetAllTermsOfPaymentsResp{}
 
 	err := c._GET(ctx, termsOfPaymentsURI, nil, resp)
@@ -18,13 +18,14 @@ func (c *Client) GetAllTermsOfPayments(ctx context.Context) (*GetAllTermsOfPayme
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.TermsOfPayments, nil
 }
 
 // CreateTermOfPayment does _POST https://api.fortnox.se/3/termsofpayments
 //
 // req - term of payment to create
-func (c Client) CreateTermOfPayment(ctx context.Context, req *CreateTermOfPaymentReq) (*CreateTermOfPaymentResp, error) {
+func (c Client) CreateTermOfPayment(ctx context.Context, top *TermsOfPayment) (*TermsOfPayment, error) {
+	req := &CreateTermOfPaymentReq{TermsOfPayment: *top}
 	resp := &CreateTermOfPaymentResp{}
 
 	err := c._POST(ctx, termsOfPaymentsURI, nil, req, resp)
@@ -32,13 +33,13 @@ func (c Client) CreateTermOfPayment(ctx context.Context, req *CreateTermOfPaymen
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.TermsOfPayment, nil
 }
 
 // GetTermOfPayment does _GET https://api.fortnox.se/3/termsofpayments/{Code}
 //
 // code - identifies the terms of payment
-func (c *Client) GetTermOfPayment(ctx context.Context, code string) (*GetTermOfPaymentResp, error) {
+func (c *Client) GetTermOfPayment(ctx context.Context, code string) (*TermsOfPayment, error) {
 	resp := &GetTermOfPaymentResp{}
 
 	uri := fmt.Sprintf("%s/%s", termsOfPaymentsURI, code)
@@ -48,7 +49,7 @@ func (c *Client) GetTermOfPayment(ctx context.Context, code string) (*GetTermOfP
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.TermsOfPayment, nil
 }
 
 // UpdateTermOfPayment does _PUT https://api.fortnox.se/3/termsofpayments/{Code}
@@ -59,8 +60,9 @@ func (c *Client) GetTermOfPayment(ctx context.Context, code string) (*GetTermOfP
 func (c *Client) UpdateTermOfPayment(
 	ctx context.Context,
 	code string,
-	req *UpdateTermOfPaymentReq) (*UpdateTermOfPaymentResp, error) {
+	top *TermsOfPayment) (*TermsOfPayment, error) {
 
+	req := &UpdateTermOfPaymentReq{TermsOfPayment: *top}
 	resp := &UpdateTermOfPaymentResp{}
 
 	uri := fmt.Sprintf("%s/%s", termsOfPaymentsURI, code)
@@ -70,7 +72,7 @@ func (c *Client) UpdateTermOfPayment(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.TermsOfPayment, nil
 }
 
 // RemoveTermOfPayment does _DELETE https://api.fortnox.se/3/termsofpayments/{Code}
@@ -80,50 +82,32 @@ func (c *Client) RemoveTermOfPayment(ctx context.Context, code string) error {
 	return c._DELETE(ctx, uri)
 }
 
+type TermsOfPayment struct {
+	Url         string `json:"@url"`
+	Code        string `json:"Code"`
+	Description string `json:"Description"`
+}
+
 type GetAllTermsOfPaymentsResp struct {
-	TermsOfPayments []struct {
-		Url         string `json:"@url"`
-		Code        string `json:"Code"`
-		Description string `json:"Description"`
-	} `json:"TermsOfPayments"`
+	TermsOfPayments []TermsOfPayment `json:"TermsOfPayments"`
 }
 
 type CreateTermOfPaymentReq struct {
-	TermsOfPayment struct {
-		Url         string `json:"@url"`
-		Code        string `json:"Code"`
-		Description string `json:"Description"`
-	} `json:"TermsOfPayment"`
+	TermsOfPayment TermsOfPayment `json:"TermsOfPayment"`
 }
 
 type CreateTermOfPaymentResp struct {
-	TermsOfPayment struct {
-		Url         string `json:"@url"`
-		Code        string `json:"Code"`
-		Description string `json:"Description"`
-	} `json:"TermsOfPayment"`
+	TermsOfPayment TermsOfPayment `json:"TermsOfPayment"`
 }
 
 type GetTermOfPaymentResp struct {
-	TermsOfPayment struct {
-		Url         string `json:"@url"`
-		Code        string `json:"Code"`
-		Description string `json:"Description"`
-	} `json:"TermsOfPayment"`
+	TermsOfPayment TermsOfPayment `json:"TermsOfPayment"`
 }
 
 type UpdateTermOfPaymentReq struct {
-	TermsOfPayment struct {
-		Url         string `json:"@url"`
-		Code        string `json:"Code"`
-		Description string `json:"Description"`
-	} `json:"TermsOfPayment"`
+	TermsOfPayment TermsOfPayment `json:"TermsOfPayment"`
 }
 
 type UpdateTermOfPaymentResp struct {
-	TermsOfPayment struct {
-		Url         string `json:"@url"`
-		Code        string `json:"Code"`
-		Description string `json:"Description"`
-	} `json:"TermsOfPayment"`
+	TermsOfPayment TermsOfPayment `json:"TermsOfPayment"`
 }

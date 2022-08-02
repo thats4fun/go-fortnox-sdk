@@ -7,7 +7,7 @@ const (
 )
 
 // GetMeInformation does _GET https://api.fortnox.se/3/me
-func (c *Client) GetMeInformation(ctx context.Context) (*GetMeInformationResp, error) {
+func (c *Client) GetMeInformation(ctx context.Context) (*MeInformation, error) {
 	resp := &GetMeInformationResp{}
 
 	err := c._GET(ctx, meURI, nil, resp)
@@ -15,15 +15,15 @@ func (c *Client) GetMeInformation(ctx context.Context) (*GetMeInformationResp, e
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.MeInformation, nil
 }
 
 type MeInformation struct {
-	Id       string `json:"Id"`
-	Name     string `json:"Name"`
-	Email    string `json:"Email"`
-	SysAdmin bool   `json:"SysAdmin"`
-	Locale   string `json:"Locale"`
+	Id       string `json:"Id,omitempty"`
+	Name     string `json:"Name,omitempty"`
+	Email    string `json:"Email,omitempty"`
+	SysAdmin bool   `json:"SysAdmin,omitempty"`
+	Locale   string `json:"Locale,omitempty"`
 }
 
 type GetMeInformationResp struct {

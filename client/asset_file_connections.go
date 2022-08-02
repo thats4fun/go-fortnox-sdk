@@ -26,9 +26,9 @@ func (c *Client) GetAllAssetFileConnections(ctx context.Context) (*GetAllAssetFi
 // req - asset file connection to create
 func (c *Client) CreateAssetFileConnection(
 	ctx context.Context,
-	req *CreateAssetFileConnectionReq) (*CreateAssetFileConnectionResp, error) {
+	req *CreateAssetFileConnectionReq) (*AssetFileConnection, error) {
 
-	resp := &CreateAssetFileConnectionResp{}
+	resp := &AssetFileConnection{}
 
 	err := c._POST(ctx, assetFileConnectionsURI, nil, req, resp)
 	if err != nil {
@@ -46,28 +46,25 @@ func (c *Client) DeleteAssetFileConnection(ctx context.Context, fileID string) e
 	return c._DELETE(ctx, uri)
 }
 
+type AssetFileConnection struct {
+	Url     string `json:"@url"`
+	FileId  string `json:"FileId"`
+	Name    string `json:"Name"`
+	AssetId string `json:"AssetId"`
+}
+
+type AssetFileConnectionMetaInformation struct {
+	TotalResources int `json:"@TotalResources"`
+	TotalPages     int `json:"@TotalPages"`
+	CurrentPage    int `json:"@CurrentPage"`
+}
+
 type GetAllAssetFileConnectionsResp struct {
-	AssetFileConnections []struct {
-		Url     string `json:"@url"`
-		FileId  string `json:"FileId"`
-		Name    string `json:"Name"`
-		AssetId string `json:"AssetId"`
-	} `json:"AssetFileConnections"`
-	MetaInformation struct {
-		TotalResources int `json:"@TotalResources"`
-		TotalPages     int `json:"@TotalPages"`
-		CurrentPage    int `json:"@CurrentPage"`
-	} `json:"MetaInformation"`
+	AssetFileConnections []AssetFileConnection              `json:"AssetFileConnections"`
+	MetaInformation      AssetFileConnectionMetaInformation `json:"MetaInformation"`
 }
 
 type CreateAssetFileConnectionReq struct {
 	FileId  string `json:"FileId"`
-	AssetId string `json:"AssetId"`
-}
-
-type CreateAssetFileConnectionResp struct {
-	Url     string `json:"@url"`
-	FileId  string `json:"FileId"`
-	Name    string `json:"Name"`
 	AssetId string `json:"AssetId"`
 }

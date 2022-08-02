@@ -3,6 +3,7 @@ package client
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -40,22 +41,6 @@ var (
 		"Content-Type": mimeType,
 		"User-Agent":   userAgent,
 	}
-)
-
-type Scope string
-
-const (
-	Salary             Scope = "salary"
-	Bookkeeping        Scope = "bookkeeping"
-	Archive            Scope = "archive"
-	FileConnection     Scope = "connectfile"
-	Article            Scope = "article"
-	CompanyInformation Scope = "companyinformation"
-	Settings           Scope = "settings"
-	Invoice            Scope = "invoice"
-	CostCenters        Scope = "costcenter"
-	Currency           Scope = "currency"
-	Customer           Scope = "customer"
 )
 
 type Client struct {
@@ -142,7 +127,29 @@ func (c *Client) request(
 
 	if strings.ToLower(method) == "delete" {
 		bodyBuffer := http.NoBody
-		return request(ctx, c.clientOptions.HTTPClient, headers, method, u.String(), bodyBuffer, result)
+
+		if !c.clientOptions.AutoRefreshToken {
+			return request(ctx, c.clientOptions.HTTPClient, headers, method, u.String(), bodyBuffer, result)
+		}
+
+		err := request(ctx, c.clientOptions.HTTPClient, headers, method, u.String(), bodyBuffer, result)
+		ferr := &FortnoxError{}
+		if errors.As(err, ferr) {
+			if ferr.Code == 0 && ferr.Message == ErrAccessTokenSE.Error() {
+				fmt.Println("ErrAccessTokenSE | Going to RefreshToken")
+				err := c.RefreshToken()
+				if err != nil {
+					return err
+				}
+				fmt.Println("AFTER REFRESH")
+				fmt.Printf("AccessToken:%s\n", c.clientOptions.AccessToken)
+				fmt.Printf("RefreshToken:%s\n", c.clientOptions.RefreshToken)
+
+				return request(ctx, c.clientOptions.HTTPClient, headers, method, u.String(), bodyBuffer, result)
+			}
+		}
+
+		return err
 	}
 
 	bodyBuffer := &bytes.Buffer{}
@@ -151,7 +158,98 @@ func (c *Client) request(
 		return err
 	}
 
-	return request(ctx, c.clientOptions.HTTPClient, headers, method, u.String(), bodyBuffer, result)
+	if !c.clientOptions.AutoRefreshToken {
+		return request(ctx, c.clientOptions.HTTPClient, headers, method, u.String(), bodyBuffer, result)
+	}
+
+	err = request(ctx, c.clientOptions.HTTPClient, headers, method, u.String(), bodyBuffer, result)
+	ferr := &FortnoxError{}
+	if errors.As(err, ferr) {
+		if ferr.Code == 0 && ferr.Message == ErrAccessTokenSE.Error() {
+			fmt.Println("ErrAccessTokenSE | Going to RefreshToken")
+			err := c.RefreshToken()
+			if err != nil {
+				return err
+			}
+
+			fmt.Println("AFTER REFRESH")
+			fmt.Printf("AccessToken:%s\n", c.clientOptions.AccessToken)
+			fmt.Printf("RefreshToken:%s\n", c.clientOptions.RefreshToken)
+
+			return request(ctx, c.clientOptions.HTTPClient, headers, method, u.String(), bodyBuffer, result)
+		}
+	}
+
+	return err
+}
+
+// GetAuthCodeLink requires manual authentication
+func GetAuthCodeLink(clientID, redirectURI string, scopes Scopes, isService bool) string {
+	state := time.Now().Unix()
+
+	var authCodeURL string
+	if isService {
+		authCodeURL = fmt.Sprintf("https://apps.fortnox.se/oauth-v1/auth?client_id=%s&redirect_uri=%s&scope=%s&state=%d&access_type=offline&response_type=code",
+			clientID,
+			redirectURI,
+			scopes.toString(),
+			state,
+		)
+	} else {
+		authCodeURL = fmt.Sprintf("https://apps.fortnox.se/oauth-v1/auth?client_id=%s&redirect_uri=%s&scope=%s&state=%d&access_type=offline&response_type=code&account_type=service",
+			clientID,
+			redirectURI,
+			scopes.toString(),
+			state,
+		)
+	}
+
+	return authCodeURL
+}
+
+const postToken = "https://apps.fortnox.se/oauth-v1/token"
+
+func Authorize(clientID, clientSecret, authCode, redirectURI string) (*TokenInfo, error) {
+	body := &bytes.Buffer{}
+
+	body.WriteString(
+		fmt.Sprintf("grant_type=authorization_code&code=%s&redirect_uri=%s", authCode, redirectURI),
+	)
+
+	data := fmt.Sprintf("%s:%s", clientID, clientSecret)
+	encoded := base64.StdEncoding.EncodeToString([]byte(data))
+	fmt.Println("encoded: ", encoded)
+
+	req, err := http.NewRequest("POST", postToken, body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Authorization", fmt.Sprintf("Basic %s", encoded))
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+	c := http.Client{
+		Timeout: defaultTimeout,
+	}
+
+	resp, err := c.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	bts, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	tokenInfo := TokenInfo{}
+	err = json.Unmarshal(bts, &tokenInfo)
+	if err != nil {
+		return nil, err
+	}
+
+	return &tokenInfo, nil
 }
 
 func (c *Client) RefreshToken() error {
@@ -161,7 +259,23 @@ func (c *Client) RefreshToken() error {
 		fmt.Sprintf("grant_type=refresh_token&refresh_token=%s", c.clientOptions.RefreshToken),
 	)
 
-	resp, err := http.Post(refreshTokenURL, "application/x-www-form-urlencoded", body)
+	data := fmt.Sprintf("%s:%s", c.clientOptions.ClientID, c.clientOptions.ClientSecret)
+	encoded := base64.StdEncoding.EncodeToString([]byte(data))
+	fmt.Println("encoded: ", encoded)
+
+	req, err := http.NewRequest("POST", refreshTokenURL, body)
+	if err != nil {
+		return err
+	}
+
+	req.Header.Add("Authorization", fmt.Sprintf("Basic %s", encoded))
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+	cc := http.Client{
+		Timeout: defaultTimeout,
+	}
+
+	resp, err := cc.Do(req)
 	if err != nil {
 		return err
 	}
@@ -180,6 +294,10 @@ func (c *Client) RefreshToken() error {
 
 	c.clientOptions.AccessToken = tokenInfo.AccessToken
 	c.clientOptions.RefreshToken = tokenInfo.RefreshToken
+
+	fmt.Println("REFRESH SUCCESS~~")
+	fmt.Printf("AccessToken:%s\n", c.clientOptions.AccessToken)
+	fmt.Printf("RefreshToken:%s\n", c.clientOptions.RefreshToken)
 
 	return nil
 }
@@ -277,6 +395,7 @@ func getRespBodyPreview(resp *http.Response, len int64) (string, error) {
 var (
 	ErrCreateRequest = errors.New("error creating request")
 	ErrSendRequest   = errors.New("error sending request")
+	ErrAccessTokenSE = errors.New(`{"message":"unauthorized"} | try to refresh token`)
 )
 
 // ErrorResp error response from Fortnox

@@ -10,7 +10,7 @@ const (
 )
 
 // GetAllCostCenters does _GET https://api.fortnox.se/3/costcenters
-func (c *Client) GetAllCostCenters(ctx context.Context) (*GetAllCostCentersResp, error) {
+func (c *Client) GetAllCostCenters(ctx context.Context) ([]CostCenter, error) {
 	resp := &GetAllCostCentersResp{}
 
 	err := c._GET(ctx, costCentersURI, nil, resp)
@@ -18,13 +18,14 @@ func (c *Client) GetAllCostCenters(ctx context.Context) (*GetAllCostCentersResp,
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.CostCenters, nil
 }
 
 // CreateCostCenter does _POST https://api.fortnox.se/3/costcenters
 //
-// req - cost center to create
-func (c *Client) CreateCostCenter(ctx context.Context, req *CreateCostCenterReq) (*CreateCostCenterResp, error) {
+// cc - cost center to create
+func (c *Client) CreateCostCenter(ctx context.Context, cc *CostCenter) (*CostCenter, error) {
+	req := &CreateCostCenterReq{CostCenter: *cc}
 	resp := &CreateCostCenterResp{}
 
 	err := c._POST(ctx, costCentersURI, nil, req, resp)
@@ -32,13 +33,13 @@ func (c *Client) CreateCostCenter(ctx context.Context, req *CreateCostCenterReq)
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.CostCenter, nil
 }
 
 // GetCostCenter does _GET https://api.fortnox.se/3/costcenters/{Code}
 //
 // code - identifies the cost center
-func (c Client) GetCostCenter(ctx context.Context, code string) (*GetCostCenterResp, error) {
+func (c Client) GetCostCenter(ctx context.Context, code string) (*CostCenter, error) {
 	resp := &GetCostCenterResp{}
 
 	uri := fmt.Sprintf("%s/%s", costCentersURI, code)
@@ -48,17 +49,16 @@ func (c Client) GetCostCenter(ctx context.Context, code string) (*GetCostCenterR
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.CostCenter, nil
 }
 
 // UpdateCostCenter does _PUT https://api.fortnox.se/3/costcenters/{Code}
 //
 // code - identifies the cost center
 //
-// req - cost center to update
-func (c Client) UpdateCostCenter(
-	ctx context.Context, code string, req *UpdateCostCenterReq) (*UpdateCostCenterResp, error) {
-
+// cc - cost center to update
+func (c Client) UpdateCostCenter(ctx context.Context, code string, cc *CostCenter) (*CostCenter, error) {
+	req := UpdateCostCenterReq{CostCenter: *cc}
 	resp := &UpdateCostCenterResp{}
 
 	uri := fmt.Sprintf("%s/%s", costCentersURI, code)
@@ -68,7 +68,7 @@ func (c Client) UpdateCostCenter(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.CostCenter, nil
 }
 
 // RemoveCostCenter does _DELETE https://api.fortnox.se/3/costcenters/{Code}
@@ -79,62 +79,34 @@ func (c *Client) RemoveCostCenter(ctx context.Context, code string) error {
 	return c._DELETE(ctx, uri)
 }
 
+type CostCenter struct {
+	Url         string `json:"@url,omitempty"`
+	Code        string `json:"Code,omitempty"`
+	Description string `json:"Description,omitempty"`
+	Note        string `json:"Note,omitempty"`
+	Active      bool   `json:"Active,omitempty"`
+}
+
 type GetAllCostCentersResp struct {
-	CostCenters []struct {
-		Url         string `json:"@url"`
-		Code        string `json:"Code"`
-		Description string `json:"Description"`
-		Note        string `json:"Note"`
-		Active      bool   `json:"Active"`
-	} `json:"CostCenters"`
+	CostCenters []CostCenter `json:"CostCenters"`
 }
 
 type CreateCostCenterReq struct {
-	CostCenter struct {
-		Url         string `json:"@url"`
-		Code        string `json:"Code"`
-		Description string `json:"Description"`
-		Note        string `json:"Note"`
-		Active      bool   `json:"Active"`
-	} `json:"CostCenter"`
+	CostCenter CostCenter `json:"CostCenter"`
 }
 
 type CreateCostCenterResp struct {
-	CostCenter struct {
-		Url         string `json:"@url"`
-		Code        string `json:"Code"`
-		Description string `json:"Description"`
-		Note        string `json:"Note"`
-		Active      bool   `json:"Active"`
-	} `json:"CostCenter"`
+	CostCenter CostCenter `json:"CostCenter"`
 }
 
 type GetCostCenterResp struct {
-	CostCenter struct {
-		Url         string `json:"@url"`
-		Code        string `json:"Code"`
-		Description string `json:"Description"`
-		Note        string `json:"Note"`
-		Active      bool   `json:"Active"`
-	} `json:"CostCenter"`
+	CostCenter CostCenter `json:"CostCenter"`
 }
 
 type UpdateCostCenterReq struct {
-	CostCenter struct {
-		Url         string `json:"@url"`
-		Code        string `json:"Code"`
-		Description string `json:"Description"`
-		Note        string `json:"Note"`
-		Active      bool   `json:"Active"`
-	} `json:"CostCenter"`
+	CostCenter CostCenter `json:"CostCenter"`
 }
 
 type UpdateCostCenterResp struct {
-	CostCenter struct {
-		Url         string `json:"@url"`
-		Code        string `json:"Code"`
-		Description string `json:"Description"`
-		Note        string `json:"Note"`
-		Active      bool   `json:"Active"`
-	} `json:"CostCenter"`
+	CostCenter CostCenter `json:"CostCenter"`
 }
