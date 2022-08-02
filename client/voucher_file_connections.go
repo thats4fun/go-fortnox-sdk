@@ -67,12 +67,12 @@ func (c *Client) RemoveVoucherFileConnections(ctx context.Context, fieldID strin
 }
 
 type VoucherFileConnection struct {
-	Url                string `json:"@url"`
-	FileId             string `json:"FileId"`
-	VoucherDescription string `json:"VoucherDescription"`
-	VoucherNumber      string `json:"VoucherNumber"`
-	VoucherSeries      string `json:"VoucherSeries"`
-	VoucherYear        int    `json:"VoucherYear"`
+	Url                string `json:"@url,omitempty"`
+	FileId             string `json:"FileId,omitempty"`
+	VoucherDescription string `json:"VoucherDescription,omitempty"`
+	VoucherNumber      string `json:"VoucherNumber,omitempty"`
+	VoucherSeries      string `json:"VoucherSeries,omitempty"`
+	VoucherYear        int    `json:"VoucherYear,omitempty"`
 }
 
 type GetAllVoucherFileConnectionsResp struct {
