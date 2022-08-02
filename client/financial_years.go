@@ -37,7 +37,7 @@ func (c *Client) GetAllFinancialYears(ctx context.Context, date *GetAllFinancial
 
 // CreateFinancialYear does _POST https://api.fortnox.se/3/financialyears
 //
-// financialYear - financial year to create
+// fy - financial year to create
 func (c *Client) CreateFinancialYear(ctx context.Context, fy *FinancialYear) (*FinancialYear, error) {
 	req := &CreateFinancialYearReq{FinancialYear: *fy}
 	resp := &CreateFinancialYearResp{}

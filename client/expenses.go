@@ -23,7 +23,7 @@ func (c *Client) GetAllExpenses(ctx context.Context) ([]Expense, error) {
 
 // CreateExpense does _POST https://api.fortnox.se/3/expenses/
 //
-// req - expense to create
+// e - expense to create
 func (c *Client) CreateExpense(ctx context.Context, e *Expense) (*Expense, error) {
 	req := &CreateExpenseReq{Expense: *e}
 	resp := &CreateExpenseResp{}

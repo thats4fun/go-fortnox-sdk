@@ -94,120 +94,94 @@ type GetAllInvoiceAccrualsResp struct {
 
 type CreateInvoiceAccrualReq struct {
 	InvoiceAccrual struct {
-		Url                string `json:"@url"`
-		AccrualAccount     int    `json:"AccrualAccount"`
-		Description        string `json:"Description"`
-		EndDate            string `json:"EndDate"`
-		InvoiceAccrualRows []struct {
-			Account                int    `json:"Account"`
-			CostCenter             string `json:"CostCenter"`
-			Credit                 int    `json:"Credit"`
-			Debit                  int    `json:"Debit"`
-			Project                string `json:"Project"`
-			TransactionInformation string `json:"TransactionInformation"`
-		} `json:"InvoiceAccrualRows"`
-		InvoiceNumber  int    `json:"InvoiceNumber"`
-		Period         string `json:"Period"`
-		RevenueAccount int    `json:"RevenueAccount"`
-		StartDate      string `json:"StartDate"`
-		Times          int    `json:"Times"`
-		Total          int    `json:"Total"`
-		VATIncluded    bool   `json:"VATIncluded"`
+		Url                string              `json:"@url"`
+		AccrualAccount     int                 `json:"AccrualAccount"`
+		Description        string              `json:"Description"`
+		EndDate            string              `json:"EndDate"`
+		InvoiceAccrualRows []InvoiceAccrualRow `json:"InvoiceAccrualRows"`
+		InvoiceNumber      int                 `json:"InvoiceNumber"`
+		Period             string              `json:"Period"`
+		RevenueAccount     int                 `json:"RevenueAccount"`
+		StartDate          string              `json:"StartDate"`
+		Times              int                 `json:"Times"`
+		Total              int                 `json:"Total"`
+		VATIncluded        bool                `json:"VATIncluded"`
 	} `json:"InvoiceAccrual"`
 }
 
 type CreateInvoiceAccrualResp struct {
 	InvoiceAccrual struct {
-		Url                string `json:"@url"`
-		AccrualAccount     int    `json:"AccrualAccount"`
-		Description        string `json:"Description"`
-		EndDate            string `json:"EndDate"`
-		InvoiceAccrualRows []struct {
-			Account                int    `json:"Account"`
-			CostCenter             string `json:"CostCenter"`
-			Credit                 int    `json:"Credit"`
-			Debit                  int    `json:"Debit"`
-			Project                string `json:"Project"`
-			TransactionInformation string `json:"TransactionInformation"`
-		} `json:"InvoiceAccrualRows"`
-		InvoiceNumber  int    `json:"InvoiceNumber"`
-		Period         string `json:"Period"`
-		RevenueAccount int    `json:"RevenueAccount"`
-		StartDate      string `json:"StartDate"`
-		Times          int    `json:"Times"`
-		Total          int    `json:"Total"`
-		VATIncluded    bool   `json:"VATIncluded"`
+		Url                string              `json:"@url"`
+		AccrualAccount     int                 `json:"AccrualAccount"`
+		Description        string              `json:"Description"`
+		EndDate            string              `json:"EndDate"`
+		InvoiceAccrualRows []InvoiceAccrualRow `json:"InvoiceAccrualRows"`
+		InvoiceNumber      int                 `json:"InvoiceNumber"`
+		Period             string              `json:"Period"`
+		RevenueAccount     int                 `json:"RevenueAccount"`
+		StartDate          string              `json:"StartDate"`
+		Times              int                 `json:"Times"`
+		Total              int                 `json:"Total"`
+		VATIncluded        bool                `json:"VATIncluded"`
 	} `json:"InvoiceAccrual"`
 }
 
 type GetInvoiceAccrualResp struct {
 	InvoiceAccrual struct {
-		Url                string `json:"@url"`
-		AccrualAccount     int    `json:"AccrualAccount"`
-		Description        string `json:"Description"`
-		EndDate            string `json:"EndDate"`
-		InvoiceAccrualRows []struct {
-			Account                int    `json:"Account"`
-			CostCenter             string `json:"CostCenter"`
-			Credit                 int    `json:"Credit"`
-			Debit                  int    `json:"Debit"`
-			Project                string `json:"Project"`
-			TransactionInformation string `json:"TransactionInformation"`
-		} `json:"InvoiceAccrualRows"`
-		InvoiceNumber  int    `json:"InvoiceNumber"`
-		Period         string `json:"Period"`
-		RevenueAccount int    `json:"RevenueAccount"`
-		StartDate      string `json:"StartDate"`
-		Times          int    `json:"Times"`
-		Total          int    `json:"Total"`
-		VATIncluded    bool   `json:"VATIncluded"`
+		Url                string              `json:"@url"`
+		AccrualAccount     int                 `json:"AccrualAccount"`
+		Description        string              `json:"Description"`
+		EndDate            string              `json:"EndDate"`
+		InvoiceAccrualRows []InvoiceAccrualRow `json:"InvoiceAccrualRows"`
+		InvoiceNumber      int                 `json:"InvoiceNumber"`
+		Period             string              `json:"Period"`
+		RevenueAccount     int                 `json:"RevenueAccount"`
+		StartDate          string              `json:"StartDate"`
+		Times              int                 `json:"Times"`
+		Total              int                 `json:"Total"`
+		VATIncluded        bool                `json:"VATIncluded"`
 	} `json:"InvoiceAccrual"`
 }
 
 type UpdateInvoiceAccrualReq struct {
 	InvoiceAccrual struct {
-		Url                string `json:"@url"`
-		AccrualAccount     int    `json:"AccrualAccount"`
-		Description        string `json:"Description"`
-		EndDate            string `json:"EndDate"`
-		InvoiceAccrualRows []struct {
-			Account                int    `json:"Account"`
-			CostCenter             string `json:"CostCenter"`
-			Credit                 int    `json:"Credit"`
-			Debit                  int    `json:"Debit"`
-			Project                string `json:"Project"`
-			TransactionInformation string `json:"TransactionInformation"`
-		} `json:"InvoiceAccrualRows"`
-		InvoiceNumber  int    `json:"InvoiceNumber"`
-		Period         string `json:"Period"`
-		RevenueAccount int    `json:"RevenueAccount"`
-		StartDate      string `json:"StartDate"`
-		Times          int    `json:"Times"`
-		Total          int    `json:"Total"`
-		VATIncluded    bool   `json:"VATIncluded"`
+		Url                string              `json:"@url"`
+		AccrualAccount     int                 `json:"AccrualAccount"`
+		Description        string              `json:"Description"`
+		EndDate            string              `json:"EndDate"`
+		InvoiceAccrualRows []InvoiceAccrualRow `json:"InvoiceAccrualRows"`
+		InvoiceNumber      int                 `json:"InvoiceNumber"`
+		Period             string              `json:"Period"`
+		RevenueAccount     int                 `json:"RevenueAccount"`
+		StartDate          string              `json:"StartDate"`
+		Times              int                 `json:"Times"`
+		Total              int                 `json:"Total"`
+		VATIncluded        bool                `json:"VATIncluded"`
 	} `json:"InvoiceAccrual"`
 }
 
 type UpdateInvoiceAccrualResp struct {
 	InvoiceAccrual struct {
-		Url                string `json:"@url"`
-		AccrualAccount     int    `json:"AccrualAccount"`
-		Description        string `json:"Description"`
-		EndDate            string `json:"EndDate"`
-		InvoiceAccrualRows []struct {
-			Account                int    `json:"Account"`
-			CostCenter             string `json:"CostCenter"`
-			Credit                 int    `json:"Credit"`
-			Debit                  int    `json:"Debit"`
-			Project                string `json:"Project"`
-			TransactionInformation string `json:"TransactionInformation"`
-		} `json:"InvoiceAccrualRows"`
-		InvoiceNumber  int    `json:"InvoiceNumber"`
-		Period         string `json:"Period"`
-		RevenueAccount int    `json:"RevenueAccount"`
-		StartDate      string `json:"StartDate"`
-		Times          int    `json:"Times"`
-		Total          int    `json:"Total"`
-		VATIncluded    bool   `json:"VATIncluded"`
+		Url                string              `json:"@url"`
+		AccrualAccount     int                 `json:"AccrualAccount"`
+		Description        string              `json:"Description"`
+		EndDate            string              `json:"EndDate"`
+		InvoiceAccrualRows []InvoiceAccrualRow `json:"InvoiceAccrualRows"`
+		InvoiceNumber      int                 `json:"InvoiceNumber"`
+		Period             string              `json:"Period"`
+		RevenueAccount     int                 `json:"RevenueAccount"`
+		StartDate          string              `json:"StartDate"`
+		Times              int                 `json:"Times"`
+		Total              int                 `json:"Total"`
+		VATIncluded        bool                `json:"VATIncluded"`
 	} `json:"InvoiceAccrual"`
+}
+
+type InvoiceAccrualRow struct {
+	Account                int    `json:"Account,omitempty"`
+	CostCenter             string `json:"CostCenter,omitempty"`
+	Credit                 int    `json:"Credit,omitempty"`
+	Debit                  int    `json:"Debit,omitempty"`
+	Project                string `json:"Project,omitempty"`
+	TransactionInformation string `json:"TransactionInformation,omitempty"`
 }

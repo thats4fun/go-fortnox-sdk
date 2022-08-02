@@ -302,6 +302,14 @@ func (c *Client) RefreshToken() error {
 	return nil
 }
 
+func (c *Client) IsAutoRefreshTokenActive() bool {
+	return c.clientOptions.AutoRefreshToken
+}
+
+func (c *Client) GetAccessToken() string {
+	return c.clientOptions.AccessToken
+}
+
 func (c *Client) GetRefreshToken() string {
 	return c.clientOptions.RefreshToken
 }

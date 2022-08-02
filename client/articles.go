@@ -18,7 +18,7 @@ const (
 // GetArticle does _GET https://api.fortnox.se/3/articles/{ArticleNumber}
 //
 // articleNumber - identifies the article
-func (c *Client) GetArticle(ctx context.Context, articleNumber int) (*GetArticleResp, error) {
+func (c *Client) GetArticle(ctx context.Context, articleNumber int) (*Article, error) {
 	resp := &GetArticleResp{}
 
 	uri := fmt.Sprintf("%s/%d", articlesURI, articleNumber)
@@ -28,7 +28,7 @@ func (c *Client) GetArticle(ctx context.Context, articleNumber int) (*GetArticle
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Article, nil
 }
 
 // UpdateArticle does _PUT https://api.fortnox.se/3/articles/{ArticleNumber}
@@ -110,271 +110,73 @@ const (
 )
 
 type GetArticleResp struct {
-	Article struct {
-		Url                       string `json:"@url"`
-		ArticleNumber             string `json:"ArticleNumber"`
-		Bulky                     bool   `json:"Bulky"`
-		ConstructionAccount       int    `json:"ConstructionAccount"`
-		Depth                     int    `json:"Depth"`
-		Description               string `json:"Description"`
-		DisposableQuantity        int    `json:"DisposableQuantity"`
-		EAN                       string `json:"EAN"`
-		EUAccount                 int    `json:"EUAccount"`
-		EUVATAccount              int    `json:"EUVATAccount"`
-		ExportAccount             int    `json:"ExportAccount"`
-		Height                    int    `json:"Height"`
-		Housework                 bool   `json:"Housework"`
-		HouseworkType             string `json:"HouseworkType"`
-		Active                    bool   `json:"Active"`
-		Manufacturer              string `json:"Manufacturer"`
-		ManufacturerArticleNumber string `json:"ManufacturerArticleNumber"`
-		Note                      string `json:"Note"`
-		PurchaseAccount           int    `json:"PurchaseAccount"`
-		PurchasePrice             int    `json:"PurchasePrice"`
-		QuantityInStock           int    `json:"QuantityInStock"`
-		ReservedQuantity          int    `json:"ReservedQuantity"`
-		SalesAccount              int    `json:"SalesAccount"`
-		StockGoods                bool   `json:"StockGoods"`
-		StockPlace                string `json:"StockPlace"`
-		StockValue                int    `json:"StockValue"`
-		StockWarning              int    `json:"StockWarning"`
-		SupplierName              string `json:"SupplierName"`
-		SupplierNumber            string `json:"SupplierNumber"`
-		Type                      string `json:"Type"`
-		Unit                      string `json:"Unit"`
-		VAT                       int    `json:"VAT"`
-		WebshopArticle            bool   `json:"WebshopArticle"`
-		Weight                    int    `json:"Weight"`
-		Width                     int    `json:"Width"`
-		Expired                   bool   `json:"Expired"`
-		SalesPrice                int    `json:"SalesPrice"`
-		CostCalculationMethod     string `json:"CostCalculationMethod"`
-		StockAccount              int    `json:"StockAccount"`
-		StockChangeAccount        int    `json:"StockChangeAccount"`
-		DirectCost                int    `json:"DirectCost"`
-		FreightCost               int    `json:"FreightCost"`
-		OtherCost                 int    `json:"OtherCost"`
-		DefaultStockPoint         string `json:"DefaultStockPoint"`
-		DefaultStockLocation      string `json:"DefaultStockLocation"`
-	} `json:"Article"`
+	Article Article `json:"Article"`
 }
 
 type UpdateArticleReq struct {
-	Article struct {
-		Url                       string `json:"@url"`
-		ArticleNumber             string `json:"ArticleNumber"`
-		Bulky                     bool   `json:"Bulky"`
-		ConstructionAccount       int    `json:"ConstructionAccount"`
-		Depth                     int    `json:"Depth"`
-		Description               string `json:"Description"`
-		DisposableQuantity        int    `json:"DisposableQuantity"`
-		EAN                       string `json:"EAN"`
-		EUAccount                 int    `json:"EUAccount"`
-		EUVATAccount              int    `json:"EUVATAccount"`
-		ExportAccount             int    `json:"ExportAccount"`
-		Height                    int    `json:"Height"`
-		Housework                 bool   `json:"Housework"`
-		HouseworkType             string `json:"HouseworkType"`
-		Active                    bool   `json:"Active"`
-		Manufacturer              string `json:"Manufacturer"`
-		ManufacturerArticleNumber string `json:"ManufacturerArticleNumber"`
-		Note                      string `json:"Note"`
-		PurchaseAccount           int    `json:"PurchaseAccount"`
-		PurchasePrice             int    `json:"PurchasePrice"`
-		QuantityInStock           int    `json:"QuantityInStock"`
-		ReservedQuantity          int    `json:"ReservedQuantity"`
-		SalesAccount              int    `json:"SalesAccount"`
-		StockGoods                bool   `json:"StockGoods"`
-		StockPlace                string `json:"StockPlace"`
-		StockValue                int    `json:"StockValue"`
-		StockWarning              int    `json:"StockWarning"`
-		SupplierName              string `json:"SupplierName"`
-		SupplierNumber            string `json:"SupplierNumber"`
-		Type                      string `json:"Type"`
-		Unit                      string `json:"Unit"`
-		VAT                       int    `json:"VAT"`
-		WebshopArticle            bool   `json:"WebshopArticle"`
-		Weight                    int    `json:"Weight"`
-		Width                     int    `json:"Width"`
-		Expired                   bool   `json:"Expired"`
-		SalesPrice                int    `json:"SalesPrice"`
-		CostCalculationMethod     string `json:"CostCalculationMethod"`
-		StockAccount              int    `json:"StockAccount"`
-		StockChangeAccount        int    `json:"StockChangeAccount"`
-		DirectCost                int    `json:"DirectCost"`
-		FreightCost               int    `json:"FreightCost"`
-		OtherCost                 int    `json:"OtherCost"`
-		DefaultStockPoint         string `json:"DefaultStockPoint"`
-		DefaultStockLocation      string `json:"DefaultStockLocation"`
-	} `json:"Article"`
+	Article Article `json:"Article"`
 }
 
 type UpdateArticleResp struct {
-	Article struct {
-		Url                       string `json:"@url"`
-		ArticleNumber             string `json:"ArticleNumber"`
-		Bulky                     bool   `json:"Bulky"`
-		ConstructionAccount       int    `json:"ConstructionAccount"`
-		Depth                     int    `json:"Depth"`
-		Description               string `json:"Description"`
-		DisposableQuantity        int    `json:"DisposableQuantity"`
-		EAN                       string `json:"EAN"`
-		EUAccount                 int    `json:"EUAccount"`
-		EUVATAccount              int    `json:"EUVATAccount"`
-		ExportAccount             int    `json:"ExportAccount"`
-		Height                    int    `json:"Height"`
-		Housework                 bool   `json:"Housework"`
-		HouseworkType             string `json:"HouseworkType"`
-		Active                    bool   `json:"Active"`
-		Manufacturer              string `json:"Manufacturer"`
-		ManufacturerArticleNumber string `json:"ManufacturerArticleNumber"`
-		Note                      string `json:"Note"`
-		PurchaseAccount           int    `json:"PurchaseAccount"`
-		PurchasePrice             int    `json:"PurchasePrice"`
-		QuantityInStock           int    `json:"QuantityInStock"`
-		ReservedQuantity          int    `json:"ReservedQuantity"`
-		SalesAccount              int    `json:"SalesAccount"`
-		StockGoods                bool   `json:"StockGoods"`
-		StockPlace                string `json:"StockPlace"`
-		StockValue                int    `json:"StockValue"`
-		StockWarning              int    `json:"StockWarning"`
-		SupplierName              string `json:"SupplierName"`
-		SupplierNumber            string `json:"SupplierNumber"`
-		Type                      string `json:"Type"`
-		Unit                      string `json:"Unit"`
-		VAT                       int    `json:"VAT"`
-		WebshopArticle            bool   `json:"WebshopArticle"`
-		Weight                    int    `json:"Weight"`
-		Width                     int    `json:"Width"`
-		Expired                   bool   `json:"Expired"`
-		SalesPrice                int    `json:"SalesPrice"`
-		CostCalculationMethod     string `json:"CostCalculationMethod"`
-		StockAccount              int    `json:"StockAccount"`
-		StockChangeAccount        int    `json:"StockChangeAccount"`
-		DirectCost                int    `json:"DirectCost"`
-		FreightCost               int    `json:"FreightCost"`
-		OtherCost                 int    `json:"OtherCost"`
-		DefaultStockPoint         string `json:"DefaultStockPoint"`
-		DefaultStockLocation      string `json:"DefaultStockLocation"`
-	} `json:"Article"`
+	Article Article `json:"Article"`
 }
 
 type GetArticlesResp struct {
-	Articles []struct {
-		Url                string `json:"@url"`
-		ArticleNumber      string `json:"ArticleNumber"`
-		Description        string `json:"Description"`
-		DisposableQuantity string `json:"DisposableQuantity"`
-		EAN                string `json:"EAN"`
-		Housework          bool   `json:"Housework"`
-		PurchasePrice      string `json:"PurchasePrice"`
-		SalesPrice         string `json:"SalesPrice"`
-		QuantityInStock    int    `json:"QuantityInStock"`
-		ReservedQuantity   string `json:"ReservedQuantity"`
-		StockPlace         string `json:"StockPlace"`
-		StockValue         string `json:"StockValue"`
-		Unit               string `json:"Unit"`
-		VAT                string `json:"VAT"`
-		WebshopArticle     bool   `json:"WebshopArticle"`
-	} `json:"Articles"`
+	Articles []Article `json:"Articles"`
 }
 
 type CreateArticleReq struct {
-	Article struct {
-		Url                       string `json:"@url"`
-		ArticleNumber             string `json:"ArticleNumber"`
-		Bulky                     bool   `json:"Bulky"`
-		ConstructionAccount       int    `json:"ConstructionAccount"`
-		Depth                     int    `json:"Depth"`
-		Description               string `json:"Description"`
-		DisposableQuantity        int    `json:"DisposableQuantity"`
-		EAN                       string `json:"EAN"`
-		EUAccount                 int    `json:"EUAccount"`
-		EUVATAccount              int    `json:"EUVATAccount"`
-		ExportAccount             int    `json:"ExportAccount"`
-		Height                    int    `json:"Height"`
-		Housework                 bool   `json:"Housework"`
-		HouseworkType             string `json:"HouseworkType"`
-		Active                    bool   `json:"Active"`
-		Manufacturer              string `json:"Manufacturer"`
-		ManufacturerArticleNumber string `json:"ManufacturerArticleNumber"`
-		Note                      string `json:"Note"`
-		PurchaseAccount           int    `json:"PurchaseAccount"`
-		PurchasePrice             int    `json:"PurchasePrice"`
-		QuantityInStock           int    `json:"QuantityInStock"`
-		ReservedQuantity          int    `json:"ReservedQuantity"`
-		SalesAccount              int    `json:"SalesAccount"`
-		StockGoods                bool   `json:"StockGoods"`
-		StockPlace                string `json:"StockPlace"`
-		StockValue                int    `json:"StockValue"`
-		StockWarning              int    `json:"StockWarning"`
-		SupplierName              string `json:"SupplierName"`
-		SupplierNumber            string `json:"SupplierNumber"`
-		Type                      string `json:"Type"`
-		Unit                      string `json:"Unit"`
-		VAT                       int    `json:"VAT"`
-		WebshopArticle            bool   `json:"WebshopArticle"`
-		Weight                    int    `json:"Weight"`
-		Width                     int    `json:"Width"`
-		Expired                   bool   `json:"Expired"`
-		SalesPrice                int    `json:"SalesPrice"`
-		CostCalculationMethod     string `json:"CostCalculationMethod"`
-		StockAccount              int    `json:"StockAccount"`
-		StockChangeAccount        int    `json:"StockChangeAccount"`
-		DirectCost                int    `json:"DirectCost"`
-		FreightCost               int    `json:"FreightCost"`
-		OtherCost                 int    `json:"OtherCost"`
-		DefaultStockPoint         string `json:"DefaultStockPoint"`
-		DefaultStockLocation      string `json:"DefaultStockLocation"`
-	} `json:"Article"`
+	Article Article `json:"Article"`
 }
 
 type CreateArticleResp struct {
-	Article struct {
-		Url                       string `json:"@url"`
-		ArticleNumber             string `json:"ArticleNumber"`
-		Bulky                     bool   `json:"Bulky"`
-		ConstructionAccount       int    `json:"ConstructionAccount"`
-		Depth                     int    `json:"Depth"`
-		Description               string `json:"Description"`
-		DisposableQuantity        int    `json:"DisposableQuantity"`
-		EAN                       string `json:"EAN"`
-		EUAccount                 int    `json:"EUAccount"`
-		EUVATAccount              int    `json:"EUVATAccount"`
-		ExportAccount             int    `json:"ExportAccount"`
-		Height                    int    `json:"Height"`
-		Housework                 bool   `json:"Housework"`
-		HouseworkType             string `json:"HouseworkType"`
-		Active                    bool   `json:"Active"`
-		Manufacturer              string `json:"Manufacturer"`
-		ManufacturerArticleNumber string `json:"ManufacturerArticleNumber"`
-		Note                      string `json:"Note"`
-		PurchaseAccount           int    `json:"PurchaseAccount"`
-		PurchasePrice             int    `json:"PurchasePrice"`
-		QuantityInStock           int    `json:"QuantityInStock"`
-		ReservedQuantity          int    `json:"ReservedQuantity"`
-		SalesAccount              int    `json:"SalesAccount"`
-		StockGoods                bool   `json:"StockGoods"`
-		StockPlace                string `json:"StockPlace"`
-		StockValue                int    `json:"StockValue"`
-		StockWarning              int    `json:"StockWarning"`
-		SupplierName              string `json:"SupplierName"`
-		SupplierNumber            string `json:"SupplierNumber"`
-		Type                      string `json:"Type"`
-		Unit                      string `json:"Unit"`
-		VAT                       int    `json:"VAT"`
-		WebshopArticle            bool   `json:"WebshopArticle"`
-		Weight                    int    `json:"Weight"`
-		Width                     int    `json:"Width"`
-		Expired                   bool   `json:"Expired"`
-		SalesPrice                int    `json:"SalesPrice"`
-		CostCalculationMethod     string `json:"CostCalculationMethod"`
-		StockAccount              int    `json:"StockAccount"`
-		StockChangeAccount        int    `json:"StockChangeAccount"`
-		DirectCost                int    `json:"DirectCost"`
-		FreightCost               int    `json:"FreightCost"`
-		OtherCost                 int    `json:"OtherCost"`
-		DefaultStockPoint         string `json:"DefaultStockPoint"`
-		DefaultStockLocation      string `json:"DefaultStockLocation"`
-	} `json:"Article"`
+	Article Article `json:"Article"`
+}
+
+type Article struct {
+	Url                       string `json:"@url"`
+	ArticleNumber             string `json:"ArticleNumber"`
+	Bulky                     bool   `json:"Bulky"`
+	ConstructionAccount       int    `json:"ConstructionAccount"`
+	Depth                     int    `json:"Depth"`
+	Description               string `json:"Description"`
+	DisposableQuantity        int    `json:"DisposableQuantity"`
+	EAN                       string `json:"EAN"`
+	EUAccount                 int    `json:"EUAccount"`
+	EUVATAccount              int    `json:"EUVATAccount"`
+	ExportAccount             int    `json:"ExportAccount"`
+	Height                    int    `json:"Height"`
+	Housework                 bool   `json:"Housework"`
+	HouseworkType             string `json:"HouseworkType"`
+	Active                    bool   `json:"Active"`
+	Manufacturer              string `json:"Manufacturer"`
+	ManufacturerArticleNumber string `json:"ManufacturerArticleNumber"`
+	Note                      string `json:"Note"`
+	PurchaseAccount           int    `json:"PurchaseAccount"`
+	PurchasePrice             int    `json:"PurchasePrice"`
+	QuantityInStock           int    `json:"QuantityInStock"`
+	ReservedQuantity          int    `json:"ReservedQuantity"`
+	SalesAccount              int    `json:"SalesAccount"`
+	StockGoods                bool   `json:"StockGoods"`
+	StockPlace                string `json:"StockPlace"`
+	StockValue                int    `json:"StockValue"`
+	StockWarning              int    `json:"StockWarning"`
+	SupplierName              string `json:"SupplierName"`
+	SupplierNumber            string `json:"SupplierNumber"`
+	Type                      string `json:"Type"`
+	Unit                      string `json:"Unit"`
+	VAT                       int    `json:"VAT"`
+	WebshopArticle            bool   `json:"WebshopArticle"`
+	Weight                    int    `json:"Weight"`
+	Width                     int    `json:"Width"`
+	Expired                   bool   `json:"Expired"`
+	SalesPrice                int    `json:"SalesPrice"`
+	CostCalculationMethod     string `json:"CostCalculationMethod"`
+	StockAccount              int    `json:"StockAccount"`
+	StockChangeAccount        int    `json:"StockChangeAccount"`
+	DirectCost                int    `json:"DirectCost"`
+	FreightCost               int    `json:"FreightCost"`
+	OtherCost                 int    `json:"OtherCost"`
+	DefaultStockPoint         string `json:"DefaultStockPoint"`
+	DefaultStockLocation      string `json:"DefaultStockLocation"`
 }
