@@ -28,7 +28,7 @@ func (c *Client) CreateWayOfDeliveries(
 	ctx context.Context,
 	wod *WayOfDelivery) (*WayOfDelivery, error) {
 
-	req := CreateWayOfDeliveriesReq{WayOfDelivery: *wod}
+	req := &CreateWayOfDeliveriesReq{WayOfDelivery: *wod}
 	resp := &CreateWayOfDeliveriesResp{}
 
 	err := c._POST(ctx, wayOfDeliveriesURI, nil, req, resp)
@@ -65,7 +65,7 @@ func (c *Client) UpdateWayOfDelivery(
 	code string,
 	wod *WayOfDelivery) (*WayOfDelivery, error) {
 
-	req := UpdateWayOfDeliveryReq{WayOfDelivery: *wod}
+	req := &UpdateWayOfDeliveryReq{WayOfDelivery: *wod}
 	resp := &UpdateWayOfDeliveryResp{}
 
 	uri := fmt.Sprintf("%s/%s", wayOfDeliveriesURI, code)
@@ -87,10 +87,10 @@ func (c *Client) RemoveWayOfDelivery(ctx context.Context, code string) error {
 }
 
 type WayOfDelivery struct {
-	Url                string `json:"@url"`
-	Code               string `json:"Code"`
-	Description        string `json:"Description"`
-	DescriptionEnglish string `json:"DescriptionEnglish"`
+	Url                string `json:"@url,omitempty"`
+	Code               string `json:"Code,omitempty"`
+	Description        string `json:"Description,omitempty"`
+	DescriptionEnglish string `json:"DescriptionEnglish,omitempty"`
 }
 
 type GetAllWayOfDeliveriesResp struct {

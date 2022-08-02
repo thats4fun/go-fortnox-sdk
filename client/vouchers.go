@@ -98,127 +98,49 @@ func (c *Client) GetVouchersBySeries(
 }
 
 type GetVoucherResp struct {
-	Voucher struct {
-		Url             string `json:"@url"`
-		Comments        string `json:"Comments"`
-		CostCenter      string `json:"CostCenter"`
-		Description     string `json:"Description"`
-		Project         string `json:"Project"`
-		ReferenceNumber string `json:"ReferenceNumber"`
-		ReferenceType   string `json:"ReferenceType"`
-		TransactionDate string `json:"TransactionDate"`
-		VoucherNumber   int    `json:"VoucherNumber"`
-		VoucherRows     []struct {
-			Account                int    `json:"Account"`
-			CostCenter             string `json:"CostCenter"`
-			Credit                 int    `json:"Credit"`
-			Description            string `json:"Description"`
-			Debit                  int    `json:"Debit"`
-			Project                string `json:"Project"`
-			Removed                bool   `json:"Removed"`
-			TransactionInformation string `json:"TransactionInformation"`
-			Quantity               int    `json:"Quantity"`
-		} `json:"VoucherRows"`
-		VoucherSeries string `json:"VoucherSeries"`
-		Year          int    `json:"Year"`
-		ApprovalState int    `json:"ApprovalState"`
-	} `json:"Voucher"`
+	Voucher Voucher `json:"Voucher"`
 }
 
 type GetAllVouchersResp struct {
-	Vouchers []struct {
-		Url             string `json:"@url"`
-		Comments        string `json:"Comments"`
-		Description     string `json:"Description"`
-		ReferenceNumber string `json:"ReferenceNumber"`
-		ReferenceType   string `json:"ReferenceType"`
-		TransactionDate string `json:"TransactionDate"`
-		VoucherNumber   int    `json:"VoucherNumber"`
-		VoucherSeries   string `json:"VoucherSeries"`
-		Year            int    `json:"Year"`
-		ApprovalState   int    `json:"ApprovalState"`
-	} `json:"Vouchers"`
+	Vouchers []Voucher `json:"Vouchers"`
 }
 
 type CreateVoucherReq struct {
-	Voucher struct {
-		Url             string `json:"@url"`
-		Comments        string `json:"Comments"`
-		CostCenter      string `json:"CostCenter"`
-		Description     string `json:"Description"`
-		Project         string `json:"Project"`
-		ReferenceNumber string `json:"ReferenceNumber"`
-		ReferenceType   string `json:"ReferenceType"`
-		TransactionDate string `json:"TransactionDate"`
-		VoucherNumber   int    `json:"VoucherNumber"`
-		VoucherRows     []struct {
-			Account                int    `json:"Account"`
-			CostCenter             string `json:"CostCenter"`
-			Credit                 int    `json:"Credit"`
-			Description            string `json:"Description"`
-			Debit                  int    `json:"Debit"`
-			Project                string `json:"Project"`
-			Removed                bool   `json:"Removed"`
-			TransactionInformation string `json:"TransactionInformation"`
-			Quantity               int    `json:"Quantity"`
-		} `json:"VoucherRows"`
-		VoucherSeries string `json:"VoucherSeries"`
-		Year          int    `json:"Year"`
-		ApprovalState int    `json:"ApprovalState"`
-	} `json:"Voucher"`
+	Voucher Voucher `json:"Voucher"`
 }
 
 type CreateVoucherResp struct {
-	Voucher struct {
-		Url             string `json:"@url"`
-		Comments        string `json:"Comments"`
-		CostCenter      string `json:"CostCenter"`
-		Description     string `json:"Description"`
-		Project         string `json:"Project"`
-		ReferenceNumber string `json:"ReferenceNumber"`
-		ReferenceType   string `json:"ReferenceType"`
-		TransactionDate string `json:"TransactionDate"`
-		VoucherNumber   int    `json:"VoucherNumber"`
-		VoucherRows     []struct {
-			Account                int    `json:"Account"`
-			CostCenter             string `json:"CostCenter"`
-			Credit                 int    `json:"Credit"`
-			Description            string `json:"Description"`
-			Debit                  int    `json:"Debit"`
-			Project                string `json:"Project"`
-			Removed                bool   `json:"Removed"`
-			TransactionInformation string `json:"TransactionInformation"`
-			Quantity               int    `json:"Quantity"`
-		} `json:"VoucherRows"`
-		VoucherSeries string `json:"VoucherSeries"`
-		Year          int    `json:"Year"`
-		ApprovalState int    `json:"ApprovalState"`
-	} `json:"Voucher"`
+	Voucher Voucher `json:"Voucher"`
 }
 
 type GetVouchersBySeriesResp struct {
-	Vouchers []struct {
-		Url             string `json:"@url"`
-		Comments        string `json:"Comments"`
-		Description     string `json:"Description"`
-		ReferenceNumber string `json:"ReferenceNumber"`
-		ReferenceType   string `json:"ReferenceType"`
-		TransactionDate string `json:"TransactionDate"`
-		VoucherNumber   int    `json:"VoucherNumber"`
-		VoucherSeries   string `json:"VoucherSeries"`
-		Year            int    `json:"Year"`
-		ApprovalState   int    `json:"ApprovalState"`
-	} `json:"Vouchers"`
+	Vouchers []Voucher `json:"Vouchers"`
 }
 
 type VoucherRow struct {
-	Account                int    `json:"Account"`
-	CostCenter             string `json:"CostCenter"`
-	Credit                 int    `json:"Credit"`
-	Description            string `json:"Description"`
-	Debit                  int    `json:"Debit"`
-	Project                string `json:"Project"`
-	Removed                bool   `json:"Removed"`
-	TransactionInformation string `json:"TransactionInformation"`
-	Quantity               int    `json:"Quantity"`
+	Account                int    `json:"Account,omitempty"`
+	CostCenter             string `json:"CostCenter,omitempty"`
+	Credit                 int    `json:"Credit,omitempty"`
+	Description            string `json:"Description,omitempty"`
+	Debit                  int    `json:"Debit,omitempty"`
+	Project                string `json:"Project,omitempty"`
+	Removed                bool   `json:"Removed,omitempty"`
+	TransactionInformation string `json:"TransactionInformation,omitempty"`
+	Quantity               int    `json:"Quantity,omitempty"`
+}
+
+type Voucher struct {
+	Url             string       `json:"@url,omitempty"`
+	Comments        string       `json:"Comments,omitempty"`
+	CostCenter      string       `json:"CostCenter,omitempty"`
+	Description     string       `json:"Description,omitempty"`
+	Project         string       `json:"Project,omitempty"`
+	ReferenceNumber string       `json:"ReferenceNumber,omitempty"`
+	ReferenceType   string       `json:"ReferenceType,omitempty"`
+	TransactionDate string       `json:"TransactionDate,omitempty"`
+	VoucherNumber   int          `json:"VoucherNumber,omitempty"`
+	VoucherRows     []VoucherRow `json:"VoucherRows,omitempty"`
+	VoucherSeries   string       `json:"VoucherSeries,omitempty"`
+	Year            int          `json:"Year,omitempty"`
+	ApprovalState   int          `json:"ApprovalState,omitempty"`
 }
