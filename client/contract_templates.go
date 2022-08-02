@@ -88,155 +88,100 @@ type GetAllContractTemplatesResp struct {
 
 type CreateContractTemplateReq struct {
 	ContractTemplate struct {
-		Url               string `json:"@url"`
-		AdministrationFee int    `json:"AdministrationFee"`
-		ContractLength    int    `json:"ContractLength"`
-		Freight           int    `json:"Freight"`
-		InvoiceInterval   int    `json:"InvoiceInterval"`
-		InvoiceRows       []struct {
-			AccountNumber     int    `json:"AccountNumber"`
-			ArticleNumber     string `json:"ArticleNumber"`
-			CostCenter        string `json:"CostCenter"`
-			DeliveredQuantity string `json:"DeliveredQuantity"`
-			Description       string `json:"Description"`
-			Discount          int    `json:"Discount"`
-			DiscountType      string `json:"DiscountType"`
-			Price             int    `json:"Price"`
-			Project           string `json:"Project"`
-			Unit              string `json:"Unit"`
-		} `json:"InvoiceRows"`
-		Continuous      bool   `json:"Continuous"`
-		OurReference    string `json:"OurReference"`
-		PrintTemplate   string `json:"PrintTemplate"`
-		Remarks         string `json:"Remarks"`
-		TemplateName    string `json:"TemplateName"`
-		TemplateNumber  int    `json:"TemplateNumber"`
-		TermsOfDelivery string `json:"TermsOfDelivery"`
-		TermsOfPayment  string `json:"TermsOfPayment"`
-		WayOfDelivery   string `json:"WayOfDelivery"`
+		Url               string       `json:"@url"`
+		AdministrationFee int          `json:"AdministrationFee"`
+		ContractLength    int          `json:"ContractLength"`
+		Freight           int          `json:"Freight"`
+		InvoiceInterval   int          `json:"InvoiceInterval"`
+		InvoiceRows       []InvoiceRow `json:"InvoiceRows"`
+		Continuous        bool         `json:"Continuous"`
+		OurReference      string       `json:"OurReference"`
+		PrintTemplate     string       `json:"PrintTemplate"`
+		Remarks           string       `json:"Remarks"`
+		TemplateName      string       `json:"TemplateName"`
+		TemplateNumber    int          `json:"TemplateNumber"`
+		TermsOfDelivery   string       `json:"TermsOfDelivery"`
+		TermsOfPayment    string       `json:"TermsOfPayment"`
+		WayOfDelivery     string       `json:"WayOfDelivery"`
 	} `json:"ContractTemplate"`
 }
 
 type CreateContractTemplateResp struct {
 	ContractTemplate struct {
-		Url               string `json:"@url"`
-		AdministrationFee int    `json:"AdministrationFee"`
-		ContractLength    int    `json:"ContractLength"`
-		Freight           int    `json:"Freight"`
-		InvoiceInterval   int    `json:"InvoiceInterval"`
-		InvoiceRows       []struct {
-			AccountNumber     int    `json:"AccountNumber"`
-			ArticleNumber     string `json:"ArticleNumber"`
-			CostCenter        string `json:"CostCenter"`
-			DeliveredQuantity string `json:"DeliveredQuantity"`
-			Description       string `json:"Description"`
-			Discount          int    `json:"Discount"`
-			DiscountType      string `json:"DiscountType"`
-			Price             int    `json:"Price"`
-			Project           string `json:"Project"`
-			Unit              string `json:"Unit"`
-		} `json:"InvoiceRows"`
-		Continuous      bool   `json:"Continuous"`
-		OurReference    string `json:"OurReference"`
-		PrintTemplate   string `json:"PrintTemplate"`
-		Remarks         string `json:"Remarks"`
-		TemplateName    string `json:"TemplateName"`
-		TemplateNumber  int    `json:"TemplateNumber"`
-		TermsOfDelivery string `json:"TermsOfDelivery"`
-		TermsOfPayment  string `json:"TermsOfPayment"`
-		WayOfDelivery   string `json:"WayOfDelivery"`
+		Url               string       `json:"@url"`
+		AdministrationFee int          `json:"AdministrationFee"`
+		ContractLength    int          `json:"ContractLength"`
+		Freight           int          `json:"Freight"`
+		InvoiceInterval   int          `json:"InvoiceInterval"`
+		InvoiceRows       []InvoiceRow `json:"InvoiceRows"`
+		Continuous        bool         `json:"Continuous"`
+		OurReference      string       `json:"OurReference"`
+		PrintTemplate     string       `json:"PrintTemplate"`
+		Remarks           string       `json:"Remarks"`
+		TemplateName      string       `json:"TemplateName"`
+		TemplateNumber    int          `json:"TemplateNumber"`
+		TermsOfDelivery   string       `json:"TermsOfDelivery"`
+		TermsOfPayment    string       `json:"TermsOfPayment"`
+		WayOfDelivery     string       `json:"WayOfDelivery"`
 	} `json:"ContractTemplate"`
 }
 
 type GetContractTemplateResp struct {
 	ContractTemplate struct {
-		Url               string `json:"@url"`
-		AdministrationFee int    `json:"AdministrationFee"`
-		ContractLength    int    `json:"ContractLength"`
-		Freight           int    `json:"Freight"`
-		InvoiceInterval   int    `json:"InvoiceInterval"`
-		InvoiceRows       []struct {
-			AccountNumber     int    `json:"AccountNumber"`
-			ArticleNumber     string `json:"ArticleNumber"`
-			CostCenter        string `json:"CostCenter"`
-			DeliveredQuantity string `json:"DeliveredQuantity"`
-			Description       string `json:"Description"`
-			Discount          int    `json:"Discount"`
-			DiscountType      string `json:"DiscountType"`
-			Price             int    `json:"Price"`
-			Project           string `json:"Project"`
-			Unit              string `json:"Unit"`
-		} `json:"InvoiceRows"`
-		Continuous      bool   `json:"Continuous"`
-		OurReference    string `json:"OurReference"`
-		PrintTemplate   string `json:"PrintTemplate"`
-		Remarks         string `json:"Remarks"`
-		TemplateName    string `json:"TemplateName"`
-		TemplateNumber  int    `json:"TemplateNumber"`
-		TermsOfDelivery string `json:"TermsOfDelivery"`
-		TermsOfPayment  string `json:"TermsOfPayment"`
-		WayOfDelivery   string `json:"WayOfDelivery"`
+		Url               string       `json:"@url"`
+		AdministrationFee int          `json:"AdministrationFee"`
+		ContractLength    int          `json:"ContractLength"`
+		Freight           int          `json:"Freight"`
+		InvoiceInterval   int          `json:"InvoiceInterval"`
+		InvoiceRows       []InvoiceRow `json:"InvoiceRows"`
+		Continuous        bool         `json:"Continuous"`
+		OurReference      string       `json:"OurReference"`
+		PrintTemplate     string       `json:"PrintTemplate"`
+		Remarks           string       `json:"Remarks"`
+		TemplateName      string       `json:"TemplateName"`
+		TemplateNumber    int          `json:"TemplateNumber"`
+		TermsOfDelivery   string       `json:"TermsOfDelivery"`
+		TermsOfPayment    string       `json:"TermsOfPayment"`
+		WayOfDelivery     string       `json:"WayOfDelivery"`
 	} `json:"ContractTemplate"`
 }
 
 type UpdateContractTemplateReq struct {
 	ContractTemplate struct {
-		Url               string `json:"@url"`
-		AdministrationFee int    `json:"AdministrationFee"`
-		ContractLength    int    `json:"ContractLength"`
-		Freight           int    `json:"Freight"`
-		InvoiceInterval   int    `json:"InvoiceInterval"`
-		InvoiceRows       []struct {
-			AccountNumber     int    `json:"AccountNumber"`
-			ArticleNumber     string `json:"ArticleNumber"`
-			CostCenter        string `json:"CostCenter"`
-			DeliveredQuantity string `json:"DeliveredQuantity"`
-			Description       string `json:"Description"`
-			Discount          int    `json:"Discount"`
-			DiscountType      string `json:"DiscountType"`
-			Price             int    `json:"Price"`
-			Project           string `json:"Project"`
-			Unit              string `json:"Unit"`
-		} `json:"InvoiceRows"`
-		Continuous      bool   `json:"Continuous"`
-		OurReference    string `json:"OurReference"`
-		PrintTemplate   string `json:"PrintTemplate"`
-		Remarks         string `json:"Remarks"`
-		TemplateName    string `json:"TemplateName"`
-		TemplateNumber  int    `json:"TemplateNumber"`
-		TermsOfDelivery string `json:"TermsOfDelivery"`
-		TermsOfPayment  string `json:"TermsOfPayment"`
-		WayOfDelivery   string `json:"WayOfDelivery"`
+		Url               string       `json:"@url"`
+		AdministrationFee int          `json:"AdministrationFee"`
+		ContractLength    int          `json:"ContractLength"`
+		Freight           int          `json:"Freight"`
+		InvoiceInterval   int          `json:"InvoiceInterval"`
+		InvoiceRows       []InvoiceRow `json:"InvoiceRows"`
+		Continuous        bool         `json:"Continuous"`
+		OurReference      string       `json:"OurReference"`
+		PrintTemplate     string       `json:"PrintTemplate"`
+		Remarks           string       `json:"Remarks"`
+		TemplateName      string       `json:"TemplateName"`
+		TemplateNumber    int          `json:"TemplateNumber"`
+		TermsOfDelivery   string       `json:"TermsOfDelivery"`
+		TermsOfPayment    string       `json:"TermsOfPayment"`
+		WayOfDelivery     string       `json:"WayOfDelivery"`
 	} `json:"ContractTemplate"`
 }
 
 type UpdateContractTemplateResp struct {
 	ContractTemplate struct {
-		Url               string `json:"@url"`
-		AdministrationFee int    `json:"AdministrationFee"`
-		ContractLength    int    `json:"ContractLength"`
-		Freight           int    `json:"Freight"`
-		InvoiceInterval   int    `json:"InvoiceInterval"`
-		InvoiceRows       []struct {
-			AccountNumber     int    `json:"AccountNumber"`
-			ArticleNumber     string `json:"ArticleNumber"`
-			CostCenter        string `json:"CostCenter"`
-			DeliveredQuantity string `json:"DeliveredQuantity"`
-			Description       string `json:"Description"`
-			Discount          int    `json:"Discount"`
-			DiscountType      string `json:"DiscountType"`
-			Price             int    `json:"Price"`
-			Project           string `json:"Project"`
-			Unit              string `json:"Unit"`
-		} `json:"InvoiceRows"`
-		Continuous      bool   `json:"Continuous"`
-		OurReference    string `json:"OurReference"`
-		PrintTemplate   string `json:"PrintTemplate"`
-		Remarks         string `json:"Remarks"`
-		TemplateName    string `json:"TemplateName"`
-		TemplateNumber  int    `json:"TemplateNumber"`
-		TermsOfDelivery string `json:"TermsOfDelivery"`
-		TermsOfPayment  string `json:"TermsOfPayment"`
-		WayOfDelivery   string `json:"WayOfDelivery"`
+		Url               string       `json:"@url"`
+		AdministrationFee int          `json:"AdministrationFee"`
+		ContractLength    int          `json:"ContractLength"`
+		Freight           int          `json:"Freight"`
+		InvoiceInterval   int          `json:"InvoiceInterval"`
+		InvoiceRows       []InvoiceRow `json:"InvoiceRows"`
+		Continuous        bool         `json:"Continuous"`
+		OurReference      string       `json:"OurReference"`
+		PrintTemplate     string       `json:"PrintTemplate"`
+		Remarks           string       `json:"Remarks"`
+		TemplateName      string       `json:"TemplateName"`
+		TemplateNumber    int          `json:"TemplateNumber"`
+		TermsOfDelivery   string       `json:"TermsOfDelivery"`
+		TermsOfPayment    string       `json:"TermsOfPayment"`
+		WayOfDelivery     string       `json:"WayOfDelivery"`
 	} `json:"ContractTemplate"`
 }

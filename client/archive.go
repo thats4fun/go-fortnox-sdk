@@ -25,7 +25,7 @@ const (
 // 1. path - name of folder
 //
 // 2. fileID - fileId from fileattachments
-func (c *Client) GetFileOrFolder(ctx context.Context, filter *PathFileIDFilter) (*GetFileOrFolderResp, error) {
+func (c *Client) GetFileOrFolder(ctx context.Context, filter *PathFileIDFilter) (*Folder, error) {
 	resp := &GetFileOrFolderResp{}
 
 	params := filter.urlValues()
@@ -35,7 +35,7 @@ func (c *Client) GetFileOrFolder(ctx context.Context, filter *PathFileIDFilter) 
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Folder, nil
 }
 
 // UploadFileToDir does _POST https://api.fortnox.se/3/archive/
@@ -47,7 +47,7 @@ func (c *Client) GetFileOrFolder(ctx context.Context, filter *PathFileIDFilter) 
 // 1. path - name of folder
 //
 // 2. folderID - if of folder
-func (c Client) UploadFileToDir(ctx context.Context, filter *PathFileIDFilter, file *File) (*UploadFileToDirResp, error) {
+func (c Client) UploadFileToDir(ctx context.Context, filter *PathFileIDFilter, file *File) (*File, error) {
 	resp := &UploadFileToDirResp{}
 
 	params := filter.urlValues()
@@ -57,7 +57,7 @@ func (c Client) UploadFileToDir(ctx context.Context, filter *PathFileIDFilter, f
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.File, nil
 }
 
 // RemoveFiles does _DELETE https://api.fortnox.se/3/archive/
@@ -137,55 +137,28 @@ func (f *PathFileIDFilter) urlValues() url.Values {
 }
 
 type Folder struct {
-	Url     string   `json:"@url"`
+	Url     string   `json:"@url,omitempty"`
 	Email   string   `json:"Email,omitempty"`
 	Files   []File   `json:"Files,omitempty"`
 	Folders []Folder `json:"Folders,omitempty"`
-	Id      string   `json:"Id"`
-	Name    string   `json:"Name"`
+	Id      string   `json:"Id,omitempty"`
+	Name    string   `json:"Name,omitempty"`
 }
 
 type File struct {
-	Url           string `json:"@url"`
-	Comments      string `json:"Comments"`
-	Id            string `json:"Id"`
-	Name          string `json:"Name"`
-	Path          string `json:"Path"`
-	Size          int    `json:"Size"`
-	ArchiveFileId string `json:"ArchiveFileId"`
+	Url           string `json:"@url,omitempty"`
+	Comments      string `json:"Comments,omitempty"`
+	Id            string `json:"Id,omitempty"`
+	Name          string `json:"Name,omitempty"`
+	Path          string `json:"Path,omitempty"`
+	Size          int    `json:"Size,omitempty"`
+	ArchiveFileId string `json:"ArchiveFileId,omitempty"`
 }
 
 type GetFileOrFolderResp struct {
-	Folder struct {
-		Url   string `json:"@url"`
-		Email string `json:"Email"`
-		Files []struct {
-			Url           string `json:"@url"`
-			Comments      string `json:"Comments"`
-			Id            string `json:"Id"`
-			Name          string `json:"Name"`
-			Path          string `json:"Path"`
-			Size          int    `json:"Size"`
-			ArchiveFileId string `json:"ArchiveFileId"`
-		} `json:"Files"`
-		Folders []struct {
-			Url  string `json:"@url"`
-			Id   string `json:"Id"`
-			Name string `json:"Name"`
-		} `json:"Folders"`
-		Id   string `json:"Id"`
-		Name string `json:"Name"`
-	} `json:"Folder"`
+	Folder Folder `json:"Folder"`
 }
 
 type UploadFileToDirResp struct {
-	File struct {
-		Url           string `json:"@url"`
-		Comments      string `json:"Comments"`
-		Id            string `json:"Id"`
-		Name          string `json:"Name"`
-		Path          string `json:"Path"`
-		Size          int    `json:"Size"`
-		ArchiveFileId string `json:"ArchiveFileId"`
-	} `json:"File"`
+	File File `json:"File"`
 }

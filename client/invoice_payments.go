@@ -10,7 +10,7 @@ const (
 )
 
 // GetAllInvoicePayments does _GET https://api.fortnox.se/3/invoicepayments/
-func (c *Client) GetAllInvoicePayments(ctx context.Context) (*GetAllInvoicePaymentsResp, error) {
+func (c *Client) GetAllInvoicePayments(ctx context.Context) ([]InvoicePayment, error) {
 	resp := &GetAllInvoicePaymentsResp{}
 
 	err := c._GET(ctx, invoicePaymentsURI, nil, resp)
@@ -18,16 +18,14 @@ func (c *Client) GetAllInvoicePayments(ctx context.Context) (*GetAllInvoicePayme
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.InvoicePayments, nil
 }
 
 // CreateInvoicePayment does _POST https://api.fortnox.se/3/invoicepayments/
 //
-// req - invoice payment to create
-func (c *Client) CreateInvoicePayment(
-	ctx context.Context,
-	req *CreateInvoicePaymentReq) (*CreateInvoicePaymentResp, error) {
-
+// ip - invoice payment to create
+func (c *Client) CreateInvoicePayment(ctx context.Context, ip *InvoicePayment) (*InvoicePayment, error) {
+	req := &CreateInvoicePaymentReq{InvoicePayment: *ip}
 	resp := &CreateInvoicePaymentResp{}
 
 	err := c._POST(ctx, invoicePaymentsURI, nil, req, resp)
@@ -35,13 +33,13 @@ func (c *Client) CreateInvoicePayment(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.InvoicePayment, nil
 }
 
 // GetInvoicePayment does _GET https://api.fortnox.se/3/invoicepayments/{Number}
 //
 // number - identifies the invoice payment
-func (c *Client) GetInvoicePayment(ctx context.Context, number string) (*GetInvoicePaymentResp, error) {
+func (c *Client) GetInvoicePayment(ctx context.Context, number string) (*InvoicePayment, error) {
 	resp := &GetInvoicePaymentResp{}
 
 	uri := fmt.Sprintf("%s/%s", invoicePaymentsURI, number)
@@ -51,18 +49,16 @@ func (c *Client) GetInvoicePayment(ctx context.Context, number string) (*GetInvo
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.InvoicePayment, nil
 }
 
 // UpdateInvoicePayment does _PUT https://api.fortnox.se/3/invoicepayments/{Number}
 //
 // number - identifies the invoice payment
 //
-// req - invoice payment to update
-func (c *Client) UpdateInvoicePayment(
-	ctx context.Context,
-	number string, req *UpdateInvoicePaymentReq) (*UpdateInvoicePaymentResp, error) {
-
+// ip - invoice payment to update
+func (c *Client) UpdateInvoicePayment(ctx context.Context, number string, ip *InvoicePayment) (*InvoicePayment, error) {
+	req := &UpdateInvoicePaymentReq{InvoicePayment: *ip}
 	resp := &UpdateInvoicePaymentResp{}
 
 	uri := fmt.Sprintf("%s/%s", invoicePaymentsURI, number)
@@ -72,7 +68,7 @@ func (c *Client) UpdateInvoicePayment(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.InvoicePayment, nil
 }
 
 // RemoveInvoicePayment does _DELETE https://api.fortnox.se/3/invoicepayments/{Number}
@@ -89,8 +85,9 @@ func (c *Client) RemoveInvoicePayment(ctx context.Context, number string) error 
 func (c *Client) BookKeepInvoicePayment(
 	ctx context.Context,
 	number string,
-	req *BookKeepInvoicePaymentReq) (*BookKeepInvoicePaymentResp, error) {
+	ip *InvoicePayment) (*InvoicePayment, error) {
 
+	req := BookKeepInvoicePaymentReq{InvoicePayment: *ip}
 	resp := &BookKeepInvoicePaymentResp{}
 
 	uri := fmt.Sprintf("%s/%s/bookkeep", invoicePaymentsURI, number)
@@ -100,279 +97,64 @@ func (c *Client) BookKeepInvoicePayment(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.InvoicePayment, nil
 }
 
 type GetAllInvoicePaymentsResp struct {
-	InvoicePayments []struct {
-		Url           string `json:"@url"`
-		Amount        int    `json:"Amount"`
-		Booked        bool   `json:"Booked"`
-		Currency      string `json:"Currency"`
-		CurrencyRate  int    `json:"CurrencyRate"`
-		CurrencyUnit  int    `json:"CurrencyUnit"`
-		InvoiceNumber int    `json:"InvoiceNumber"`
-		Number        string `json:"Number"`
-		PaymentDate   string `json:"PaymentDate"`
-		Source        string `json:"Source"`
-	} `json:"InvoicePayments"`
+	InvoicePayments []InvoicePayment `json:"InvoicePayments"`
 }
 
 type CreateInvoicePaymentReq struct {
-	InvoicePayment struct {
-		Url                       string `json:"@url"`
-		Amount                    int    `json:"Amount"`
-		AmountCurrency            int    `json:"AmountCurrency"`
-		Booked                    bool   `json:"Booked"`
-		Currency                  string `json:"Currency"`
-		CurrencyRate              int    `json:"CurrencyRate"`
-		CurrencyUnit              int    `json:"CurrencyUnit"`
-		ExternalInvoiceReference1 string `json:"ExternalInvoiceReference1"`
-		ExternalInvoiceReference2 string `json:"ExternalInvoiceReference2"`
-		InvoiceCustomerName       string `json:"InvoiceCustomerName"`
-		InvoiceCustomerNumber     string `json:"InvoiceCustomerNumber"`
-		InvoiceNumber             int    `json:"InvoiceNumber"`
-		InvoiceDueDate            string `json:"InvoiceDueDate"`
-		InvoiceOCR                string `json:"InvoiceOCR"`
-		InvoiceTotal              string `json:"InvoiceTotal"`
-		ModeOfPayment             string `json:"ModeOfPayment"`
-		ModeOfPaymentAccount      int    `json:"ModeOfPaymentAccount"`
-		Number                    string `json:"Number"`
-		PaymentDate               string `json:"PaymentDate"`
-		VoucherNumber             int    `json:"VoucherNumber"`
-		VoucherSeries             string `json:"VoucherSeries"`
-		VoucherYear               int    `json:"VoucherYear"`
-		Source                    string `json:"Source"`
-		WriteOffs                 []struct {
-			Amount                 int    `json:"Amount"`
-			AccountNumber          int    `json:"AccountNumber"`
-			CostCenter             string `json:"CostCenter"`
-			Currency               string `json:"Currency"`
-			Description            string `json:"Description"`
-			TransactionInformation string `json:"TransactionInformation"`
-			Project                string `json:"Project"`
-		} `json:"WriteOffs"`
-	} `json:"InvoicePayment"`
+	InvoicePayment InvoicePayment `json:"InvoicePayment"`
 }
 
 type CreateInvoicePaymentResp struct {
-	InvoicePayment struct {
-		Url                       string `json:"@url"`
-		Amount                    int    `json:"Amount"`
-		AmountCurrency            int    `json:"AmountCurrency"`
-		Booked                    bool   `json:"Booked"`
-		Currency                  string `json:"Currency"`
-		CurrencyRate              int    `json:"CurrencyRate"`
-		CurrencyUnit              int    `json:"CurrencyUnit"`
-		ExternalInvoiceReference1 string `json:"ExternalInvoiceReference1"`
-		ExternalInvoiceReference2 string `json:"ExternalInvoiceReference2"`
-		InvoiceCustomerName       string `json:"InvoiceCustomerName"`
-		InvoiceCustomerNumber     string `json:"InvoiceCustomerNumber"`
-		InvoiceNumber             int    `json:"InvoiceNumber"`
-		InvoiceDueDate            string `json:"InvoiceDueDate"`
-		InvoiceOCR                string `json:"InvoiceOCR"`
-		InvoiceTotal              string `json:"InvoiceTotal"`
-		ModeOfPayment             string `json:"ModeOfPayment"`
-		ModeOfPaymentAccount      int    `json:"ModeOfPaymentAccount"`
-		Number                    string `json:"Number"`
-		PaymentDate               string `json:"PaymentDate"`
-		VoucherNumber             int    `json:"VoucherNumber"`
-		VoucherSeries             string `json:"VoucherSeries"`
-		VoucherYear               int    `json:"VoucherYear"`
-		Source                    string `json:"Source"`
-		WriteOffs                 []struct {
-			Amount                 int    `json:"Amount"`
-			AccountNumber          int    `json:"AccountNumber"`
-			CostCenter             string `json:"CostCenter"`
-			Currency               string `json:"Currency"`
-			Description            string `json:"Description"`
-			TransactionInformation string `json:"TransactionInformation"`
-			Project                string `json:"Project"`
-		} `json:"WriteOffs"`
-	} `json:"InvoicePayment"`
+	InvoicePayment InvoicePayment `json:"InvoicePayment"`
 }
 
 type BookKeepInvoicePaymentReq struct {
-	InvoicePayment struct {
-		Url                       string `json:"@url"`
-		Amount                    int    `json:"Amount"`
-		AmountCurrency            int    `json:"AmountCurrency"`
-		Booked                    bool   `json:"Booked"`
-		Currency                  string `json:"Currency"`
-		CurrencyRate              int    `json:"CurrencyRate"`
-		CurrencyUnit              int    `json:"CurrencyUnit"`
-		ExternalInvoiceReference1 string `json:"ExternalInvoiceReference1"`
-		ExternalInvoiceReference2 string `json:"ExternalInvoiceReference2"`
-		InvoiceCustomerName       string `json:"InvoiceCustomerName"`
-		InvoiceCustomerNumber     string `json:"InvoiceCustomerNumber"`
-		InvoiceNumber             int    `json:"InvoiceNumber"`
-		InvoiceDueDate            string `json:"InvoiceDueDate"`
-		InvoiceOCR                string `json:"InvoiceOCR"`
-		InvoiceTotal              string `json:"InvoiceTotal"`
-		ModeOfPayment             string `json:"ModeOfPayment"`
-		ModeOfPaymentAccount      int    `json:"ModeOfPaymentAccount"`
-		Number                    string `json:"Number"`
-		PaymentDate               string `json:"PaymentDate"`
-		VoucherNumber             int    `json:"VoucherNumber"`
-		VoucherSeries             string `json:"VoucherSeries"`
-		VoucherYear               int    `json:"VoucherYear"`
-		Source                    string `json:"Source"`
-		WriteOffs                 []struct {
-			Amount                 int    `json:"Amount"`
-			AccountNumber          int    `json:"AccountNumber"`
-			CostCenter             string `json:"CostCenter"`
-			Currency               string `json:"Currency"`
-			Description            string `json:"Description"`
-			TransactionInformation string `json:"TransactionInformation"`
-			Project                string `json:"Project"`
-		} `json:"WriteOffs"`
-	} `json:"InvoicePayment"`
+	InvoicePayment InvoicePayment `json:"InvoicePayment"`
 }
 
 type BookKeepInvoicePaymentResp struct {
-	InvoicePayment struct {
-		Url                       string `json:"@url"`
-		Amount                    int    `json:"Amount"`
-		AmountCurrency            int    `json:"AmountCurrency"`
-		Booked                    bool   `json:"Booked"`
-		Currency                  string `json:"Currency"`
-		CurrencyRate              int    `json:"CurrencyRate"`
-		CurrencyUnit              int    `json:"CurrencyUnit"`
-		ExternalInvoiceReference1 string `json:"ExternalInvoiceReference1"`
-		ExternalInvoiceReference2 string `json:"ExternalInvoiceReference2"`
-		InvoiceCustomerName       string `json:"InvoiceCustomerName"`
-		InvoiceCustomerNumber     string `json:"InvoiceCustomerNumber"`
-		InvoiceNumber             int    `json:"InvoiceNumber"`
-		InvoiceDueDate            string `json:"InvoiceDueDate"`
-		InvoiceOCR                string `json:"InvoiceOCR"`
-		InvoiceTotal              string `json:"InvoiceTotal"`
-		ModeOfPayment             string `json:"ModeOfPayment"`
-		ModeOfPaymentAccount      int    `json:"ModeOfPaymentAccount"`
-		Number                    string `json:"Number"`
-		PaymentDate               string `json:"PaymentDate"`
-		VoucherNumber             int    `json:"VoucherNumber"`
-		VoucherSeries             string `json:"VoucherSeries"`
-		VoucherYear               int    `json:"VoucherYear"`
-		Source                    string `json:"Source"`
-		WriteOffs                 []struct {
-			Amount                 int    `json:"Amount"`
-			AccountNumber          int    `json:"AccountNumber"`
-			CostCenter             string `json:"CostCenter"`
-			Currency               string `json:"Currency"`
-			Description            string `json:"Description"`
-			TransactionInformation string `json:"TransactionInformation"`
-			Project                string `json:"Project"`
-		} `json:"WriteOffs"`
-	} `json:"InvoicePayment"`
+	InvoicePayment InvoicePayment `json:"InvoicePayment"`
 }
 
 type GetInvoicePaymentResp struct {
-	InvoicePayment struct {
-		Url                       string `json:"@url"`
-		Amount                    int    `json:"Amount"`
-		AmountCurrency            int    `json:"AmountCurrency"`
-		Booked                    bool   `json:"Booked"`
-		Currency                  string `json:"Currency"`
-		CurrencyRate              int    `json:"CurrencyRate"`
-		CurrencyUnit              int    `json:"CurrencyUnit"`
-		ExternalInvoiceReference1 string `json:"ExternalInvoiceReference1"`
-		ExternalInvoiceReference2 string `json:"ExternalInvoiceReference2"`
-		InvoiceCustomerName       string `json:"InvoiceCustomerName"`
-		InvoiceCustomerNumber     string `json:"InvoiceCustomerNumber"`
-		InvoiceNumber             int    `json:"InvoiceNumber"`
-		InvoiceDueDate            string `json:"InvoiceDueDate"`
-		InvoiceOCR                string `json:"InvoiceOCR"`
-		InvoiceTotal              string `json:"InvoiceTotal"`
-		ModeOfPayment             string `json:"ModeOfPayment"`
-		ModeOfPaymentAccount      int    `json:"ModeOfPaymentAccount"`
-		Number                    string `json:"Number"`
-		PaymentDate               string `json:"PaymentDate"`
-		VoucherNumber             int    `json:"VoucherNumber"`
-		VoucherSeries             string `json:"VoucherSeries"`
-		VoucherYear               int    `json:"VoucherYear"`
-		Source                    string `json:"Source"`
-		WriteOffs                 []struct {
-			Amount                 int    `json:"Amount"`
-			AccountNumber          int    `json:"AccountNumber"`
-			CostCenter             string `json:"CostCenter"`
-			Currency               string `json:"Currency"`
-			Description            string `json:"Description"`
-			TransactionInformation string `json:"TransactionInformation"`
-			Project                string `json:"Project"`
-		} `json:"WriteOffs"`
-	} `json:"InvoicePayment"`
+	InvoicePayment InvoicePayment `json:"InvoicePayment"`
 }
 
 type UpdateInvoicePaymentReq struct {
-	InvoicePayment struct {
-		Url                       string `json:"@url"`
-		Amount                    int    `json:"Amount"`
-		AmountCurrency            int    `json:"AmountCurrency"`
-		Booked                    bool   `json:"Booked"`
-		Currency                  string `json:"Currency"`
-		CurrencyRate              int    `json:"CurrencyRate"`
-		CurrencyUnit              int    `json:"CurrencyUnit"`
-		ExternalInvoiceReference1 string `json:"ExternalInvoiceReference1"`
-		ExternalInvoiceReference2 string `json:"ExternalInvoiceReference2"`
-		InvoiceCustomerName       string `json:"InvoiceCustomerName"`
-		InvoiceCustomerNumber     string `json:"InvoiceCustomerNumber"`
-		InvoiceNumber             int    `json:"InvoiceNumber"`
-		InvoiceDueDate            string `json:"InvoiceDueDate"`
-		InvoiceOCR                string `json:"InvoiceOCR"`
-		InvoiceTotal              string `json:"InvoiceTotal"`
-		ModeOfPayment             string `json:"ModeOfPayment"`
-		ModeOfPaymentAccount      int    `json:"ModeOfPaymentAccount"`
-		Number                    string `json:"Number"`
-		PaymentDate               string `json:"PaymentDate"`
-		VoucherNumber             int    `json:"VoucherNumber"`
-		VoucherSeries             string `json:"VoucherSeries"`
-		VoucherYear               int    `json:"VoucherYear"`
-		Source                    string `json:"Source"`
-		WriteOffs                 []struct {
-			Amount                 int    `json:"Amount"`
-			AccountNumber          int    `json:"AccountNumber"`
-			CostCenter             string `json:"CostCenter"`
-			Currency               string `json:"Currency"`
-			Description            string `json:"Description"`
-			TransactionInformation string `json:"TransactionInformation"`
-			Project                string `json:"Project"`
-		} `json:"WriteOffs"`
-	} `json:"InvoicePayment"`
+	InvoicePayment InvoicePayment `json:"InvoicePayment"`
 }
 
 type UpdateInvoicePaymentResp struct {
-	InvoicePayment struct {
-		Url                       string `json:"@url"`
-		Amount                    int    `json:"Amount"`
-		AmountCurrency            int    `json:"AmountCurrency"`
-		Booked                    bool   `json:"Booked"`
-		Currency                  string `json:"Currency"`
-		CurrencyRate              int    `json:"CurrencyRate"`
-		CurrencyUnit              int    `json:"CurrencyUnit"`
-		ExternalInvoiceReference1 string `json:"ExternalInvoiceReference1"`
-		ExternalInvoiceReference2 string `json:"ExternalInvoiceReference2"`
-		InvoiceCustomerName       string `json:"InvoiceCustomerName"`
-		InvoiceCustomerNumber     string `json:"InvoiceCustomerNumber"`
-		InvoiceNumber             int    `json:"InvoiceNumber"`
-		InvoiceDueDate            string `json:"InvoiceDueDate"`
-		InvoiceOCR                string `json:"InvoiceOCR"`
-		InvoiceTotal              string `json:"InvoiceTotal"`
-		ModeOfPayment             string `json:"ModeOfPayment"`
-		ModeOfPaymentAccount      int    `json:"ModeOfPaymentAccount"`
-		Number                    string `json:"Number"`
-		PaymentDate               string `json:"PaymentDate"`
-		VoucherNumber             int    `json:"VoucherNumber"`
-		VoucherSeries             string `json:"VoucherSeries"`
-		VoucherYear               int    `json:"VoucherYear"`
-		Source                    string `json:"Source"`
-		WriteOffs                 []struct {
-			Amount                 int    `json:"Amount"`
-			AccountNumber          int    `json:"AccountNumber"`
-			CostCenter             string `json:"CostCenter"`
-			Currency               string `json:"Currency"`
-			Description            string `json:"Description"`
-			TransactionInformation string `json:"TransactionInformation"`
-			Project                string `json:"Project"`
-		} `json:"WriteOffs"`
-	} `json:"InvoicePayment"`
+	InvoicePayment InvoicePayment `json:"InvoicePayment"`
+}
+
+type InvoicePayment struct {
+	Url                       string     `json:"@url,omitempty"`
+	Amount                    int        `json:"Amount,omitempty"`
+	AmountCurrency            int        `json:"AmountCurrency,omitempty"`
+	Booked                    bool       `json:"Booked,omitempty"`
+	Currency                  string     `json:"Currency,omitempty"`
+	CurrencyRate              int        `json:"CurrencyRate,omitempty"`
+	CurrencyUnit              int        `json:"CurrencyUnit,omitempty"`
+	ExternalInvoiceReference1 string     `json:"ExternalInvoiceReference1,omitempty"`
+	ExternalInvoiceReference2 string     `json:"ExternalInvoiceReference2,omitempty"`
+	InvoiceCustomerName       string     `json:"InvoiceCustomerName,omitempty"`
+	InvoiceCustomerNumber     string     `json:"InvoiceCustomerNumber,omitempty"`
+	InvoiceNumber             int        `json:"InvoiceNumber,omitempty"`
+	InvoiceDueDate            string     `json:"InvoiceDueDate,omitempty"`
+	InvoiceOCR                string     `json:"InvoiceOCR,omitempty"`
+	InvoiceTotal              string     `json:"InvoiceTotal,omitempty"`
+	ModeOfPayment             string     `json:"ModeOfPayment,omitempty"`
+	ModeOfPaymentAccount      int        `json:"ModeOfPaymentAccount,omitempty"`
+	Number                    string     `json:"Number,omitempty"`
+	PaymentDate               string     `json:"PaymentDate,omitempty"`
+	VoucherNumber             int        `json:"VoucherNumber,omitempty"`
+	VoucherSeries             string     `json:"VoucherSeries,omitempty"`
+	VoucherYear               int        `json:"VoucherYear,omitempty"`
+	Source                    string     `json:"Source,omitempty"`
+	WriteOffs                 []WriteOff `json:"WriteOffs,omitempty"`
 }

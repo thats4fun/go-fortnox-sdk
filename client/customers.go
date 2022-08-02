@@ -118,7 +118,7 @@ type Customer struct {
 	CostCenter               string               `json:"CostCenter,omitempty"`
 	CountryCode              string               `json:"CountryCode,omitempty"`
 	Active                   bool                 `json:"Active,omitempty"`
-	CustomerNumber           string               `json:"CustomerNumber,omitempty"`
+	CustomerNumber           int64                `json:"CustomerNumber,omitempty"`
 	DefaultDeliveryTypes     DefaultDeliveryTypes `json:"DefaultDeliveryTypes,omitempty"`
 	DefaultTemplates         DefaultTemplates     `json:"DefaultTemplates,omitempty"`
 	DeliveryAddress1         string               `json:"DeliveryAddress1,omitempty"`

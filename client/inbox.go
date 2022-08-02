@@ -43,7 +43,7 @@ func (c *Client) GetRootDirectory(ctx context.Context) (*InboxRootFolder, error)
 //
 // path - path
 //
-// req - file to upload
+// f - file to upload
 func (c *Client) UploadFile(ctx context.Context, params *UploadFileParams, f *InboxFile) (*InboxFile, error) {
 	req := &UploadFileReq{File: *f}
 	resp := &UploadFileResp{}
@@ -106,28 +106,28 @@ type GetRootDirectoryResp struct {
 }
 
 type InboxRootFolder struct {
-	Url     string             `json:"@url"`
-	Email   string             `json:"Email"`
-	Files   []InboxFile        `json:"Files"`
-	Folders []InnerInboxFolder `json:"Folders"`
-	Id      string             `json:"Id"`
-	Name    string             `json:"Name"`
+	Url     string             `json:"@url,omitempty"`
+	Email   string             `json:"Email,omitempty"`
+	Files   []InboxFile        `json:"Files,omitempty"`
+	Folders []InnerInboxFolder `json:"Folders,omitempty"`
+	Id      string             `json:"Id,omitempty"`
+	Name    string             `json:"Name,omitempty"`
 }
 
 type InboxFile struct {
-	Url           string `json:"@url"`
-	Comments      string `json:"Comments"`
-	Id            string `json:"Id"`
-	Name          string `json:"Name"`
-	Path          string `json:"Path"`
-	Size          int    `json:"Size"`
-	ArchiveFileId string `json:"ArchiveFileId"`
+	Url           string `json:"@url,omitempty"`
+	Comments      string `json:"Comments,omitempty"`
+	Id            string `json:"Id,omitempty"`
+	Name          string `json:"Name,omitempty"`
+	Path          string `json:"Path,omitempty"`
+	Size          int    `json:"Size,omitempty"`
+	ArchiveFileId string `json:"ArchiveFileId,omitempty"`
 }
 
 type InnerInboxFolder struct {
-	Url  string `json:"@url"`
-	Id   string `json:"Id"`
-	Name string `json:"Name"`
+	Url  string `json:"@url,omitempty"`
+	Id   string `json:"Id,omitempty"`
+	Name string `json:"Name,omitempty"`
 }
 
 type UploadFileReq struct {

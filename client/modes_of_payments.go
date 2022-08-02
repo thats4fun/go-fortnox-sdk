@@ -10,7 +10,7 @@ const (
 )
 
 // GetAllModesOfPayments does _GET https://api.fortnox.se/3/modesofpayments
-func (c *Client) GetAllModesOfPayments(ctx context.Context) (*GetAllModesOfPaymentsResp, error) {
+func (c *Client) GetAllModesOfPayments(ctx context.Context) ([]ModeOfPayment, error) {
 	resp := &GetAllModesOfPaymentsResp{}
 
 	err := c._GET(ctx, modesOfPaymentsURI, nil, resp)
@@ -18,16 +18,14 @@ func (c *Client) GetAllModesOfPayments(ctx context.Context) (*GetAllModesOfPayme
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.ModeOfPayments, nil
 }
 
 // CreateModeOfPayment does _POST https://api.fortnox.se/3/modesofpayments
 //
-// req - mode of payment to create
-func (c *Client) CreateModeOfPayment(
-	ctx context.Context,
-	req *CreateModeOfPaymentReq) (*CreateModeOfPaymentResp, error) {
-
+// mop - mode of payment to create
+func (c *Client) CreateModeOfPayment(ctx context.Context, si *ModeOfPayment) (*ModeOfPayment, error) {
+	req := &CreateModeOfPaymentReq{ModeOfPayment: *si}
 	resp := &CreateModeOfPaymentResp{}
 
 	err := c._POST(ctx, modesOfPaymentsURI, nil, req, resp)
@@ -35,13 +33,13 @@ func (c *Client) CreateModeOfPayment(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.ModeOfPayment, nil
 }
 
 // GetModeOfPayment does _GET https://api.fortnox.se/3/modesofpayments/{Code}
 //
 // code - identifies the mode of payment
-func (c *Client) GetModeOfPayment(ctx context.Context, code string) (*GetModeOfPaymentResp, error) {
+func (c *Client) GetModeOfPayment(ctx context.Context, code string) (*ModeOfPayment, error) {
 	resp := &GetModeOfPaymentResp{}
 
 	uri := fmt.Sprintf("%s/%s", modesOfPaymentsURI, code)
@@ -51,19 +49,20 @@ func (c *Client) GetModeOfPayment(ctx context.Context, code string) (*GetModeOfP
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.ModeOfPayment, nil
 }
 
 // UpdateModeOfPayment does _PUT https://api.fortnox.se/3/modesofpayments/{Code}
 //
 // code - identifies the mode of payment
 //
-// req - mode of payment to update
+// mop - mode of payment to update
 func (c *Client) UpdateModeOfPayment(
 	ctx context.Context,
 	code string,
-	req *UpdateModeOfPaymentReq) (*UpdateModeOfPaymentResp, error) {
+	mop *ModeOfPayment) (*ModeOfPayment, error) {
 
+	req := &UpdateModeOfPaymentReq{ModeOfPayment: *mop}
 	resp := &UpdateModeOfPaymentResp{}
 
 	uri := fmt.Sprintf("%s/%s", modesOfPaymentsURI, code)
@@ -73,377 +72,35 @@ func (c *Client) UpdateModeOfPayment(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.ModeOfPayment, nil
 }
 
 type GetAllModesOfPaymentsResp struct {
-	SupplierInvoices []struct {
-		Url                   string `json:"@url"`
-		Balance               string `json:"Balance"`
-		Booked                bool   `json:"Booked"`
-		Cancel                bool   `json:"Cancel"`
-		CostCenter            string `json:"CostCenter"`
-		Credit                bool   `json:"Credit"`
-		Currency              string `json:"Currency"`
-		CurrencyRate          string `json:"CurrencyRate"`
-		CurrencyUnit          int    `json:"CurrencyUnit"`
-		DueDate               string `json:"DueDate"`
-		ExternalInvoiceNumber string `json:"ExternalInvoiceNumber"`
-		ExternalInvoiceSeries string `json:"ExternalInvoiceSeries"`
-		GivenNumber           string `json:"GivenNumber"`
-		InvoiceDate           string `json:"InvoiceDate"`
-		InvoiceNumber         string `json:"InvoiceNumber"`
-		Project               string `json:"Project"`
-		SupplierNumber        string `json:"SupplierNumber"`
-		SupplierName          string `json:"SupplierName"`
-		Total                 string `json:"Total"`
-		AuthorizerName        string `json:"AuthorizerName"`
-		Vouchers              []struct {
-			Number        int    `json:"Number"`
-			Year          int    `json:"Year"`
-			Series        string `json:"Series"`
-			ReferenceType string `json:"ReferenceType"`
-		} `json:"Vouchers"`
-		FinalPayDate string `json:"FinalPayDate"`
-	} `json:"SupplierInvoices"`
+	ModeOfPayments []ModeOfPayment `json:"ModeOfPayments"`
 }
 
 type CreateModeOfPaymentReq struct {
-	SupplierInvoice struct {
-		Url                   string `json:"@url"`
-		AdministrationFee     string `json:"AdministrationFee"`
-		Balance               string `json:"Balance"`
-		Booked                bool   `json:"Booked"`
-		Cancelled             bool   `json:"Cancelled"`
-		Comments              string `json:"Comments"`
-		CostCenter            string `json:"CostCenter"`
-		Credit                bool   `json:"Credit"`
-		CreditReference       int    `json:"CreditReference"`
-		Currency              string `json:"Currency"`
-		CurrencyRate          string `json:"CurrencyRate"`
-		CurrencyUnit          int    `json:"CurrencyUnit"`
-		DisablePaymentFile    bool   `json:"DisablePaymentFile"`
-		DueDate               string `json:"DueDate"`
-		ExternalInvoiceNumber string `json:"ExternalInvoiceNumber"`
-		ExternalInvoiceSeries string `json:"ExternalInvoiceSeries"`
-		Freight               string `json:"Freight"`
-		GivenNumber           string `json:"GivenNumber"`
-		InvoiceDate           string `json:"InvoiceDate"`
-		InvoiceNumber         string `json:"InvoiceNumber"`
-		OCR                   string `json:"OCR"`
-		OurReference          string `json:"OurReference"`
-		PaymentPending        bool   `json:"PaymentPending"`
-		Project               string `json:"Project"`
-		RoundOffValue         string `json:"RoundOffValue"`
-		SupplierInvoiceRows   []struct {
-			Account                int    `json:"Account"`
-			ArticleNumber          string `json:"ArticleNumber"`
-			Code                   string `json:"Code"`
-			CostCenter             string `json:"CostCenter"`
-			AccountDescription     string `json:"AccountDescription"`
-			ItemDescription        string `json:"ItemDescription"`
-			Debit                  int    `json:"Debit"`
-			DebitCurrency          int    `json:"DebitCurrency"`
-			Credit                 int    `json:"Credit"`
-			CreditCurrency         int    `json:"CreditCurrency"`
-			Project                string `json:"Project"`
-			TransactionInformation string `json:"TransactionInformation"`
-			Price                  int    `json:"Price"`
-			Quantity               int    `json:"Quantity"`
-			Total                  int    `json:"Total"`
-			Unit                   string `json:"Unit"`
-			StockPointCode         string `json:"StockPointCode"`
-			StockLocationCode      string `json:"StockLocationCode"`
-		} `json:"SupplierInvoiceRows"`
-		SupplierNumber   string `json:"SupplierNumber"`
-		SupplierName     string `json:"SupplierName"`
-		Total            string `json:"Total"`
-		VAT              string `json:"VAT"`
-		YourReference    string `json:"YourReference"`
-		VoucherNumber    int    `json:"VoucherNumber"`
-		VoucherSeries    string `json:"VoucherSeries"`
-		VoucherYear      int    `json:"VoucherYear"`
-		VATType          string `json:"VATType"`
-		SalesType        string `json:"SalesType"`
-		AccountingMethod string `json:"AccountingMethod"`
-		Vouchers         []struct {
-			Number        int    `json:"Number"`
-			Year          int    `json:"Year"`
-			Series        string `json:"Series"`
-			ReferenceType string `json:"ReferenceType"`
-		} `json:"Vouchers"`
-		FinalPayDate string `json:"FinalPayDate"`
-	} `json:"SupplierInvoice"`
+	ModeOfPayment ModeOfPayment `json:"ModeOfPayment"`
 }
 
 type CreateModeOfPaymentResp struct {
-	SupplierInvoice struct {
-		Url                   string `json:"@url"`
-		AdministrationFee     string `json:"AdministrationFee"`
-		Balance               string `json:"Balance"`
-		Booked                bool   `json:"Booked"`
-		Cancelled             bool   `json:"Cancelled"`
-		Comments              string `json:"Comments"`
-		CostCenter            string `json:"CostCenter"`
-		Credit                bool   `json:"Credit"`
-		CreditReference       int    `json:"CreditReference"`
-		Currency              string `json:"Currency"`
-		CurrencyRate          string `json:"CurrencyRate"`
-		CurrencyUnit          int    `json:"CurrencyUnit"`
-		DisablePaymentFile    bool   `json:"DisablePaymentFile"`
-		DueDate               string `json:"DueDate"`
-		ExternalInvoiceNumber string `json:"ExternalInvoiceNumber"`
-		ExternalInvoiceSeries string `json:"ExternalInvoiceSeries"`
-		Freight               string `json:"Freight"`
-		GivenNumber           string `json:"GivenNumber"`
-		InvoiceDate           string `json:"InvoiceDate"`
-		InvoiceNumber         string `json:"InvoiceNumber"`
-		OCR                   string `json:"OCR"`
-		OurReference          string `json:"OurReference"`
-		PaymentPending        bool   `json:"PaymentPending"`
-		Project               string `json:"Project"`
-		RoundOffValue         string `json:"RoundOffValue"`
-		SupplierInvoiceRows   []struct {
-			Account                int    `json:"Account"`
-			ArticleNumber          string `json:"ArticleNumber"`
-			Code                   string `json:"Code"`
-			CostCenter             string `json:"CostCenter"`
-			AccountDescription     string `json:"AccountDescription"`
-			ItemDescription        string `json:"ItemDescription"`
-			Debit                  int    `json:"Debit"`
-			DebitCurrency          int    `json:"DebitCurrency"`
-			Credit                 int    `json:"Credit"`
-			CreditCurrency         int    `json:"CreditCurrency"`
-			Project                string `json:"Project"`
-			TransactionInformation string `json:"TransactionInformation"`
-			Price                  int    `json:"Price"`
-			Quantity               int    `json:"Quantity"`
-			Total                  int    `json:"Total"`
-			Unit                   string `json:"Unit"`
-			StockPointCode         string `json:"StockPointCode"`
-			StockLocationCode      string `json:"StockLocationCode"`
-		} `json:"SupplierInvoiceRows"`
-		SupplierNumber   string `json:"SupplierNumber"`
-		SupplierName     string `json:"SupplierName"`
-		Total            string `json:"Total"`
-		VAT              string `json:"VAT"`
-		YourReference    string `json:"YourReference"`
-		VoucherNumber    int    `json:"VoucherNumber"`
-		VoucherSeries    string `json:"VoucherSeries"`
-		VoucherYear      int    `json:"VoucherYear"`
-		VATType          string `json:"VATType"`
-		SalesType        string `json:"SalesType"`
-		AccountingMethod string `json:"AccountingMethod"`
-		Vouchers         []struct {
-			Number        int    `json:"Number"`
-			Year          int    `json:"Year"`
-			Series        string `json:"Series"`
-			ReferenceType string `json:"ReferenceType"`
-		} `json:"Vouchers"`
-		FinalPayDate string `json:"FinalPayDate"`
-	} `json:"SupplierInvoice"`
+	ModeOfPayment ModeOfPayment `json:"ModeOfPayment"`
 }
 
 type GetModeOfPaymentResp struct {
-	SupplierInvoice struct {
-		Url                   string `json:"@url"`
-		AdministrationFee     string `json:"AdministrationFee"`
-		Balance               string `json:"Balance"`
-		Booked                bool   `json:"Booked"`
-		Cancelled             bool   `json:"Cancelled"`
-		Comments              string `json:"Comments"`
-		CostCenter            string `json:"CostCenter"`
-		Credit                bool   `json:"Credit"`
-		CreditReference       int    `json:"CreditReference"`
-		Currency              string `json:"Currency"`
-		CurrencyRate          string `json:"CurrencyRate"`
-		CurrencyUnit          int    `json:"CurrencyUnit"`
-		DisablePaymentFile    bool   `json:"DisablePaymentFile"`
-		DueDate               string `json:"DueDate"`
-		ExternalInvoiceNumber string `json:"ExternalInvoiceNumber"`
-		ExternalInvoiceSeries string `json:"ExternalInvoiceSeries"`
-		Freight               string `json:"Freight"`
-		GivenNumber           string `json:"GivenNumber"`
-		InvoiceDate           string `json:"InvoiceDate"`
-		InvoiceNumber         string `json:"InvoiceNumber"`
-		OCR                   string `json:"OCR"`
-		OurReference          string `json:"OurReference"`
-		PaymentPending        bool   `json:"PaymentPending"`
-		Project               string `json:"Project"`
-		RoundOffValue         string `json:"RoundOffValue"`
-		SupplierInvoiceRows   []struct {
-			Account                int    `json:"Account"`
-			ArticleNumber          string `json:"ArticleNumber"`
-			Code                   string `json:"Code"`
-			CostCenter             string `json:"CostCenter"`
-			AccountDescription     string `json:"AccountDescription"`
-			ItemDescription        string `json:"ItemDescription"`
-			Debit                  int    `json:"Debit"`
-			DebitCurrency          int    `json:"DebitCurrency"`
-			Credit                 int    `json:"Credit"`
-			CreditCurrency         int    `json:"CreditCurrency"`
-			Project                string `json:"Project"`
-			TransactionInformation string `json:"TransactionInformation"`
-			Price                  int    `json:"Price"`
-			Quantity               int    `json:"Quantity"`
-			Total                  int    `json:"Total"`
-			Unit                   string `json:"Unit"`
-			StockPointCode         string `json:"StockPointCode"`
-			StockLocationCode      string `json:"StockLocationCode"`
-		} `json:"SupplierInvoiceRows"`
-		SupplierNumber   string `json:"SupplierNumber"`
-		SupplierName     string `json:"SupplierName"`
-		Total            string `json:"Total"`
-		VAT              string `json:"VAT"`
-		YourReference    string `json:"YourReference"`
-		VoucherNumber    int    `json:"VoucherNumber"`
-		VoucherSeries    string `json:"VoucherSeries"`
-		VoucherYear      int    `json:"VoucherYear"`
-		VATType          string `json:"VATType"`
-		SalesType        string `json:"SalesType"`
-		AccountingMethod string `json:"AccountingMethod"`
-		Vouchers         []struct {
-			Number        int    `json:"Number"`
-			Year          int    `json:"Year"`
-			Series        string `json:"Series"`
-			ReferenceType string `json:"ReferenceType"`
-		} `json:"Vouchers"`
-		FinalPayDate string `json:"FinalPayDate"`
-	} `json:"SupplierInvoice"`
+	ModeOfPayment ModeOfPayment `json:"ModeOfPayment"`
 }
 
 type UpdateModeOfPaymentReq struct {
-	SupplierInvoice struct {
-		Url                   string `json:"@url"`
-		AdministrationFee     string `json:"AdministrationFee"`
-		Balance               string `json:"Balance"`
-		Booked                bool   `json:"Booked"`
-		Cancelled             bool   `json:"Cancelled"`
-		Comments              string `json:"Comments"`
-		CostCenter            string `json:"CostCenter"`
-		Credit                bool   `json:"Credit"`
-		CreditReference       int    `json:"CreditReference"`
-		Currency              string `json:"Currency"`
-		CurrencyRate          string `json:"CurrencyRate"`
-		CurrencyUnit          int    `json:"CurrencyUnit"`
-		DisablePaymentFile    bool   `json:"DisablePaymentFile"`
-		DueDate               string `json:"DueDate"`
-		ExternalInvoiceNumber string `json:"ExternalInvoiceNumber"`
-		ExternalInvoiceSeries string `json:"ExternalInvoiceSeries"`
-		Freight               string `json:"Freight"`
-		GivenNumber           string `json:"GivenNumber"`
-		InvoiceDate           string `json:"InvoiceDate"`
-		InvoiceNumber         string `json:"InvoiceNumber"`
-		OCR                   string `json:"OCR"`
-		OurReference          string `json:"OurReference"`
-		PaymentPending        bool   `json:"PaymentPending"`
-		Project               string `json:"Project"`
-		RoundOffValue         string `json:"RoundOffValue"`
-		SupplierInvoiceRows   []struct {
-			Account                int    `json:"Account"`
-			ArticleNumber          string `json:"ArticleNumber"`
-			Code                   string `json:"Code"`
-			CostCenter             string `json:"CostCenter"`
-			AccountDescription     string `json:"AccountDescription"`
-			ItemDescription        string `json:"ItemDescription"`
-			Debit                  int    `json:"Debit"`
-			DebitCurrency          int    `json:"DebitCurrency"`
-			Credit                 int    `json:"Credit"`
-			CreditCurrency         int    `json:"CreditCurrency"`
-			Project                string `json:"Project"`
-			TransactionInformation string `json:"TransactionInformation"`
-			Price                  int    `json:"Price"`
-			Quantity               int    `json:"Quantity"`
-			Total                  int    `json:"Total"`
-			Unit                   string `json:"Unit"`
-			StockPointCode         string `json:"StockPointCode"`
-			StockLocationCode      string `json:"StockLocationCode"`
-		} `json:"SupplierInvoiceRows"`
-		SupplierNumber   string `json:"SupplierNumber"`
-		SupplierName     string `json:"SupplierName"`
-		Total            string `json:"Total"`
-		VAT              string `json:"VAT"`
-		YourReference    string `json:"YourReference"`
-		VoucherNumber    int    `json:"VoucherNumber"`
-		VoucherSeries    string `json:"VoucherSeries"`
-		VoucherYear      int    `json:"VoucherYear"`
-		VATType          string `json:"VATType"`
-		SalesType        string `json:"SalesType"`
-		AccountingMethod string `json:"AccountingMethod"`
-		Vouchers         []struct {
-			Number        int    `json:"Number"`
-			Year          int    `json:"Year"`
-			Series        string `json:"Series"`
-			ReferenceType string `json:"ReferenceType"`
-		} `json:"Vouchers"`
-		FinalPayDate string `json:"FinalPayDate"`
-	} `json:"SupplierInvoice"`
+	ModeOfPayment ModeOfPayment `json:"ModeOfPayment"`
 }
 
 type UpdateModeOfPaymentResp struct {
-	SupplierInvoice struct {
-		Url                   string `json:"@url"`
-		AdministrationFee     string `json:"AdministrationFee"`
-		Balance               string `json:"Balance"`
-		Booked                bool   `json:"Booked"`
-		Cancelled             bool   `json:"Cancelled"`
-		Comments              string `json:"Comments"`
-		CostCenter            string `json:"CostCenter"`
-		Credit                bool   `json:"Credit"`
-		CreditReference       int    `json:"CreditReference"`
-		Currency              string `json:"Currency"`
-		CurrencyRate          string `json:"CurrencyRate"`
-		CurrencyUnit          int    `json:"CurrencyUnit"`
-		DisablePaymentFile    bool   `json:"DisablePaymentFile"`
-		DueDate               string `json:"DueDate"`
-		ExternalInvoiceNumber string `json:"ExternalInvoiceNumber"`
-		ExternalInvoiceSeries string `json:"ExternalInvoiceSeries"`
-		Freight               string `json:"Freight"`
-		GivenNumber           string `json:"GivenNumber"`
-		InvoiceDate           string `json:"InvoiceDate"`
-		InvoiceNumber         string `json:"InvoiceNumber"`
-		OCR                   string `json:"OCR"`
-		OurReference          string `json:"OurReference"`
-		PaymentPending        bool   `json:"PaymentPending"`
-		Project               string `json:"Project"`
-		RoundOffValue         string `json:"RoundOffValue"`
-		SupplierInvoiceRows   []struct {
-			Account                int    `json:"Account"`
-			ArticleNumber          string `json:"ArticleNumber"`
-			Code                   string `json:"Code"`
-			CostCenter             string `json:"CostCenter"`
-			AccountDescription     string `json:"AccountDescription"`
-			ItemDescription        string `json:"ItemDescription"`
-			Debit                  int    `json:"Debit"`
-			DebitCurrency          int    `json:"DebitCurrency"`
-			Credit                 int    `json:"Credit"`
-			CreditCurrency         int    `json:"CreditCurrency"`
-			Project                string `json:"Project"`
-			TransactionInformation string `json:"TransactionInformation"`
-			Price                  int    `json:"Price"`
-			Quantity               int    `json:"Quantity"`
-			Total                  int    `json:"Total"`
-			Unit                   string `json:"Unit"`
-			StockPointCode         string `json:"StockPointCode"`
-			StockLocationCode      string `json:"StockLocationCode"`
-		} `json:"SupplierInvoiceRows"`
-		SupplierNumber   string `json:"SupplierNumber"`
-		SupplierName     string `json:"SupplierName"`
-		Total            string `json:"Total"`
-		VAT              string `json:"VAT"`
-		YourReference    string `json:"YourReference"`
-		VoucherNumber    int    `json:"VoucherNumber"`
-		VoucherSeries    string `json:"VoucherSeries"`
-		VoucherYear      int    `json:"VoucherYear"`
-		VATType          string `json:"VATType"`
-		SalesType        string `json:"SalesType"`
-		AccountingMethod string `json:"AccountingMethod"`
-		Vouchers         []struct {
-			Number        int    `json:"Number"`
-			Year          int    `json:"Year"`
-			Series        string `json:"Series"`
-			ReferenceType string `json:"ReferenceType"`
-		} `json:"Vouchers"`
-		FinalPayDate string `json:"FinalPayDate"`
-	} `json:"SupplierInvoice"`
+	ModeOfPayment ModeOfPayment `json:"ModeOfPayment"`
+}
+type ModeOfPayment struct {
+	Url           string `json:"@url,omitempty"`
+	Code          string `json:"Code,omitempty"`
+	Description   string `json:"Description,omitempty"`
+	AccountNumber string `json:"AccountNumber,omitempty"`
 }

@@ -145,10 +145,8 @@ func (c *Client) GetAllAbsenceTransactions(
 
 // CreateNewAbsenceTransaction does _POST https://api.fortnox.se/3/absencetransactions
 //
-// req - absence transaction to create
-func (c *Client) CreateNewAbsenceTransaction(
-	ctx context.Context,
-	at *AbsenceTransaction) (*AbsenceTransaction, error) {
+// at - absence transaction to create
+func (c *Client) CreateNewAbsenceTransaction(ctx context.Context, at *AbsenceTransaction) (*AbsenceTransaction, error) {
 
 	req := CreateNewAbsenceTransactionReq{AbsenceTransaction: *at}
 	resp := &CreateNewAbsenceTransactionResp{}
@@ -181,7 +179,7 @@ func (c *Client) GetAbsenceTransactionByID(ctx context.Context, id string) (*Abs
 //
 // id - identifies the transaction
 //
-// req - absence transaction to update
+// at - absence transaction to update
 func (c *Client) UpdateAbsenceTransactionByID(
 	ctx context.Context,
 	id string,

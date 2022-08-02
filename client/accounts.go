@@ -25,7 +25,7 @@ const (
 // GetAccount does _GET https://api.fortnox.se/3/accounts/{Number}
 //
 // accountID - identifies the account
-func (c *Client) GetAccount(ctx context.Context, accountID int) (*GetAccountResp, error) {
+func (c *Client) GetAccount(ctx context.Context, accountID int) (*Account, error) {
 	resp := &GetAccountResp{}
 
 	uri := fmt.Sprintf("%s/%d", accountsURI, accountID)
@@ -35,7 +35,7 @@ func (c *Client) GetAccount(ctx context.Context, accountID int) (*GetAccountResp
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Account, nil
 }
 
 // UpdateAccount does _PUT https://api.fortnox.se/3/accounts/{Number}
@@ -46,9 +46,10 @@ func (c *Client) GetAccount(ctx context.Context, accountID int) (*GetAccountResp
 func (c *Client) UpdateAccount(
 	ctx context.Context,
 	accountID int,
-	req *UpdateAccountReq,
-	filter *FinancialYearFilter) (*UpdateAccountResp, error) {
+	a *Account,
+	filter *FinancialYearFilter) (*Account, error) {
 
+	req := &UpdateAccountReq{Account: *a}
 	resp := &UpdateAccountResp{}
 
 	uri := fmt.Sprintf("%s/%d", accountsURI, accountID)
@@ -63,13 +64,13 @@ func (c *Client) UpdateAccount(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Account, nil
 }
 
 // GetAllAccounts does _GET https://api.fortnox.se/3/accounts/
 //
 // filter - GetAllAccountsFilter
-func (c *Client) GetAllAccounts(ctx context.Context, filter *GetAllAccountsFilter) ([]*AccountResult, error) {
+func (c *Client) GetAllAccounts(ctx context.Context, filter *GetAllAccountsFilter) ([]Account, error) {
 	resp := &GetAllAccountsResp{}
 
 	var params url.Values
@@ -90,9 +91,10 @@ func (c *Client) GetAllAccounts(ctx context.Context, filter *GetAllAccountsFilte
 // filter - financial year to create account against
 func (c *Client) CreateAccount(
 	ctx context.Context,
-	req *CreateAccountReq,
-	filter *FinancialYearFilter) (*CreateAccountInnerResp, error) {
+	a *Account,
+	filter *FinancialYearFilter) (*Account, error) {
 
+	req := &CreateAccountReq{Account: *a}
 	resp := CreateAccountResp{}
 
 	var params url.Values
@@ -150,35 +152,34 @@ func (f *FinancialYearFilter) urlValues() url.Values {
 	return params
 }
 
+type Account struct {
+	Url                            string            `json:"@url,omitempty"`
+	Active                         bool              `json:"Active,omitempty"`
+	BalanceBroughtForward          int               `json:"BalanceBroughtForward,omitempty"`
+	CostCenter                     string            `json:"CostCenter,omitempty"`
+	CostCenterSettings             string            `json:"CostCenterSettings,omitempty"`
+	Description                    string            `json:"Description,omitempty"`
+	Number                         int               `json:"Number,omitempty"`
+	Project                        string            `json:"Project,omitempty"`
+	ProjectSettings                string            `json:"ProjectSettings,omitempty"`
+	SRU                            int               `json:"SRU,omitempty"`
+	Year                           int               `json:"Year,omitempty"`
+	VATCode                        string            `json:"VATCode,omitempty"`
+	BalanceCarriedForward          int               `json:"BalanceCarriedForward,omitempty"`
+	TransactionInformation         string            `json:"TransactionInformation,omitempty"`
+	TransactionInformationSettings string            `json:"TransactionInformationSettings,omitempty"`
+	QuantitySettings               string            `json:"QuantitySettings,omitempty"`
+	QuantityUnit                   string            `json:"QuantityUnit,omitempty"`
+	OpeningQuantities              []OpeningQuantity `json:"OpeningQuantities,omitempty"`
+}
+
 type OpeningQuantity struct {
-	Project string `json:"Project"`
-	Balance int    `json:"Balance"`
+	Project string `json:"Project,omitempty"`
+	Balance int    `json:"Balance,omitempty"`
 }
 
 type GetAccountResp struct {
-	Account struct {
-		Url                            string `json:"@url"`
-		Active                         bool   `json:"Active"`
-		BalanceBroughtForward          int    `json:"BalanceBroughtForward"`
-		CostCenter                     string `json:"CostCenter"`
-		CostCenterSettings             string `json:"CostCenterSettings"`
-		Description                    string `json:"Description"`
-		Number                         int    `json:"Number"`
-		Project                        string `json:"Project"`
-		ProjectSettings                string `json:"ProjectSettings"`
-		SRU                            int    `json:"SRU"`
-		Year                           int    `json:"Year"`
-		VATCode                        string `json:"VATCode"`
-		BalanceCarriedForward          int    `json:"BalanceCarriedForward"`
-		TransactionInformation         string `json:"TransactionInformation"`
-		TransactionInformationSettings string `json:"TransactionInformationSettings"`
-		QuantitySettings               string `json:"QuantitySettings"`
-		QuantityUnit                   string `json:"QuantityUnit"`
-		OpeningQuantities              []struct {
-			Project string `json:"Project"`
-			Balance int    `json:"Balance"`
-		} `json:"OpeningQuantities"`
-	} `json:"Account"`
+	Account Account `json:"Account"`
 }
 
 type UpdateAccountReq GetAccountResp
@@ -186,65 +187,13 @@ type UpdateAccountReq GetAccountResp
 type UpdateAccountResp GetAccountResp
 
 type GetAllAccountsResp struct {
-	Accounts []*AccountResult `json:"Accounts"`
-}
-
-type AccountResult struct {
-	Url                   string `json:"@url"`
-	Active                bool   `json:"Active"`
-	BalanceBroughtForward int    `json:"BalanceBroughtForward"`
-	CostCenter            string `json:"CostCenter"`
-	CostCenterSettings    string `json:"CostCenterSettings"`
-	Description           string `json:"Description"`
-	Number                int    `json:"Number"`
-	Project               string `json:"Project"`
-	ProjectSettings       string `json:"ProjectSettings"`
-	SRU                   int    `json:"SRU"`
-	Year                  int    `json:"Year"`
-	VATCode               string `json:"VATCode"`
+	Accounts []Account `json:"Accounts"`
 }
 
 type CreateAccountReq struct {
-	Account CreateAccountInnerReq `json:"Account"`
-}
-
-type CreateAccountInnerReq struct {
-	Active                         bool              `json:"Active"`
-	BalanceBroughtForward          int               `json:"BalanceBroughtForward"`
-	CostCenter                     string            `json:"CostCenter"`
-	CostCenterSettings             string            `json:"CostCenterSettings"`
-	Description                    string            `json:"Description"`
-	Number                         int               `json:"Number"`
-	Project                        string            `json:"Project"`
-	ProjectSettings                string            `json:"ProjectSettings"`
-	SRU                            int               `json:"SRU"`
-	TransactionInformation         string            `json:"TransactionInformation"`
-	TransactionInformationSettings string            `json:"TransactionInformationSettings"`
-	VATCode                        string            `json:"VATCode"`
-	OpeningQuantities              []OpeningQuantity `json:"OpeningQuantities"`
+	Account Account `json:"Account"`
 }
 
 type CreateAccountResp struct {
-	Account CreateAccountInnerResp `json:"Account"`
-}
-
-type CreateAccountInnerResp struct {
-	Url                            string            `json:"@url"`
-	Active                         bool              `json:"Active"`
-	BalanceBroughtForward          int               `json:"BalanceBroughtForward"`
-	CostCenter                     string            `json:"CostCenter"`
-	CostCenterSettings             string            `json:"CostCenterSettings"`
-	Description                    string            `json:"Description"`
-	Number                         int               `json:"Number"`
-	Project                        string            `json:"Project"`
-	ProjectSettings                string            `json:"ProjectSettings"`
-	SRU                            int               `json:"SRU"`
-	Year                           int               `json:"Year"`
-	VATCode                        string            `json:"VATCode"`
-	BalanceCarriedForward          int               `json:"BalanceCarriedForward"`
-	TransactionInformation         string            `json:"TransactionInformation"`
-	TransactionInformationSettings string            `json:"TransactionInformationSettings"`
-	QuantitySettings               string            `json:"QuantitySettings"`
-	QuantityUnit                   string            `json:"QuantityUnit"`
-	OpeningQuantities              []OpeningQuantity `json:"OpeningQuantities"`
+	Account Account `json:"Account"`
 }

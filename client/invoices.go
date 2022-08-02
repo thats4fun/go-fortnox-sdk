@@ -291,6 +291,7 @@ type GetAllInvoicesQueryParams struct {
 	SortBy                    GetAllInvoicesSortBy
 }
 
+// TODO: update param names
 func (p GetAllInvoicesQueryParams) urlValues() url.Values {
 	params := url.Values{}
 
@@ -316,6 +317,74 @@ func (p GetAllInvoicesQueryParams) urlValues() url.Values {
 	if strings.TrimSpace(p.FromDate) != "" {
 		params["customername"] = []string{p.FromDate}
 	}
+	if strings.TrimSpace(p.ToDate) != "" {
+		params["filter"] = []string{p.ToDate}
+	}
+	if strings.TrimSpace(p.FromFinalPayDate) != "" {
+		params["costcenter"] = []string{p.FromFinalPayDate}
+	}
+	if strings.TrimSpace(p.ToFinalPayDate) != "" {
+		params["customername"] = []string{p.ToFinalPayDate}
+	}
+	if strings.TrimSpace(p.LastModified) != "" {
+		params["customername"] = []string{p.LastModified}
+	}
+	if strings.TrimSpace(p.NotCompleted) != "" {
+		params["customername"] = []string{p.NotCompleted}
+	}
+	if strings.TrimSpace(p.DocumentNumber) != "" {
+		params["customername"] = []string{p.DocumentNumber}
+	}
+	if strings.TrimSpace(p.Ocr) != "" {
+		params["customername"] = []string{p.Ocr}
+	}
+	if strings.TrimSpace(p.OurReference) != "" {
+		params["filter"] = []string{p.OurReference}
+	}
+	if strings.TrimSpace(p.Project) != "" {
+		params["costcenter"] = []string{p.Project}
+	}
+	if strings.TrimSpace(p.Sent) != "" {
+		params["customername"] = []string{p.Sent}
+	}
+	if strings.TrimSpace(p.ExternalInvoiceReference1) != "" {
+		params["customername"] = []string{p.ExternalInvoiceReference1}
+	}
+	if strings.TrimSpace(p.ExternalInvoiceReference2) != "" {
+		params["customername"] = []string{p.ExternalInvoiceReference2}
+	}
+	if strings.TrimSpace(p.YourReference) != "" {
+		params["customername"] = []string{p.YourReference}
+	}
+	if strings.TrimSpace(p.InvoiceType) != "" {
+		params["customername"] = []string{p.InvoiceType}
+	}
+	if strings.TrimSpace(p.ArticleNumber) != "" {
+		params["customername"] = []string{p.ArticleNumber}
+	}
+	if strings.TrimSpace(p.ArticleDescription) != "" {
+		params["customername"] = []string{p.ArticleDescription}
+	}
+	if strings.TrimSpace(p.Currency) != "" {
+		params["customername"] = []string{p.Currency}
+	}
+	if strings.TrimSpace(p.AccountNumberFrom) != "" {
+		params["customername"] = []string{p.AccountNumberFrom}
+	}
+	if strings.TrimSpace(p.AccountNumberTo) != "" {
+		params["customername"] = []string{p.AccountNumberTo}
+	}
+	if strings.TrimSpace(p.YourOrderNumber) != "" {
+		params["customername"] = []string{p.YourOrderNumber}
+	}
+	if strings.TrimSpace(p.Credit) != "" {
+		params["customername"] = []string{p.Credit}
+	}
+	sortBy := string(p.SortBy)
+	if strings.TrimSpace(sortBy) != "" {
+		params["customername"] = []string{sortBy}
+	}
+
 	return params
 }
 
