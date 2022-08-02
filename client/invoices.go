@@ -298,7 +298,24 @@ func (p GetAllInvoicesQueryParams) urlValues() url.Values {
 	if strings.TrimSpace(filterStr) != "" {
 		params["filter"] = []string{filterStr}
 	}
-
+	if strings.TrimSpace(p.CostCenter) != "" {
+		params["costcenter"] = []string{p.CostCenter}
+	}
+	if strings.TrimSpace(p.CustomerName) != "" {
+		params["customername"] = []string{p.CostCenter}
+	}
+	if strings.TrimSpace(p.CustomerNumber) != "" {
+		params["customername"] = []string{p.CustomerNumber}
+	}
+	if strings.TrimSpace(p.Label) != "" {
+		params["customername"] = []string{p.Label}
+	}
+	if strings.TrimSpace(p.DocumentNumber) != "" {
+		params["customername"] = []string{p.DocumentNumber}
+	}
+	if strings.TrimSpace(p.FromDate) != "" {
+		params["customername"] = []string{p.FromDate}
+	}
 	return params
 }
 

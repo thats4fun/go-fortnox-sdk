@@ -302,6 +302,10 @@ func (c *Client) RefreshToken() error {
 	return nil
 }
 
+func (c *Client) GetRefreshToken() string {
+	return c.clientOptions.RefreshToken
+}
+
 type TokenInfo struct {
 	AccessToken  string `json:"access_token"`
 	ExpiresIn    int    `json:"expires_in"`
