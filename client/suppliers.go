@@ -10,7 +10,7 @@ const (
 )
 
 // GetAllSuppliers does _GET https://api.fortnox.se/3/suppliers
-func (c *Client) GetAllSuppliers(ctx context.Context) (*GetAllSuppliersResp, error) {
+func (c *Client) GetAllSuppliers(ctx context.Context) ([]Supplier, error) {
 	resp := &GetAllSuppliersResp{}
 
 	err := c._GET(ctx, suppliersURI, nil, resp)
@@ -18,13 +18,14 @@ func (c *Client) GetAllSuppliers(ctx context.Context) (*GetAllSuppliersResp, err
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.Suppliers, nil
 }
 
 // CreateSupplier does _POST https://api.fortnox.se/3/suppliers
 //
 // req - supplier to create
-func (c *Client) CreateSupplier(ctx context.Context, req *CreateSupplierReq) (*CreateSupplierResp, error) {
+func (c *Client) CreateSupplier(ctx context.Context, s *Supplier) (*Supplier, error) {
+	req := &CreateSupplierReq{Supplier: *s}
 	resp := &CreateSupplierResp{}
 
 	err := c._POST(ctx, suppliersURI, nil, req, resp)
@@ -32,13 +33,13 @@ func (c *Client) CreateSupplier(ctx context.Context, req *CreateSupplierReq) (*C
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Supplier, nil
 }
 
 // GetSupplier does _GET https://api.fortnox.se/3/suppliers/{SupplierNumber}
 //
 // supplierNumber - identifies the supplier
-func (c *Client) GetSupplier(ctx context.Context, supplierNumber string) (*GetSupplierResp, error) {
+func (c *Client) GetSupplier(ctx context.Context, supplierNumber string) (*Supplier, error) {
 	resp := &GetSupplierResp{}
 
 	uri := fmt.Sprintf("%s/%s", suppliersURI, supplierNumber)
@@ -48,17 +49,14 @@ func (c *Client) GetSupplier(ctx context.Context, supplierNumber string) (*GetSu
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Supplier, nil
 }
 
 // UpdateSupplier does _PUT https://api.fortnox.se/3/suppliers/{SupplierNumber}
 //
 // supplierNumber - identifies the supplier
-func (c *Client) UpdateSupplier(
-	ctx context.Context,
-	supplierNumber string,
-	req *UpdateSupplierReq) (*UpdateSupplierResp, error) {
-
+func (c *Client) UpdateSupplier(ctx context.Context, supplierNumber string, s *Supplier) (*Supplier, error) {
+	req := &UpdateSupplierReq{Supplier: *s}
 	resp := &UpdateSupplierResp{}
 
 	uri := fmt.Sprintf("%s/%s", suppliersURI, supplierNumber)
@@ -68,268 +66,74 @@ func (c *Client) UpdateSupplier(
 		return nil, err
 	}
 
-	return resp, nil
+	return &resp.Supplier, nil
 }
 
 type GetAllSuppliersResp struct {
-	Suppliers []struct {
-		Url                string `json:"@url"`
-		Active             bool   `json:"Active"`
-		Address1           string `json:"Address1"`
-		Address2           string `json:"Address2"`
-		BankAccountNumber  string `json:"BankAccountNumber"`
-		BG                 string `json:"BG"`
-		BIC                string `json:"BIC"`
-		City               string `json:"City"`
-		CostCenter         string `json:"CostCenter"`
-		CountryCode        string `json:"CountryCode"`
-		Currency           string `json:"Currency"`
-		DisablePaymentFile bool   `json:"DisablePaymentFile"`
-		Email              string `json:"Email"`
-		IBAN               string `json:"IBAN"`
-		Name               string `json:"Name"`
-		OrganisationNumber string `json:"OrganisationNumber"`
-		PG                 string `json:"PG"`
-		Phone              string `json:"Phone"`
-		PreDefinedAccount  string `json:"PreDefinedAccount"`
-		Project            string `json:"Project"`
-		SupplierNumber     string `json:"SupplierNumber"`
-		TermsOfPayment     string `json:"TermsOfPayment"`
-		ZipCode            string `json:"ZipCode"`
-	} `json:"Suppliers"`
+	Suppliers []Supplier `json:"Suppliers"`
 }
 
 type CreateSupplierReq struct {
-	Supplier struct {
-		Url                 string `json:"@url"`
-		Active              bool   `json:"Active"`
-		Address1            string `json:"Address1"`
-		Address2            string `json:"Address2"`
-		Bank                string `json:"Bank"`
-		BankAccountNumber   string `json:"BankAccountNumber"`
-		BG                  string `json:"BG"`
-		BIC                 string `json:"BIC"`
-		BranchCode          string `json:"BranchCode"`
-		City                string `json:"City"`
-		ClearingNumber      string `json:"ClearingNumber"`
-		Comments            string `json:"Comments"`
-		CostCenter          string `json:"CostCenter"`
-		Country             string `json:"Country"`
-		CountryCode         string `json:"CountryCode"`
-		Currency            string `json:"Currency"`
-		DisablePaymentFile  bool   `json:"DisablePaymentFile"`
-		Email               string `json:"Email"`
-		Fax                 string `json:"Fax"`
-		IBAN                string `json:"IBAN"`
-		Name                string `json:"Name"`
-		OrganisationNumber  string `json:"OrganisationNumber"`
-		OurReference        string `json:"OurReference"`
-		OurCustomerNumber   string `json:"OurCustomerNumber"`
-		PG                  string `json:"PG"`
-		Phone1              string `json:"Phone1"`
-		Phone2              string `json:"Phone2"`
-		PreDefinedAccount   string `json:"PreDefinedAccount"`
-		Project             string `json:"Project"`
-		SupplierNumber      string `json:"SupplierNumber"`
-		TermsOfPayment      string `json:"TermsOfPayment"`
-		VATNumber           string `json:"VATNumber"`
-		VATType             string `json:"VATType"`
-		VisitingAddress     string `json:"VisitingAddress"`
-		VisitingCity        string `json:"VisitingCity"`
-		VisitingCountry     string `json:"VisitingCountry"`
-		VisitingCountryCode string `json:"VisitingCountryCode"`
-		VisitingZipCode     string `json:"VisitingZipCode"`
-		WorkPlace           string `json:"WorkPlace"`
-		WWW                 string `json:"WWW"`
-		YourReference       string `json:"YourReference"`
-		ZipCode             string `json:"ZipCode"`
-	} `json:"Supplier"`
+	Supplier Supplier `json:"Supplier"`
 }
 
 type CreateSupplierResp struct {
-	Supplier struct {
-		Url                 string `json:"@url"`
-		Active              bool   `json:"Active"`
-		Address1            string `json:"Address1"`
-		Address2            string `json:"Address2"`
-		Bank                string `json:"Bank"`
-		BankAccountNumber   string `json:"BankAccountNumber"`
-		BG                  string `json:"BG"`
-		BIC                 string `json:"BIC"`
-		BranchCode          string `json:"BranchCode"`
-		City                string `json:"City"`
-		ClearingNumber      string `json:"ClearingNumber"`
-		Comments            string `json:"Comments"`
-		CostCenter          string `json:"CostCenter"`
-		Country             string `json:"Country"`
-		CountryCode         string `json:"CountryCode"`
-		Currency            string `json:"Currency"`
-		DisablePaymentFile  bool   `json:"DisablePaymentFile"`
-		Email               string `json:"Email"`
-		Fax                 string `json:"Fax"`
-		IBAN                string `json:"IBAN"`
-		Name                string `json:"Name"`
-		OrganisationNumber  string `json:"OrganisationNumber"`
-		OurReference        string `json:"OurReference"`
-		OurCustomerNumber   string `json:"OurCustomerNumber"`
-		PG                  string `json:"PG"`
-		Phone1              string `json:"Phone1"`
-		Phone2              string `json:"Phone2"`
-		PreDefinedAccount   string `json:"PreDefinedAccount"`
-		Project             string `json:"Project"`
-		SupplierNumber      string `json:"SupplierNumber"`
-		TermsOfPayment      string `json:"TermsOfPayment"`
-		VATNumber           string `json:"VATNumber"`
-		VATType             string `json:"VATType"`
-		VisitingAddress     string `json:"VisitingAddress"`
-		VisitingCity        string `json:"VisitingCity"`
-		VisitingCountry     string `json:"VisitingCountry"`
-		VisitingCountryCode string `json:"VisitingCountryCode"`
-		VisitingZipCode     string `json:"VisitingZipCode"`
-		WorkPlace           string `json:"WorkPlace"`
-		WWW                 string `json:"WWW"`
-		YourReference       string `json:"YourReference"`
-		ZipCode             string `json:"ZipCode"`
-	} `json:"Supplier"`
+	Supplier Supplier `json:"Supplier"`
 }
 
 type GetSupplierResp struct {
-	Supplier struct {
-		Url                 string `json:"@url"`
-		Active              bool   `json:"Active"`
-		Address1            string `json:"Address1"`
-		Address2            string `json:"Address2"`
-		Bank                string `json:"Bank"`
-		BankAccountNumber   string `json:"BankAccountNumber"`
-		BG                  string `json:"BG"`
-		BIC                 string `json:"BIC"`
-		BranchCode          string `json:"BranchCode"`
-		City                string `json:"City"`
-		ClearingNumber      string `json:"ClearingNumber"`
-		Comments            string `json:"Comments"`
-		CostCenter          string `json:"CostCenter"`
-		Country             string `json:"Country"`
-		CountryCode         string `json:"CountryCode"`
-		Currency            string `json:"Currency"`
-		DisablePaymentFile  bool   `json:"DisablePaymentFile"`
-		Email               string `json:"Email"`
-		Fax                 string `json:"Fax"`
-		IBAN                string `json:"IBAN"`
-		Name                string `json:"Name"`
-		OrganisationNumber  string `json:"OrganisationNumber"`
-		OurReference        string `json:"OurReference"`
-		OurCustomerNumber   string `json:"OurCustomerNumber"`
-		PG                  string `json:"PG"`
-		Phone1              string `json:"Phone1"`
-		Phone2              string `json:"Phone2"`
-		PreDefinedAccount   string `json:"PreDefinedAccount"`
-		Project             string `json:"Project"`
-		SupplierNumber      string `json:"SupplierNumber"`
-		TermsOfPayment      string `json:"TermsOfPayment"`
-		VATNumber           string `json:"VATNumber"`
-		VATType             string `json:"VATType"`
-		VisitingAddress     string `json:"VisitingAddress"`
-		VisitingCity        string `json:"VisitingCity"`
-		VisitingCountry     string `json:"VisitingCountry"`
-		VisitingCountryCode string `json:"VisitingCountryCode"`
-		VisitingZipCode     string `json:"VisitingZipCode"`
-		WorkPlace           string `json:"WorkPlace"`
-		WWW                 string `json:"WWW"`
-		YourReference       string `json:"YourReference"`
-		ZipCode             string `json:"ZipCode"`
-	} `json:"Supplier"`
+	Supplier Supplier `json:"Supplier"`
 }
 
 type UpdateSupplierReq struct {
-	Supplier struct {
-		Url                 string `json:"@url"`
-		Active              bool   `json:"Active"`
-		Address1            string `json:"Address1"`
-		Address2            string `json:"Address2"`
-		Bank                string `json:"Bank"`
-		BankAccountNumber   string `json:"BankAccountNumber"`
-		BG                  string `json:"BG"`
-		BIC                 string `json:"BIC"`
-		BranchCode          string `json:"BranchCode"`
-		City                string `json:"City"`
-		ClearingNumber      string `json:"ClearingNumber"`
-		Comments            string `json:"Comments"`
-		CostCenter          string `json:"CostCenter"`
-		Country             string `json:"Country"`
-		CountryCode         string `json:"CountryCode"`
-		Currency            string `json:"Currency"`
-		DisablePaymentFile  bool   `json:"DisablePaymentFile"`
-		Email               string `json:"Email"`
-		Fax                 string `json:"Fax"`
-		IBAN                string `json:"IBAN"`
-		Name                string `json:"Name"`
-		OrganisationNumber  string `json:"OrganisationNumber"`
-		OurReference        string `json:"OurReference"`
-		OurCustomerNumber   string `json:"OurCustomerNumber"`
-		PG                  string `json:"PG"`
-		Phone1              string `json:"Phone1"`
-		Phone2              string `json:"Phone2"`
-		PreDefinedAccount   string `json:"PreDefinedAccount"`
-		Project             string `json:"Project"`
-		SupplierNumber      string `json:"SupplierNumber"`
-		TermsOfPayment      string `json:"TermsOfPayment"`
-		VATNumber           string `json:"VATNumber"`
-		VATType             string `json:"VATType"`
-		VisitingAddress     string `json:"VisitingAddress"`
-		VisitingCity        string `json:"VisitingCity"`
-		VisitingCountry     string `json:"VisitingCountry"`
-		VisitingCountryCode string `json:"VisitingCountryCode"`
-		VisitingZipCode     string `json:"VisitingZipCode"`
-		WorkPlace           string `json:"WorkPlace"`
-		WWW                 string `json:"WWW"`
-		YourReference       string `json:"YourReference"`
-		ZipCode             string `json:"ZipCode"`
-	} `json:"Supplier"`
+	Supplier Supplier `json:"Supplier"`
 }
 
 type UpdateSupplierResp struct {
-	Supplier struct {
-		Url                 string `json:"@url"`
-		Active              bool   `json:"Active"`
-		Address1            string `json:"Address1"`
-		Address2            string `json:"Address2"`
-		Bank                string `json:"Bank"`
-		BankAccountNumber   string `json:"BankAccountNumber"`
-		BG                  string `json:"BG"`
-		BIC                 string `json:"BIC"`
-		BranchCode          string `json:"BranchCode"`
-		City                string `json:"City"`
-		ClearingNumber      string `json:"ClearingNumber"`
-		Comments            string `json:"Comments"`
-		CostCenter          string `json:"CostCenter"`
-		Country             string `json:"Country"`
-		CountryCode         string `json:"CountryCode"`
-		Currency            string `json:"Currency"`
-		DisablePaymentFile  bool   `json:"DisablePaymentFile"`
-		Email               string `json:"Email"`
-		Fax                 string `json:"Fax"`
-		IBAN                string `json:"IBAN"`
-		Name                string `json:"Name"`
-		OrganisationNumber  string `json:"OrganisationNumber"`
-		OurReference        string `json:"OurReference"`
-		OurCustomerNumber   string `json:"OurCustomerNumber"`
-		PG                  string `json:"PG"`
-		Phone1              string `json:"Phone1"`
-		Phone2              string `json:"Phone2"`
-		PreDefinedAccount   string `json:"PreDefinedAccount"`
-		Project             string `json:"Project"`
-		SupplierNumber      string `json:"SupplierNumber"`
-		TermsOfPayment      string `json:"TermsOfPayment"`
-		VATNumber           string `json:"VATNumber"`
-		VATType             string `json:"VATType"`
-		VisitingAddress     string `json:"VisitingAddress"`
-		VisitingCity        string `json:"VisitingCity"`
-		VisitingCountry     string `json:"VisitingCountry"`
-		VisitingCountryCode string `json:"VisitingCountryCode"`
-		VisitingZipCode     string `json:"VisitingZipCode"`
-		WorkPlace           string `json:"WorkPlace"`
-		WWW                 string `json:"WWW"`
-		YourReference       string `json:"YourReference"`
-		ZipCode             string `json:"ZipCode"`
-	} `json:"Supplier"`
+	Supplier Supplier `json:"Supplier"`
+}
+
+type Supplier struct {
+	Url                 string `json:"@url,omitempty"`
+	Active              bool   `json:"Active,omitempty"`
+	Address1            string `json:"Address1,omitempty"`
+	Address2            string `json:"Address2,omitempty"`
+	Bank                string `json:"Bank,omitempty"`
+	BankAccountNumber   string `json:"BankAccountNumber,omitempty"`
+	BG                  string `json:"BG,omitempty"`
+	BIC                 string `json:"BIC,omitempty"`
+	BranchCode          string `json:"BranchCode,omitempty"`
+	City                string `json:"City,omitempty"`
+	ClearingNumber      string `json:"ClearingNumber,omitempty"`
+	Comments            string `json:"Comments,omitempty"`
+	CostCenter          string `json:"CostCenter,omitempty"`
+	Country             string `json:"Country,omitempty"`
+	CountryCode         string `json:"CountryCode,omitempty"`
+	Currency            string `json:"Currency,omitempty"`
+	DisablePaymentFile  bool   `json:"DisablePaymentFile,omitempty"`
+	Email               string `json:"Email,omitempty"`
+	Fax                 string `json:"Fax,omitempty"`
+	IBAN                string `json:"IBAN,omitempty"`
+	Name                string `json:"Name,omitempty"`
+	OrganisationNumber  string `json:"OrganisationNumber,omitempty"`
+	OurReference        string `json:"OurReference,omitempty"`
+	OurCustomerNumber   string `json:"OurCustomerNumber,omitempty"`
+	PG                  string `json:"PG,omitempty"`
+	Phone1              string `json:"Phone1,omitempty"`
+	Phone2              string `json:"Phone2,omitempty"`
+	PreDefinedAccount   string `json:"PreDefinedAccount,omitempty"`
+	Project             string `json:"Project,omitempty"`
+	SupplierNumber      string `json:"SupplierNumber,omitempty"`
+	TermsOfPayment      string `json:"TermsOfPayment,omitempty"`
+	VATNumber           string `json:"VATNumber,omitempty"`
+	VATType             string `json:"VATType,omitempty"`
+	VisitingAddress     string `json:"VisitingAddress,omitempty"`
+	VisitingCity        string `json:"VisitingCity,omitempty"`
+	VisitingCountry     string `json:"VisitingCountry,omitempty"`
+	VisitingCountryCode string `json:"VisitingCountryCode,omitempty"`
+	VisitingZipCode     string `json:"VisitingZipCode,omitempty"`
+	WorkPlace           string `json:"WorkPlace,omitempty"`
+	WWW                 string `json:"WWW,omitempty"`
+	YourReference       string `json:"YourReference,omitempty"`
+	ZipCode             string `json:"ZipCode,omitempty"`
 }
