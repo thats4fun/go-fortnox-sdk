@@ -10,9 +10,7 @@ const (
 )
 
 // GetAllTrustedAndRejectedEmailSenders does _GET https://api.fortnox.se/3/emailsenders/
-func (c *Client) GetAllTrustedAndRejectedEmailSenders(
-	ctx context.Context) (*EmailSenders, error) {
-
+func (c *Client) GetAllTrustedAndRejectedEmailSenders(ctx context.Context) (*EmailSenders, error) {
 	resp := &GetAllTrustedAndRejectedEmailSendersResp{}
 
 	err := c._GET(ctx, emailSendersURI, nil, resp)
@@ -26,10 +24,7 @@ func (c *Client) GetAllTrustedAndRejectedEmailSenders(
 // CreateTrustedEmailAddress does _POST https://api.fortnox.se/3/emailsenders/trusted
 //
 // req - trusted email sender to create
-func (c *Client) CreateTrustedEmailAddress(
-	ctx context.Context,
-	ts *TrustedSender) (*TrustedSender, error) {
-
+func (c *Client) CreateTrustedEmailAddress(ctx context.Context, ts *TrustedSender) (*TrustedSender, error) {
 	req := &CreateTrustedEmailAddressReq{TrustedSender: *ts}
 	resp := &CreateTrustedEmailAddressResp{}
 
@@ -57,13 +52,13 @@ type EmailSenders struct {
 }
 
 type TrustedSender struct {
-	Id    int    `json:"Id"`
-	Email string `json:"Email"`
+	Id    int    `json:"Id,omitempty"`
+	Email string `json:"Email,omitempty"`
 }
 
 type RejectedSenders struct {
-	Id    int    `json:"Id"`
-	Email string `json:"Email"`
+	Id    int    `json:"Id,omitempty"`
+	Email string `json:"Email,omitempty"`
 }
 
 type GetAllTrustedAndRejectedEmailSendersResp struct {

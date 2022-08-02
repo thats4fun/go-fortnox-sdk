@@ -83,9 +83,9 @@ func (c *Client) RemoveTermOfPayment(ctx context.Context, code string) error {
 }
 
 type TermsOfPayment struct {
-	Url         string `json:"@url"`
-	Code        string `json:"Code"`
-	Description string `json:"Description"`
+	Url         string `json:"@url,omitempty"`
+	Code        string `json:"Code,omitempty"`
+	Description string `json:"Description,omitempty"`
 }
 
 type GetAllTermsOfPaymentsResp struct {

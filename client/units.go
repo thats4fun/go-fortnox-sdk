@@ -78,10 +78,10 @@ func (c *Client) RemoveUnit(ctx context.Context, code string) error {
 }
 
 type Unit struct {
-	Url         string `json:"@url"`
-	Code        string `json:"Code"`
-	Description string `json:"Description"`
-	CodeEnglish string `json:"CodeEnglish"`
+	Url         string `json:"@url,omitempty"`
+	Code        string `json:"Code,omitempty"`
+	Description string `json:"Description,omitempty"`
+	CodeEnglish string `json:"CodeEnglish,omitempty"`
 }
 
 type GetAllUnitsResp struct {
